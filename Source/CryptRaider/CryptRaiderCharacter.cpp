@@ -7,6 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Grabber.h"
+#include "Inventory.h"
+#include "Picker.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -15,7 +18,7 @@
 ACryptRaiderCharacter::ACryptRaiderCharacter()
 {
 	// Character doesnt have a rifle at start
-	bHasRifle = false;
+	bHasRifle = true;
 	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
@@ -34,6 +37,15 @@ ACryptRaiderCharacter::ACryptRaiderCharacter()
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+	//...
+	this->Inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
+	this->Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
+	this->Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
+	
+	Picker->SetupAttachment(FirstPersonCameraComponent);
+	Grabber->SetupAttachment(FirstPersonCameraComponent);
+	Inventory->SetupAttachment(RootComponent);
 
 }
 
