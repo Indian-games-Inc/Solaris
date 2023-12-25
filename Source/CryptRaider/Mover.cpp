@@ -42,12 +42,12 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	UE_LOG(LogTemp, Warning, TEXT("Moving owner: %s"), *GetOwner()->GetActorNameOrLabel());
+	// UE_LOG(LogTemp, Warning, TEXT("Moving owner: %s"), *GetOwner()->GetActorNameOrLabel());
 	if (ShouldMove) {
-		UE_LOG(LogTemp, Warning, TEXT("Moving to: %s"), *OriginalLocation.ToCompactString());
+		// UE_LOG(LogTemp, Warning, TEXT("Moving to: %s"), *OriginalLocation.ToCompactString());
 		MoveActorTo(OriginalLocation + MoveOffset, DeltaTime);
 	} else {
-		UE_LOG(LogTemp, Warning, TEXT("Moving back to: %s"), *OriginalLocation.ToCompactString());
+		// UE_LOG(LogTemp, Warning, TEXT("Moving back to: %s"), *OriginalLocation.ToCompactString());
 		MoveActorTo(OriginalLocation, DeltaTime);
 	}
 }
