@@ -27,7 +27,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	FItemData GetData();
+	FItemData Pick();
 
 private:
 	// //all item specs

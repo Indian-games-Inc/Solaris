@@ -33,12 +33,12 @@ void UPicker::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	// ...
 }
 
-void UPicker::SetInventory(UInventory* _Inventory)
-{
-	this->Inventory = _Inventory;
-}
+// void UPicker::SetInventory(UInventory* _Inventory)
+// {
+// 	this->Inventory = _Inventory;
+// }
 
-void UPicker::PickItem()
+FItemData UPicker::PickItem()
 {
 	FHitResult HitResult;
 
@@ -67,12 +67,14 @@ void UPicker::PickItem()
 		if (Item)
 		{
 			// HitResult.GetActor()
-			auto data = Item->GetData();
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *data.Name);
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *data.Description);
-			UE_LOG(LogTemp, Warning, TEXT("%f"), data.Weight);
+			auto Data = Item->Pick();
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *Data.Name);
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *Data.Description);
+			UE_LOG(LogTemp, Warning, TEXT("%f"), Data.Weight);
 
-			this->Inventory->AddItem(Item->GetData());
+			return Data;
 		}
 	}
+
+	return {};
 }

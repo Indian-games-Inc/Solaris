@@ -6,7 +6,7 @@
 #include "ItemData.generated.h"
 
 /**
- * 
+ * Structure for item data
  */
 USTRUCT(BlueprintType)
 struct CRYPTRAIDER_API FItemData

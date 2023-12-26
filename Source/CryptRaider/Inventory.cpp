@@ -36,3 +36,8 @@ void UInventory::AddItem(const FItemData& Item)
 {
 	this->InventoryItems.Add(Item);
 }
+
+TArray<FItemData> UInventory::GetInventoryItems()
+{
+	return this->InventoryItems;
+}

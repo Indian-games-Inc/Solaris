@@ -25,18 +25,18 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+	// UFUNCTION(BlueprintCallable)
+	// void SetInventory(UInventory* _Inventory);
+
+
 
 	UFUNCTION(BlueprintCallable)
-	void SetInventory(UInventory* _Inventory);
-
-
-	UFUNCTION(BlueprintCallable)
-	void PickItem();
+	FItemData PickItem();
 
 	
 private:
-	UPROPERTY(VisibleAnywhere)
-	UInventory* Inventory = nullptr;
+	// UPROPERTY(VisibleAnywhere)
+	// UInventory* Inventory = nullptr;
 
 	UPROPERTY(EditAnywhere)
 	float GrabRadius = 50;

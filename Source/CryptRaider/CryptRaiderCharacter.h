@@ -27,8 +27,8 @@ class ACryptRaiderCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component, meta = (AllowPrivateAccess = "true"))
-	class UInventory* Inventory;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component, meta = (AllowPrivateAccess = "true"))
+	// class UInventory* Inventory;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UPicker* Picker;
@@ -54,7 +54,7 @@ public:
 
 protected:
 	virtual void BeginPlay();
-	void SetInventory(UInventory* Inventory);
+	// void SetInventory(UInventory* Inventory);
 
 public:
 		

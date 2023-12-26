@@ -39,13 +39,13 @@ ACryptRaiderCharacter::ACryptRaiderCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	//...
-	this->Inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
+	// this->Inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
 	this->Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
 	this->Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
 	
 	Picker->SetupAttachment(FirstPersonCameraComponent);
 	Grabber->SetupAttachment(FirstPersonCameraComponent);
-	Inventory->SetupAttachment(RootComponent);
+	// Inventory->SetupAttachment(RootComponent);
 
 }
 

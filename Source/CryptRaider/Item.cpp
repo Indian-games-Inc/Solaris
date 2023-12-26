@@ -23,7 +23,8 @@ void AItem::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-FItemData AItem::GetData()
+FItemData AItem::Pick()
 {
+	Destroy();
 	return this->ItemData;
 }
