@@ -71,6 +71,8 @@ void UPicker::PickItem()
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *data.Name);
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *data.Description);
 			UE_LOG(LogTemp, Warning, TEXT("%f"), data.Weight);
+
+			this->Inventory->AddItem(Item->GetData());
 		}
 	}
 }
