@@ -18,11 +18,11 @@
 ACryptRaiderCharacter::ACryptRaiderCharacter()
 {
 	// Character doesnt have a rifle at start
-	bHasRifle = true;
-	
+	bHasRifle = false;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-		
+
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
@@ -38,15 +38,11 @@ ACryptRaiderCharacter::ACryptRaiderCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
-	//...
-	// this->Inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
 	this->Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
 	this->Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
-	
+
 	Picker->SetupAttachment(FirstPersonCameraComponent);
 	Grabber->SetupAttachment(FirstPersonCameraComponent);
-	// Inventory->SetupAttachment(RootComponent);
-
 }
 
 void ACryptRaiderCharacter::BeginPlay()
@@ -57,12 +53,12 @@ void ACryptRaiderCharacter::BeginPlay()
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
