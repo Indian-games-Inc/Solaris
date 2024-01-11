@@ -29,7 +29,9 @@ public:
 	FItemData Pick();
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* Body;
 	// //all item specs
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FItemData ItemData;
 };

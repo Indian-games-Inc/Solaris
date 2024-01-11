@@ -12,15 +12,7 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UPicker : public USceneComponent
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this component's properties
-	UPicker();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
+	
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
