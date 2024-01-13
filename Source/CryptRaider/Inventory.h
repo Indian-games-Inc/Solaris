@@ -15,16 +15,21 @@ class CRYPTRAIDER_API UInventory : public UActorComponent
 
 public:
 
-	// Add to inventory
 	UFUNCTION(BlueprintCallable)
 	void AddItem(const FItemData& Item);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FItemData> GetInventoryItems();
 
+	UFUNCTION(BlueprintCallable)
+	float GetTotalWeight();
+		
 private:
 	UPROPERTY(EditAnywhere)
 	int InventorySize = 10;
+	
+	UPROPERTY(EditAnywhere)
+	float InventoryWeight = 0.0f;
 
 	UPROPERTY(EditAnywhere)
 	TArray<FItemData> InventoryItems = {};

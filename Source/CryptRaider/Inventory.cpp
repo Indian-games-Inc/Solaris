@@ -3,13 +3,18 @@
 #include "Inventory.h"
 #include "ItemData.h"
 
-// Add item to inventory
 void UInventory::AddItem(const FItemData& Item)
 {
-	this->InventoryItems.Add(Item);
+	InventoryItems.Add(Item);
+	InventoryWeight += Item.Weight;
 }
 
 TArray<FItemData> UInventory::GetInventoryItems()
 {
-	return this->InventoryItems;
+	return InventoryItems;
+}
+
+float UInventory::GetTotalWeight()
+{
+	return InventoryWeight;
 }
