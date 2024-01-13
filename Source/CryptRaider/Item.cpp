@@ -6,7 +6,6 @@
 // Sets default values
 AItem::AItem()
 {
-	PrimaryActorTick.bCanEverTick = true;
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
 	Body->SetupAttachment(RootComponent);
 }
@@ -16,12 +15,6 @@ void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 	this->ItemData.Model = DuplicateObject<UStaticMesh>(Body->GetStaticMesh(), nullptr);
-}
-
-// Called every frame
-void AItem::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 FItemData AItem::Pick()

@@ -4,12 +4,6 @@
 #include "Item.h"
 
 
-// Called every frame
-void UPicker::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}
-
 FItemData UPicker::PickItem()
 {
 	FHitResult HitResult;
