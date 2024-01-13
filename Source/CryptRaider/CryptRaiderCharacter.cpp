@@ -7,9 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Grabber.h"
-#include "Inventory.h"
-#include "Picker.h"
+#include "Component/Grabber.h"
+#include "Component/Inventory.h"
+#include "Component/Picker.h"
 
 
 //////////////////////////////////////////////////////////////////////////

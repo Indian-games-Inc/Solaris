@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemData.h"
+#include "../Data/ItemData.h"
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
