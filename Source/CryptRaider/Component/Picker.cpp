@@ -11,8 +11,6 @@ FItemData UPicker::PickItem()
 	FVector Start = GetComponentLocation() + GetForwardVector();
 	FVector End = Start + GetForwardVector() * 100;
 
-	DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
-
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
 
 	bool HasHit = GetWorld()->SweepSingleByChannel(
