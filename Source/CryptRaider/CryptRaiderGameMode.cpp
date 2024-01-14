@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "CryptRaiderGameMode.h"
-#include "CryptRaiderCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 ACryptRaiderGameMode::ACryptRaiderGameMode()
