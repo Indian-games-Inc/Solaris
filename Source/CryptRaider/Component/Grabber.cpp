@@ -46,8 +46,6 @@ bool UGrabber::GetGrabbableInReach(FHitResult& HitResult) const
 	FVector Start = GetComponentLocation() + GetForwardVector();
 	FVector End = Start + GetForwardVector() * MaxGrabDistance;
 
-	DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
-
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
 
 	bool HasHit = GetWorld()->SweepSingleByChannel(
