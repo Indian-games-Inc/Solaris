@@ -4,6 +4,7 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Physics/ImmediatePhysics/ImmediatePhysicsShared/ImmediatePhysicsCore.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -58,6 +59,17 @@ bool UGrabber::GetGrabbableInReach(FHitResult& HitResult) const
 	return HasHit;
 }
 
+UPrimitiveComponent* UGrabber::GetGrabbedItem() const
+{
+	
+	if (const auto* PhysicsHandle = GetPhysicsHandle(); PhysicsHandle)
+	{
+		return PhysicsHandle->GetGrabbedComponent();
+	}
+
+	return nullptr;
+}
+
 void UGrabber::Grab()
 {
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
@@ -86,13 +98,28 @@ void UGrabber::Release()
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
 	if (!PhysicsHandle) { return; }
 
-	if (auto* GrabbedComponent = PhysicsHandle->GetGrabbedComponent(); GrabbedComponent)
+	if (const auto* Grabbed = GetGrabbedItem(); Grabbed)
 	{
-		AActor* Actor = GrabbedComponent->GetOwner();
+		AActor* Actor = Grabbed->GetOwner();
 		Actor->Tags.Remove(GrabbedTag);
 		
 		PhysicsHandle->ReleaseComponent();
 	}
 }
 
+void UGrabber::Throw()
+{
+	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
+	{
+		Release();
+		
+		const FVector ImpulseVector = GetForwardVector() * ThrowImpulseStrength;
+		Grabbed->SetPhysicsLinearVelocity(ImpulseVector);
+	}
+}
+
+bool UGrabber::IsGrabbing()
+{
+	return GetGrabbedItem() != nullptr;
+}
 
