@@ -79,6 +79,7 @@ void UGrabber::Grab()
 		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
 		HitComponent->WakeAllRigidBodies();
 		HitComponent->SetSimulatePhysics(true);
+		HitComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // Disable collision with Pawns
 
 		auto* Actor = HitResult.GetActor();
 		Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
@@ -98,10 +99,17 @@ void UGrabber::Release()
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
 	if (!PhysicsHandle) { return; }
 
-	if (const auto* Grabbed = GetGrabbedItem(); Grabbed)
+	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
 	{
 		AActor* Actor = Grabbed->GetOwner();
 		Actor->Tags.Remove(GrabbedTag);
+
+		// Enable collision with Pawns back
+		Grabbed->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+
+		// Remove inertia from object
+		Grabbed->SetPhysicsLinearVelocity(FVector::Zero());
+		Grabbed->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
 		
 		PhysicsHandle->ReleaseComponent();
 	}
