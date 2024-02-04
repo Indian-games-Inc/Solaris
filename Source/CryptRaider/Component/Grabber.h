@@ -50,7 +50,7 @@ private:
 	float MaxGrabDistance = 250;
 
 	UPROPERTY(EditAnywhere)
-	float GrabRadius = 50;
+	float GrabRadius = 20;
 
 	UPROPERTY(EditAnywhere)
 	float HoldDistance = 200;
