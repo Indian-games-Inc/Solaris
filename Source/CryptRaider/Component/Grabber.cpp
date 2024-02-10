@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Components/SlateWrapperTypes.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -22,6 +22,12 @@ void UGrabber::BeginPlay()
 	Super::BeginPlay();
 }
 
+ESlateVisibility UGrabber::HasItemNear()
+{
+	FHitResult HitResult;
+	return GetGrabbableInReach(HitResult) ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+}
+
 
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -35,6 +41,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
 	}
 }
+
 
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 {
@@ -71,7 +78,7 @@ void UGrabber::Grab()
 		auto* Actor = HitResult.GetActor();
 		Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		Actor->Tags.Add(GrabbedTag);
-		
+
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			HitComponent,
 			NAME_None,
@@ -90,9 +97,7 @@ void UGrabber::Release()
 	{
 		AActor* Actor = GrabbedComponent->GetOwner();
 		Actor->Tags.Remove(GrabbedTag);
-		
+
 		PhysicsHandle->ReleaseComponent();
 	}
 }
-
-

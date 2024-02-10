@@ -30,6 +30,9 @@ public:
 	void Grab();
 
 	UFUNCTION(BlueprintCallable)
+	ESlateVisibility HasItemNear();
+
+	UFUNCTION(BlueprintCallable)
 	void Release();
 
 private:
@@ -45,6 +48,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float HoldDistance = 200;
-	
+
 	FName GrabbedTag = "Grabbed";
 };
