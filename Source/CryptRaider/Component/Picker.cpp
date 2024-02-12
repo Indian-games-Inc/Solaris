@@ -7,9 +7,22 @@
 FItemData UPicker::PickItem()
 {
 	FHitResult HitResult;
+	if (GetPickableInReach(HitResult))
+	{
+		auto* Item = Cast<AItem>(HitResult.GetActor());
+		if (Item)
+		{
+			return Item->Pick();
+		}
+	}
 
+	return {};
+}
+
+bool UPicker::GetPickableInReach(FHitResult& HitResult) const
+{
 	FVector Start = GetComponentLocation() + GetForwardVector();
-	FVector End = Start + GetForwardVector() * 100;
+	FVector End = Start + GetForwardVector() * GrabRadius;
 
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
 
@@ -20,15 +33,11 @@ FItemData UPicker::PickItem()
 		Sphere
 	);
 
+	return HasHit;
+}
 
-	if (HasHit)
-	{
-		auto* Item = Cast<AItem>(HitResult.GetActor());
-		if (Item)
-		{
-			return Item->Pick();
-		}
-	}
-
-	return {};
+bool UPicker::HasItemNear()
+{
+	FHitResult HitResult;
+	return GetPickableInReach(HitResult);
 }

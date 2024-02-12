@@ -30,14 +30,10 @@ public:
 	void Grab();
 
 	UFUNCTION(BlueprintCallable)
-	ESlateVisibility HasItemNear();
-
-	UFUNCTION(BlueprintCallable)
 	void Release();
 
 private:
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
-	bool GetGrabbableInReach(FHitResult& HitResult) const;
 
 private:
 	UPROPERTY(EditAnywhere)

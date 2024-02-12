@@ -3,7 +3,6 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
-#include "Components/SlateWrapperTypes.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -20,12 +19,6 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-ESlateVisibility UGrabber::HasItemNear()
-{
-	FHitResult HitResult;
-	return GetGrabbableInReach(HitResult) ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
 }
 
 
@@ -48,8 +41,11 @@ UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 }
 
-bool UGrabber::GetGrabbableInReach(FHitResult& HitResult) const
+void UGrabber::Grab()
 {
+	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
+	FHitResult HitResult;
+
 	FVector Start = GetComponentLocation() + GetForwardVector();
 	FVector End = Start + GetForwardVector() * MaxGrabDistance;
 
@@ -62,14 +58,7 @@ bool UGrabber::GetGrabbableInReach(FHitResult& HitResult) const
 		Sphere
 	);
 
-	return HasHit;
-}
-
-void UGrabber::Grab()
-{
-	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	FHitResult HitResult;
-	if (PhysicsHandle && GetGrabbableInReach(HitResult))
+	if (PhysicsHandle && HasHit)
 	{
 		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
 		HitComponent->WakeAllRigidBodies();

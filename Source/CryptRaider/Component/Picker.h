@@ -12,13 +12,18 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UPicker : public USceneComponent
 {
 	GENERATED_BODY()
-	
+
 public:
+	UFUNCTION(BlueprintCallable)
+	bool HasItemNear();
 
 	UFUNCTION(BlueprintCallable)
 	FItemData PickItem();
 
 private:
+	bool GetPickableInReach(FHitResult& HitResult) const;
+
 	UPROPERTY(EditAnywhere)
-	float GrabRadius = 50;
+	float GrabRadius = 100;
+	
 };

@@ -10,17 +10,8 @@ struct FItemData;
 
 /**
  * TODO:
- 
- * Added Hint to items +
- * Draw hot bar in HUD +
-
  * Replace objects in inventory
  * Rotate object by mouse, not just static rotation
-
- * Have an animated model with overlapped glyphs
- * Animation for each action
- * Do cool model and design
-
 */
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -30,21 +21,36 @@ class CRYPTRAIDER_API UInventory : public UActorComponent
 
 public:
 	UFUNCTION(BlueprintCallable)
+	void InitItemsArray();
+	
+	UFUNCTION(BlueprintCallable)
 	void AddItem(const FItemData& Item);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FItemData> GetInventoryItems();
 
 	UFUNCTION(BlueprintCallable)
-	float GetTotalWeight();
+	int GetRows();
+
+	UFUNCTION(BlueprintCallable)
+	int GetColumns();
+
+	UFUNCTION(BlueprintCallable)
+	int GetItemsCount();
+
+	UFUNCTION(BlueprintCallable)
+	int ToFlatIndex(int I, int J);
+
+	UFUNCTION(BlueprintCallable)
+	void SwapItems(int OldIndex, int NewIndex);
 
 private:
 	UPROPERTY(EditAnywhere)
-	int InventorySize = 10;
-
+	int Rows = 5;
 	UPROPERTY(EditAnywhere)
-	float InventoryWeight = 0.0f;
-
+	int Columns = 3;
 	UPROPERTY(EditAnywhere)
-	TArray<FItemData> InventoryItems = {};
+	int ItemsCount = 0;
+	UPROPERTY(EditAnywhere)
+	TArray<FItemData> Items = {};
 };
