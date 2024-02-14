@@ -9,7 +9,8 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine"
+				"Engine",
+				"GeometryCollectionEngine"
 			]
 		}
 	],
@@ -24,6 +25,14 @@
 		{
 			"Name": "FieldSystemPlugin",
 			"Enabled": true
+		},
+		{
+			"Name": "ChaosClothEditor",
+			"Enabled": false
+		},
+		{
+			"Name": "ChaosCloth",
+			"Enabled": false
 		}
 	]
 }

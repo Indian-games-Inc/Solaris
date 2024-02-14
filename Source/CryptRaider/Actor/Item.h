@@ -25,6 +25,11 @@ protected:
 public:
 	FItemData Pick();
 
+	UFUNCTION()
+	virtual void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+								UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+								const FHitResult& Hit) {};
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Body;
