@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Physics/ImmediatePhysics/ImmediatePhysicsShared/ImmediatePhysicsCore.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -35,17 +37,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	}
 }
 
-
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 {
 	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 }
 
-void UGrabber::Grab()
+bool UGrabber::GetGrabbableInReach(FHitResult& HitResult) const
 {
-	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	FHitResult HitResult;
-
 	FVector Start = GetComponentLocation() + GetForwardVector();
 	FVector End = Start + GetForwardVector() * MaxGrabDistance;
 
@@ -58,11 +56,29 @@ void UGrabber::Grab()
 		Sphere
 	);
 
-	if (PhysicsHandle && HasHit)
+	return HasHit;
+}
+
+UPrimitiveComponent* UGrabber::GetGrabbedItem() const
+{
+	if (const auto* PhysicsHandle = GetPhysicsHandle(); PhysicsHandle)
+	{
+		return PhysicsHandle->GetGrabbedComponent();
+	}
+
+	return nullptr;
+}
+
+void UGrabber::Grab()
+{
+	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
+	FHitResult HitResult;
+	if (PhysicsHandle && GetGrabbableInReach(HitResult))
 	{
 		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
 		HitComponent->WakeAllRigidBodies();
 		HitComponent->SetSimulatePhysics(true);
+		HitComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // Disable collision with Pawns
 
 		auto* Actor = HitResult.GetActor();
 		Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
@@ -82,11 +98,34 @@ void UGrabber::Release()
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
 	if (!PhysicsHandle) { return; }
 
-	if (auto* GrabbedComponent = PhysicsHandle->GetGrabbedComponent(); GrabbedComponent)
+	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
 	{
-		AActor* Actor = GrabbedComponent->GetOwner();
+		AActor* Actor = Grabbed->GetOwner();
 		Actor->Tags.Remove(GrabbedTag);
+
+		// Enable collision with Pawns back
+		Grabbed->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+
+		// Remove inertia from object
+		Grabbed->SetPhysicsLinearVelocity(FVector::Zero());
+		Grabbed->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
 
 		PhysicsHandle->ReleaseComponent();
 	}
+}
+
+void UGrabber::Throw()
+{
+	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
+	{
+		Release();
+
+		const FVector ImpulseVector = GetForwardVector() * ThrowImpulseStrength;
+		Grabbed->SetPhysicsLinearVelocity(ImpulseVector);
+	}
+}
+
+bool UGrabber::IsGrabbing()
+{
+	return GetGrabbedItem() != nullptr;
 }

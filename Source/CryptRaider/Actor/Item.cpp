@@ -14,7 +14,8 @@ AItem::AItem()
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
-	this->ItemData.Model = DuplicateObject<UStaticMesh>(Body->GetStaticMesh(), nullptr);
+	ItemData.Model = DuplicateObject<UStaticMesh>(Body->GetStaticMesh(), nullptr);
+	Body->OnComponentHit.AddDynamic(this, &AItem::OnComponentHit);
 }
 
 FItemData AItem::Pick()

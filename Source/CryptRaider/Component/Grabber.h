@@ -32,18 +32,31 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Release();
 
+	UFUNCTION(BlueprintCallable)
+	void Throw();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsGrabbing();
+
+	UFUNCTION(BlueprintCallable)
+	UPrimitiveComponent* GetGrabbedItem() const;
+
 private:
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
+	bool GetGrabbableInReach(FHitResult& HitResult) const;
 
 private:
 	UPROPERTY(EditAnywhere)
-	float MaxGrabDistance = 400;
+	float MaxGrabDistance = 250;
 
 	UPROPERTY(EditAnywhere)
-	float GrabRadius = 50;
+	float GrabRadius = 20;
 
 	UPROPERTY(EditAnywhere)
 	float HoldDistance = 200;
+
+	UPROPERTY(EditAnywhere)
+	float ThrowImpulseStrength = 100;
 
 	FName GrabbedTag = "Grabbed";
 };
