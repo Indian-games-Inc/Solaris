@@ -22,9 +22,9 @@ FItemData UPicker::PickItem()
 bool UPicker::GetPickableInReach(FHitResult& HitResult) const
 {
 	FVector Start = GetComponentLocation() + GetForwardVector();
-	FVector End = Start + GetForwardVector() * GrabRadius;
+	FVector End = Start + GetForwardVector() * MaxPickDistance;
 
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(PickRadius);
 
 	bool HasHit = GetWorld()->SweepSingleByChannel(
 		HitResult, Start, End,

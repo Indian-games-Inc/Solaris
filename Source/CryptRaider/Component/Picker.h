@@ -24,6 +24,9 @@ private:
 	bool GetPickableInReach(FHitResult& HitResult) const;
 
 	UPROPERTY(EditAnywhere)
-	float GrabRadius = 100;
+	float PickRadius = 100;
+
+	UPROPERTY(EditAnywhere)
+	float MaxPickDistance = 250;
 	
 };

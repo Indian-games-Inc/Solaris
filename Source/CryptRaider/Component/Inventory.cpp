@@ -13,7 +13,6 @@ void UInventory::AddItem(const FItemData& Item)
 {
 	for (int i = 0; i < Rows * Columns; ++i)
 	{
-		//Checks if slot is empty ???
 		if (Items[i].Name.IsEmpty())
 		{
 			Items[i] = Item;
