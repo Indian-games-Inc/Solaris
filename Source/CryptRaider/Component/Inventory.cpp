@@ -14,7 +14,7 @@ void UInventory::AddItem(const FItemData& Item)
 	for (int i = 0; i < Rows * Columns; ++i)
 	{
 		//Checks if slot is empty ???
-		if (Items[i].Name == "")
+		if (Items[i].Name.IsEmpty())
 		{
 			Items[i] = Item;
 			ItemsCount++;
@@ -55,5 +55,10 @@ void UInventory::SwapItems(int OldIndex, int NewIndex)
 
 	Items[NewIndex] = ReplacementItem;
 	Items[OldIndex] = ReplacedItem;
+}
+
+FItemData UInventory::GetItemOnIndex(int index)
+{
+	return Items[index];
 }
 

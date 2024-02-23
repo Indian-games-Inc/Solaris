@@ -42,6 +42,9 @@ public:
 	int ToFlatIndex(int I, int J);
 
 	UFUNCTION(BlueprintCallable)
+	FItemData GetItemOnIndex(int index);
+
+	UFUNCTION(BlueprintCallable)
 	void SwapItems(int OldIndex, int NewIndex);
 
 private:
