@@ -11,11 +11,11 @@ void UInventory::InitItemsArray()
 
 void UInventory::AddItem(const FItemData& Item)
 {
-	for (int i = 0; i < Rows * Columns; ++i)
+	for (auto& Data : Items)
 	{
-		if (Items[i].Name.IsEmpty())
+		if (Data.Name.IsEmpty())
 		{
-			Items[i] = Item;
+			Data = Item;
 			ItemsCount++;
 			break;
 		}
@@ -60,4 +60,3 @@ FItemData UInventory::GetItemOnIndex(int index)
 {
 	return Items[index];
 }
-
