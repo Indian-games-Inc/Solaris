@@ -56,7 +56,14 @@ void UInventory::SwapItems(int OldIndex, int NewIndex)
 	Items[OldIndex] = ReplacedItem;
 }
 
-FItemData UInventory::GetItemOnIndex(int index)
+FItemData UInventory::GetItemOnIndex(int Index)
 {
-	return Items[index];
+	return Items[Index];
+}
+
+FItemData UInventory::RemoveItemFromInventory(int Index)
+{
+	auto Item = Items[Index];
+	Items[Index] = FItemData();
+	return Item;
 }

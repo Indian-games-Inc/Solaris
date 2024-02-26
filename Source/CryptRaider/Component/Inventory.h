@@ -36,10 +36,13 @@ public:
 	int ToFlatIndex(int I, int J);
 
 	UFUNCTION(BlueprintCallable)
-	FItemData GetItemOnIndex(int index);
+	FItemData GetItemOnIndex(int Index);
 	
 	UFUNCTION(BlueprintCallable)
 	void SwapItems(int OldIndex, int NewIndex);
+
+	UFUNCTION(BlueprintCallable)
+	FItemData RemoveItemFromInventory(int Index);
 
 private:
 	UPROPERTY(EditAnywhere)
