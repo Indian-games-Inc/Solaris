@@ -63,6 +63,7 @@ FItemData UInventory::GetItemOnIndex(int Index)
 
 FItemData UInventory::RemoveItemFromInventory(int Index)
 {
+	ItemsCount--;
 	auto Item = Items[Index];
 	Items[Index] = FItemData();
 	return Item;
