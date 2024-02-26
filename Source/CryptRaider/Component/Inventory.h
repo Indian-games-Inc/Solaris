@@ -8,12 +8,6 @@
 
 struct FItemData;
 
-/**
- * TODO:
- * Replace objects in inventory
- * Rotate object by mouse, not just static rotation
-*/
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UInventory : public UActorComponent
 {
@@ -43,7 +37,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FItemData GetItemOnIndex(int index);
-
+	
 	UFUNCTION(BlueprintCallable)
 	void SwapItems(int OldIndex, int NewIndex);
 
