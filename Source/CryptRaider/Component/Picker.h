@@ -18,7 +18,7 @@ public:
 	bool HasItemNear();
 
 	UFUNCTION(BlueprintCallable)
-	FItemData PickItem();
+	struct FInventoryItemWrapper PickItem();
 
 private:
 	bool GetPickableInReach(FHitResult& HitResult) const;

@@ -1,28 +1,28 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Inventory.h"
-#include "../Data/ItemData.h"
+#include "../Data/InventoryItemWrapper.h"
 
 void UInventory::InitItemsArray()
 {
-	Items.Init(FItemData(), Rows * Columns);
+	Items.Init(FInventoryItemWrapper(), Rows * Columns);
 }
 
 
-void UInventory::AddItem(const FItemData& Item)
+void UInventory::AddItem(const FInventoryItemWrapper& NewItem)
 {
-	for (auto& Data : Items)
+	for (auto& Item : Items)
 	{
-		if (Data.Name.IsEmpty())
+		if (Item.Data.Name.IsEmpty())
 		{
-			Data = Item;
+			Item = NewItem;
 			ItemsCount++;
 			break;
 		}
 	}
 }
 
-TArray<FItemData> UInventory::GetInventoryItems()
+TArray<FInventoryItemWrapper> UInventory::GetInventoryItems()
 {
 	return Items;
 }
@@ -49,22 +49,22 @@ int UInventory::ToFlatIndex(int I, int J)
 
 void UInventory::SwapItems(int OldIndex, int NewIndex)
 {
-	const FItemData ReplacementItem = Items[OldIndex];
-	const FItemData ReplacedItem = Items[NewIndex];
+	const FInventoryItemWrapper ReplacementItem = Items[OldIndex];
+	const FInventoryItemWrapper ReplacedItem = Items[NewIndex];
 
 	Items[NewIndex] = ReplacementItem;
 	Items[OldIndex] = ReplacedItem;
 }
 
-FItemData UInventory::GetItemOnIndex(int Index)
+FInventoryItemWrapper UInventory::GetItemOnIndex(int Index)
 {
 	return Items[Index];
 }
 
-FItemData UInventory::RemoveItemFromInventory(int Index)
+FInventoryItemWrapper UInventory::RemoveItemFromInventory(int Index)
 {
 	ItemsCount--;
 	auto Item = Items[Index];
-	Items[Index] = FItemData();
+	Items[Index] = FInventoryItemWrapper();
 	return Item;
 }

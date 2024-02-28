@@ -2,9 +2,10 @@
 
 #include "Picker.h"
 #include "../Actor/Item.h"
+#include "../Data/InventoryItemWrapper.h"
 
 
-FItemData UPicker::PickItem()
+FInventoryItemWrapper UPicker::PickItem()
 {
 	FHitResult HitResult;
 	if (GetPickableInReach(HitResult))
@@ -12,7 +13,7 @@ FItemData UPicker::PickItem()
 		auto* Item = Cast<AItem>(HitResult.GetActor());
 		if (Item)
 		{
-			return Item->Pick();
+			return {Item->Pick(), Item->GetClass()};
 		}
 	}
 

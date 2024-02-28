@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Inventory.generated.h"
 
-struct FItemData;
+struct FInventoryItemWrapper;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UInventory : public UActorComponent
@@ -18,10 +18,10 @@ public:
 	void InitItemsArray();
 	
 	UFUNCTION(BlueprintCallable)
-	void AddItem(const FItemData& Item);
+	void AddItem(const FInventoryItemWrapper& Item);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FItemData> GetInventoryItems();
+	TArray<FInventoryItemWrapper> GetInventoryItems();
 
 	UFUNCTION(BlueprintCallable)
 	int GetRows();
@@ -36,13 +36,13 @@ public:
 	int ToFlatIndex(int I, int J);
 
 	UFUNCTION(BlueprintCallable)
-	FItemData GetItemOnIndex(int Index);
+	FInventoryItemWrapper GetItemOnIndex(int Index);
 	
 	UFUNCTION(BlueprintCallable)
 	void SwapItems(int OldIndex, int NewIndex);
 
 	UFUNCTION(BlueprintCallable)
-	FItemData RemoveItemFromInventory(int Index);
+	FInventoryItemWrapper RemoveItemFromInventory(int Index);
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -52,5 +52,5 @@ private:
 	UPROPERTY(EditAnywhere)
 	int ItemsCount = 0;
 	UPROPERTY(EditAnywhere)
-	TArray<FItemData> Items = {};
+	TArray<FInventoryItemWrapper> Items = {};
 };
