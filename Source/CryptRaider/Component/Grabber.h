@@ -34,13 +34,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Throw();
-	
+
 	UFUNCTION(BlueprintCallable)
 	bool IsGrabbing();
 
 	UFUNCTION(BlueprintCallable)
 	UPrimitiveComponent* GetGrabbedItem() const;
-	
+
 private:
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
 	bool GetGrabbableInReach(FHitResult& HitResult) const;
@@ -57,6 +57,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float ThrowImpulseStrength = 100;
-	
+
 	FName GrabbedTag = "Grabbed";
 };
