@@ -61,7 +61,6 @@ bool UGrabber::GetGrabbableInReach(FHitResult& HitResult) const
 
 UPrimitiveComponent* UGrabber::GetGrabbedItem() const
 {
-	
 	if (const auto* PhysicsHandle = GetPhysicsHandle(); PhysicsHandle)
 	{
 		return PhysicsHandle->GetGrabbedComponent();
@@ -84,7 +83,7 @@ void UGrabber::Grab()
 		auto* Actor = HitResult.GetActor();
 		Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		Actor->Tags.Add(GrabbedTag);
-		
+
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			HitComponent,
 			NAME_None,
@@ -110,7 +109,7 @@ void UGrabber::Release()
 		// Remove inertia from object
 		Grabbed->SetPhysicsLinearVelocity(FVector::Zero());
 		Grabbed->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
-		
+
 		PhysicsHandle->ReleaseComponent();
 	}
 }
@@ -120,7 +119,7 @@ void UGrabber::Throw()
 	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
 	{
 		Release();
-		
+
 		const FVector ImpulseVector = GetForwardVector() * ThrowImpulseStrength;
 		Grabbed->SetPhysicsLinearVelocity(ImpulseVector);
 	}
@@ -130,4 +129,3 @@ bool UGrabber::IsGrabbing()
 {
 	return GetGrabbedItem() != nullptr;
 }
-

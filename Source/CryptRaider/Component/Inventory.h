@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Inventory.generated.h"
 
-struct FItemData;
+struct FInventoryItemWrapper;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UInventory : public UActorComponent
@@ -14,23 +14,43 @@ class CRYPTRAIDER_API UInventory : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void InitItemsArray();
+	
+	UFUNCTION(BlueprintCallable)
+	void AddItem(const FInventoryItemWrapper& Item);
 
 	UFUNCTION(BlueprintCallable)
-	void AddItem(const FItemData& Item);
+	TArray<FInventoryItemWrapper> GetInventoryItems();
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FItemData> GetInventoryItems();
+	int GetRows();
 
 	UFUNCTION(BlueprintCallable)
-	float GetTotalWeight();
-		
+	int GetColumns();
+
+	UFUNCTION(BlueprintCallable)
+	int GetItemsCount();
+
+	UFUNCTION(BlueprintCallable)
+	int ToFlatIndex(int I, int J);
+
+	UFUNCTION(BlueprintCallable)
+	FInventoryItemWrapper GetItemOnIndex(int Index);
+	
+	UFUNCTION(BlueprintCallable)
+	void SwapItems(int OldIndex, int NewIndex);
+
+	UFUNCTION(BlueprintCallable)
+	FInventoryItemWrapper RemoveItemFromInventory(int Index);
+
 private:
 	UPROPERTY(EditAnywhere)
-	int InventorySize = 10;
-	
+	int Rows = 5;
 	UPROPERTY(EditAnywhere)
-	float InventoryWeight = 0.0f;
-
+	int Columns = 3;
 	UPROPERTY(EditAnywhere)
-	TArray<FItemData> InventoryItems = {};
+	int ItemsCount = 0;
+	UPROPERTY(EditAnywhere)
+	TArray<FInventoryItemWrapper> Items = {};
 };

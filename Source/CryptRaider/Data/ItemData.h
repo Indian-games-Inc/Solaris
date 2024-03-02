@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PaperSprite.h"
 #include "ItemData.generated.h"
 
 /**
@@ -21,4 +22,6 @@ struct CRYPTRAIDER_API FItemData
 	float Weight;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMesh* Model;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperSprite* Icon;
 };
