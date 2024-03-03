@@ -31,7 +31,7 @@ public:
 								const FHitResult& Hit) {};
 
 private:
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Body;
 	// //all item specs
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
