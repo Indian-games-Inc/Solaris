@@ -44,6 +44,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FInventoryItemWrapper RemoveItemFromInventory(int Index);
 
+	UFUNCTION(BlueprintCallable)
+	bool IsFull();
+
 private:
 	UPROPERTY(EditAnywhere)
 	int Rows = 5;

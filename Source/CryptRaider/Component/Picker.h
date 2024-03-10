@@ -15,18 +15,5 @@ class CRYPTRAIDER_API UPicker : public USceneComponent
 
 public:
 	UFUNCTION(BlueprintCallable)
-	bool HasItemNear();
-
-	UFUNCTION(BlueprintCallable)
-	struct FInventoryItemWrapper PickItem();
-
-private:
-	bool GetPickableInReach(FHitResult& HitResult) const;
-
-	UPROPERTY(EditAnywhere)
-	float PickRadius = 100;
-
-	UPROPERTY(EditAnywhere)
-	float MaxPickDistance = 250;
-	
+	struct FInventoryItemWrapper PickItem(const FHitResult& HitResult);
 };

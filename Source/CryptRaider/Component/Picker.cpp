@@ -5,40 +5,12 @@
 #include "../Data/InventoryItemWrapper.h"
 
 
-FInventoryItemWrapper UPicker::PickItem()
+FInventoryItemWrapper UPicker::PickItem(const FHitResult& HitResult)
 {
-	FHitResult HitResult;
-	if (GetPickableInReach(HitResult))
+	if (AItem* Item = Cast<AItem>(HitResult.GetActor()))
 	{
-		auto* Item = Cast<AItem>(HitResult.GetActor());
-		if (Item)
-		{
-			return {Item->Pick(), Item->GetClass()};
-		}
+		return {Item->Pick(), Item->GetClass()};
 	}
 
 	return {};
-}
-
-bool UPicker::GetPickableInReach(FHitResult& HitResult) const
-{
-	FVector Start = GetComponentLocation() + GetForwardVector();
-	FVector End = Start + GetForwardVector() * MaxPickDistance;
-
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(PickRadius);
-
-	bool HasHit = GetWorld()->SweepSingleByChannel(
-		HitResult, Start, End,
-		FQuat::Identity,
-		ECC_GameTraceChannel2,
-		Sphere
-	);
-
-	return HasHit;
-}
-
-bool UPicker::HasItemNear()
-{
-	FHitResult HitResult;
-	return GetPickableInReach(HitResult);
 }

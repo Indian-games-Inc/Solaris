@@ -7,6 +7,12 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "CryptRaider/Component/Hand.h"
+#include "CryptRaider/Component/Grabber.h"
+#include "CryptRaider/Component/Picker.h"
+#include "CryptRaider/Component/Interactor.h"
+#include "CryptRaider/Component/Inventory.h"
+#include "CryptRaider/Data/InventoryItemWrapper.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -22,6 +28,20 @@ ABaseCharacter::ABaseCharacter()
 
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMesh");
 	SkeletalMeshComponent->SetupAttachment(FirstPersonCameraComponent);
+
+	Hand = CreateDefaultSubobject<UHand>(TEXT("Hand"));
+	Hand->SetupAttachment(FirstPersonCameraComponent);
+	
+	Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
+	Grabber->SetupAttachment(Hand);
+	
+	Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
+	Picker->SetupAttachment(Hand);
+
+	Interactor = CreateDefaultSubobject<UInteractor>(TEXT("Interactor"));
+	Interactor->SetupAttachment(Hand);
+
+	Inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +84,11 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Look);
+
+		// Interaction with world
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ABaseCharacter::Grab);
+		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &ABaseCharacter::Throw);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABaseCharacter::Interact);
 	}
 }
 
@@ -90,5 +115,51 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ABaseCharacter::Grab(const FInputActionValue& Value)
+{
+	if (!Grabber) { return; }
+	
+	if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
+	{
+		 if(!Grabber->IsGrabbing()) {
+			Grabber->Grab(HitResult.GetValue());	
+		}
+		else {
+			Grabber->Release();
+		}
+	}
+}
+
+void ABaseCharacter::Throw(const FInputActionValue& Value)
+{
+	if (Grabber)
+		Grabber->Throw();
+}
+
+void ABaseCharacter::Interact(const FInputActionValue& Value)
+{
+	if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
+	{
+		if (Interactor)
+		{
+			Interactor->Interact(HitResult.GetValue());
+		}
+
+		PickUp(HitResult.GetValue());
+	}
+}
+
+void ABaseCharacter::PickUp(const FHitResult& HitResult)
+{
+	if (Picker)
+	{
+		if (Inventory->IsFull())
+			return;
+
+		FInventoryItemWrapper Item = Picker->PickItem(HitResult);
+		Inventory->AddItem(Item);
 	}
 }
