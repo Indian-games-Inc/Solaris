@@ -31,6 +31,9 @@ void ADoor::BeginPlay()
 
 	MoveTimeLine.AddInterpFloat(MoveCurve, ProgressUpdate);
 	MoveTimeLine.SetTimelineFinishedFunc(ProgressFinished);
+
+	if (DoorMesh)
+		DoorMesh->SetRelativeRotation({ 0,ClosedRotation, 0});
 }
 
 void ADoor::Tick(float DeltaTime)
