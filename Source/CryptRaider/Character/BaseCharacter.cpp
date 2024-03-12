@@ -141,7 +141,7 @@ void ABaseCharacter::Throw(const FInputActionValue& Value)
 
 void ABaseCharacter::Interact(const FInputActionValue& Value)
 {
-	if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
+	if (const auto& HitResult = Hand->GetInteractableInReach())
 	{
 		if (Interactor)
 		{
@@ -159,7 +159,9 @@ void ABaseCharacter::PickUp(const FHitResult& HitResult)
 		if (Inventory->IsFull())
 			return;
 
-		FInventoryItemWrapper Item = Picker->PickItem(HitResult);
-		Inventory->AddItem(Item);
+		if (const auto& Item = Picker->PickItem(HitResult))
+		{
+			Inventory->AddItem(Item.GetValue());	
+		}
 	}
 }

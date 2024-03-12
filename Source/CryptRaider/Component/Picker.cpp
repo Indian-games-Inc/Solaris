@@ -5,11 +5,11 @@
 #include "../Data/InventoryItemWrapper.h"
 
 
-FInventoryItemWrapper UPicker::PickItem(const FHitResult& HitResult)
+TOptional<FInventoryItemWrapper> UPicker::PickItem(const FHitResult& HitResult)
 {
 	if (AItem* Item = Cast<AItem>(HitResult.GetActor()))
 	{
-		return {Item->Pick(), Item->GetClass()};
+		return FInventoryItemWrapper {Item->Pick(), Item->GetClass()};
 	}
 
 	return {};

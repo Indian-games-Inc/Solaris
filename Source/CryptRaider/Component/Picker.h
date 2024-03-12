@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Misc/Optional.h"
 #include "Picker.generated.h"
 
 class UInventory;
@@ -14,6 +15,5 @@ class CRYPTRAIDER_API UPicker : public USceneComponent
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	struct FInventoryItemWrapper PickItem(const FHitResult& HitResult);
+	TOptional<struct FInventoryItemWrapper> PickItem(const FHitResult& HitResult);
 };
