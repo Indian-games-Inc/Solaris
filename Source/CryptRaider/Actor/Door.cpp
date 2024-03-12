@@ -33,7 +33,7 @@ void ADoor::BeginPlay()
 	MoveTimeLine.SetTimelineFinishedFunc(ProgressFinished);
 
 	if (DoorMesh)
-		DoorMesh->SetRelativeRotation({ 0,ClosedRotation, 0});
+		DoorMesh->SetRelativeRotation({0, ClosedRotation, 0});
 }
 
 void ADoor::Tick(float DeltaTime)
@@ -68,7 +68,7 @@ bool ADoor::IsClosed()
 
 void ADoor::MoveUpdate(float Alpha)
 {
-	FRotator NewDoorRotation = {0,FMath::Lerp(ClosedRotation, OpenedRotation, Alpha),0,};
+	FRotator NewDoorRotation = {0, FMath::Lerp(ClosedRotation, OpenedRotation, Alpha), 0,};
 	
 	if (DoorMesh)
 		DoorMesh->SetRelativeRotation(NewDoorRotation);
