@@ -13,6 +13,7 @@
 #include "CryptRaider/Component/Interactor.h"
 #include "CryptRaider/Component/Inventory.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -85,6 +86,9 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Look);
 
+		// Crouching
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &ABaseCharacter::OnCrouch);
+
 		// Interaction with world
 		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ABaseCharacter::Grab);
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &ABaseCharacter::Throw);
@@ -115,6 +119,21 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ABaseCharacter::Jump()
+{
+	UnCrouch();
+	Super::Jump();
+}
+
+void ABaseCharacter::OnCrouch(const FInputActionValue& Value)
+{
+	if (bIsCrouched) {
+		UnCrouch();
+	} else {
+		Crouch();
 	}
 }
 
