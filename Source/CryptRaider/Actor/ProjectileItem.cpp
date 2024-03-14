@@ -25,5 +25,10 @@ void AProjectileItem::AddForce(const FVector& Location) const
 		FRotator::ZeroRotator
 	);
 
+	if (!MasterFieldActor) {
+		UE_LOG(LogTemp, Warning, TEXT("Failed to spawn MasterField"));
+		return;
+	}
+	
 	MasterFieldActor->SetLifeSpan(MasterFieldDestructionDelay);
 }

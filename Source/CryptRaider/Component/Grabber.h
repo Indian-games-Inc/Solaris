@@ -27,7 +27,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	void Grab();
+	void Grab(const FHitResult& HitResult);
 
 	UFUNCTION(BlueprintCallable)
 	void Release();
@@ -38,16 +38,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsGrabbing();
 
-	UFUNCTION(BlueprintCallable)
-	UPrimitiveComponent* GetGrabbedItem() const;
-
 private:
+	UPrimitiveComponent* GetGrabbedItem() const;
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
-	bool GetGrabbableInReach(FHitResult& HitResult) const;
 
 private:
 	UPROPERTY(EditAnywhere)
-	float MaxGrabDistance = 250;
+	float MaxGrabDistance = 200;
 
 	UPROPERTY(EditAnywhere)
 	float GrabRadius = 20;
@@ -56,7 +53,7 @@ private:
 	float HoldDistance = 200;
 
 	UPROPERTY(EditAnywhere)
-	float ThrowImpulseStrength = 100;
+	float ThrowImpulseStrength = 1500;
 
 	FName GrabbedTag = "Grabbed";
 };
