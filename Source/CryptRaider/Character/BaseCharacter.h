@@ -33,6 +33,11 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	void Jump() override;
+	
+	/** Called for crouch input */
+	void OnCrouch(const FInputActionValue& Value);
+
 	/** Called for interaction with world objects */
 	void Grab(const FInputActionValue& Value);
 	void Throw(const FInputActionValue& Value);
@@ -78,6 +83,9 @@ private:
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* CrouchAction;
 
 	/** Grab Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
