@@ -10,9 +10,6 @@
 // Sets default values
 ASecurityMonitor::ASecurityMonitor()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	Monitor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Monitor"));
 	SetRootComponent(Monitor);
 
@@ -44,7 +41,7 @@ void ASecurityMonitor::BeginPlay()
 		}
 
 		FVector2D Size;
-		GetWorld()->GetGameViewport()->GetViewportSize(Size); // TODO
+		GetWorld()->GetGameViewport()->GetViewportSize(Size); // TODO: Use absolute scale?
 
 		const int64 SizeX = FMath::TruncToInt(Size.X * ScreenQualityLevel);
 		const int64 SizeY = FMath::TruncToInt(Size.Y * ScreenQualityLevel);
@@ -61,10 +58,3 @@ void ASecurityMonitor::BeginPlay()
 	}
 	
 }
-
-// Called every frame
-void ASecurityMonitor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

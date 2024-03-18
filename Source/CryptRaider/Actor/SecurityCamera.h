@@ -31,15 +31,14 @@ public:
 private:
 	void RotationTick();
 	
-private:
+private: // Components
 	UPROPERTY(EditAnywhere)
 	USceneCaptureComponent2D* SceneCaptureComponent2D;
 
-private:
-	UPROPERTY(EditAnywhere)
+private: // Camera Properties
+	UPROPERTY(EditAnywhere, Category="Camera Properties")
 	bool EnableMovement = false;
 	
-private:
 	UPROPERTY(EditAnywhere, Category="Camera Properties")
 	float VerticalSensitivity = 1.0;
 
@@ -58,7 +57,7 @@ private:
 	UPROPERTY(EditAnywhere, Category="Camera Properties")
 	float MaxDownRotation = -45;
 
-private:
+private: // Internals
 	FRotator RelativeStartRotation;
 	bool IsRightMoveDirection = true;
 };

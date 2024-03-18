@@ -19,15 +19,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 private:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* Monitor;
 
-private:
+private: // Components
 	UPROPERTY(EditAnywhere)
 	class ASecurityCamera* LinkedCamera;
 
@@ -40,9 +36,10 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UTextureRenderTarget2D* CameraRenderTarget;
 
-	UPROPERTY(EditAnywhere)
+private: // Properties
+	UPROPERTY(EditAnywhere, Category="Monitor Properties")
 	float ScreenBrightness = 1.0;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="Monitor Properties")
 	float ScreenQualityLevel = 1.0;
 };
