@@ -23,3 +23,8 @@ FItemData AItem::Pick()
 	Destroy();
 	return this->ItemData;
 }
+
+UStaticMeshComponent* AItem::GetBody() const
+{
+	return Body;
+}

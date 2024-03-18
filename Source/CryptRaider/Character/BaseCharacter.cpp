@@ -127,16 +127,12 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 
 void ABaseCharacter::Jump()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Jump"));
-
 	UnCrouch();
 	Super::Jump();
 }
 
 void ABaseCharacter::OnCrouch(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnCrouch"));
-
 	if (bIsCrouched)
 	{
 		UnCrouch();
@@ -149,7 +145,6 @@ void ABaseCharacter::OnCrouch(const FInputActionValue& Value)
 
 void ABaseCharacter::Grab(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Grab"));
 	if (!Grabber) { return; }
 
 	if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
@@ -167,15 +162,12 @@ void ABaseCharacter::Grab(const FInputActionValue& Value)
 
 void ABaseCharacter::Throw(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Throw"));
 	if (Grabber)
 		Grabber->Throw();
 }
 
 void ABaseCharacter::Interact(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Interact"));
-
 	if (const auto& HitResult = Hand->GetInteractableInReach())
 	{
 		if (Interactor)
@@ -189,8 +181,6 @@ void ABaseCharacter::Interact(const FInputActionValue& Value)
 
 void ABaseCharacter::PickUp(const FHitResult& HitResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PickUp"));
-
 	if (Picker)
 	{
 		if (Inventory->IsFull())
@@ -201,4 +191,14 @@ void ABaseCharacter::PickUp(const FHitResult& HitResult)
 			Inventory->AddItem(Item.GetValue());
 		}
 	}
+}
+
+UGrabber* ABaseCharacter::GetGrabber()
+{
+	return Grabber;
+}
+
+void ABaseCharacter::SetOnLadder(bool Value)
+{
+	IsOnLadder = Value;
 }

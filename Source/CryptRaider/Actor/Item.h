@@ -30,6 +30,7 @@ public:
 								UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 								const FHitResult& Hit) {};
 
+	UStaticMeshComponent* GetBody() const;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Body;
