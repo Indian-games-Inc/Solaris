@@ -23,14 +23,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void RotateCamera(float VerticalShift, float HorizontalShift);
+	void RotateCamera(const float VerticalShift, const float HorizontalShift);
 
 public:
 	void SetTextureTarget(UTextureRenderTarget2D* TextureRenderTarget);
+
+private:
+	void RotationTick();
 	
 private:
 	UPROPERTY(EditAnywhere)
 	USceneCaptureComponent2D* SceneCaptureComponent2D;
+
+private:
+	UPROPERTY(EditAnywhere)
+	bool EnableMovement = false;
 	
 private:
 	UPROPERTY(EditAnywhere, Category="Camera Properties")
@@ -50,4 +57,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Camera Properties")
 	float MaxDownRotation = -45;
+
+private:
+	FRotator RelativeStartRotation;
+	bool IsRightMoveDirection = true;
 };
