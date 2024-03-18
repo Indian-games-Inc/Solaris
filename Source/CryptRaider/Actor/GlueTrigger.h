@@ -7,6 +7,7 @@
 #include "GlueTrigger.generated.h"
 
 
+class UGrabber;
 class UBoxComponent;
 
 UCLASS()
@@ -18,15 +19,15 @@ public:
 	// Sets default values for this actor's properties
 	AGlueTrigger();
 	//
-	// protected:
-	// 	// Called when the game starts or when spawned
-	// 	virtual void BeginPlay() override;
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-	void OnConstruction(const FTransform& Transform) override;
-
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 private:
 	USceneComponent* Root = nullptr;
+	UGrabber* Grabber = nullptr;
 
 	//List of the exposed values in UE
 	UPROPERTY(EditInstanceOnly)

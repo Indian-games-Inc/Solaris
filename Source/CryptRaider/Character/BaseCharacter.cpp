@@ -7,13 +7,20 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "CryptRaider/Component/Hand.h"
+#include "CryptRaider/Component/Grabber.h"
+#include "CryptRaider/Component/Picker.h"
+#include "CryptRaider/Component/Interactor.h"
+#include "CryptRaider/Component/Inventory.h"
+#include "CryptRaider/Data/InventoryItemWrapper.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(RootComponent);
@@ -22,6 +29,20 @@ ABaseCharacter::ABaseCharacter()
 
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMesh");
 	SkeletalMeshComponent->SetupAttachment(FirstPersonCameraComponent);
+
+	Hand = CreateDefaultSubobject<UHand>(TEXT("Hand"));
+	Hand->SetupAttachment(FirstPersonCameraComponent);
+
+	Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
+	Grabber->SetupAttachment(Hand);
+
+	Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
+	Picker->SetupAttachment(Hand);
+
+	Interactor = CreateDefaultSubobject<UInteractor>(TEXT("Interactor"));
+	Interactor->SetupAttachment(Hand);
+
+	Inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
 }
 
 // Called when the game starts or when spawned
@@ -44,7 +65,6 @@ void ABaseCharacter::BeginPlay()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -64,11 +84,21 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Look);
+
+		// Crouching
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &ABaseCharacter::OnCrouch);
+
+		// Interaction with world
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ABaseCharacter::Grab);
+		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &ABaseCharacter::Throw);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABaseCharacter::Interact);
 	}
 }
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
 {
+	// UE_LOG(LogTemp, Warning, TEXT("Move"));
+
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -82,6 +112,8 @@ void ABaseCharacter::Move(const FInputActionValue& Value)
 
 void ABaseCharacter::Look(const FInputActionValue& Value)
 {
+	// UE_LOG(LogTemp, Warning, TEXT("Look"));
+
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -90,5 +122,83 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ABaseCharacter::Jump()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Jump"));
+
+	UnCrouch();
+	Super::Jump();
+}
+
+void ABaseCharacter::OnCrouch(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnCrouch"));
+
+	if (bIsCrouched)
+	{
+		UnCrouch();
+	}
+	else
+	{
+		Crouch();
+	}
+}
+
+void ABaseCharacter::Grab(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grab"));
+	if (!Grabber) { return; }
+
+	if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
+	{
+		if (!Grabber->IsGrabbing())
+		{
+			Grabber->Grab(HitResult.GetValue());
+		}
+		else
+		{
+			Grabber->Release();
+		}
+	}
+}
+
+void ABaseCharacter::Throw(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Throw"));
+	if (Grabber)
+		Grabber->Throw();
+}
+
+void ABaseCharacter::Interact(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Interact"));
+
+	if (const auto& HitResult = Hand->GetInteractableInReach())
+	{
+		if (Interactor)
+		{
+			Interactor->Interact(HitResult.GetValue());
+		}
+
+		PickUp(HitResult.GetValue());
+	}
+}
+
+void ABaseCharacter::PickUp(const FHitResult& HitResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("PickUp"));
+
+	if (Picker)
+	{
+		if (Inventory->IsFull())
+			return;
+
+		if (const auto& Item = Picker->PickItem(HitResult))
+		{
+			Inventory->AddItem(Item.GetValue());
+		}
 	}
 }

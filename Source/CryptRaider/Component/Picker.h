@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Misc/Optional.h"
 #include "Picker.generated.h"
 
 class UInventory;
@@ -14,19 +15,5 @@ class CRYPTRAIDER_API UPicker : public USceneComponent
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	bool HasItemNear();
-
-	UFUNCTION(BlueprintCallable)
-	struct FInventoryItemWrapper PickItem();
-
-private:
-	bool GetPickableInReach(FHitResult& HitResult) const;
-
-	UPROPERTY(EditAnywhere)
-	float PickRadius = 100;
-
-	UPROPERTY(EditAnywhere)
-	float MaxPickDistance = 250;
-	
+	TOptional<struct FInventoryItemWrapper> PickItem(const FHitResult& HitResult);
 };

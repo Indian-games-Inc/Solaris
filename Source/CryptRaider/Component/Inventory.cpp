@@ -11,6 +11,9 @@ void UInventory::InitItemsArray()
 
 void UInventory::AddItem(const FInventoryItemWrapper& NewItem)
 {
+	if (NewItem.Data.Name.IsEmpty())
+		return;
+
 	for (auto& Item : Items)
 	{
 		if (Item.Data.Name.IsEmpty())
@@ -67,4 +70,9 @@ FInventoryItemWrapper UInventory::RemoveItemFromInventory(int Index)
 	auto Item = Items[Index];
 	Items[Index] = FInventoryItemWrapper();
 	return Item;
+}
+
+bool UInventory::IsFull()
+{
+	return ItemsCount == Items.Num();
 }
