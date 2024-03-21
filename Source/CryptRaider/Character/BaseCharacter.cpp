@@ -97,23 +97,30 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("Move"));
-
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
+	if (!Controller)
+	{
+		return;
+	}
+
+	if (!IsOnLadder)
 	{
 		// add movement 
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
 	}
+	else
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		AddMovementInput(GetActorUpVector(), MovementVector.Y);
+		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+	}
 }
 
 void ABaseCharacter::Look(const FInputActionValue& Value)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("Look"));
-
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 

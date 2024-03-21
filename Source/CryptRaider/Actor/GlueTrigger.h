@@ -9,7 +9,6 @@
 
 
 class AItem;
-class UGrabber;
 class UBoxComponent;
 
 UCLASS()
@@ -24,14 +23,15 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
-	void SelectOverlappingItem();
+	AItem* SelectOverlappingItems();
 
-	//timeline functions
+	/* Timeline events*/
 	UFUNCTION()
 	void MoveUpdate(float Alpha);
 	UFUNCTION()
 	void MoveFinished();
-	//overlapping ladder function
+
+	/* Overlapping LadderBox events */
 	UFUNCTION()
 	void OnLadderComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
@@ -41,25 +41,25 @@ protected:
 	                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 private:
-	UGrabber* Grabber = nullptr;
 	USceneComponent* Root = nullptr;
-	bool IsGlued = false;
 	AItem* GluedItem = nullptr;
 	FTimeline Timeline;
+	bool IsGlued = false;
+	const FName GrabbedTag = "Grabbed";
 
+	/* Configurable values*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UCurveFloat* FloatCurve;
-
 	UPROPERTY(EditInstanceOnly)
 	TSubclassOf<AActor> ItemClass;
-	UPROPERTY(EditInstanceOnly)
-	bool IsClimbable = false;
-	UPROPERTY(EditInstanceOnly)
-	bool IsDebug = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Target;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* TriggerBox = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* LadderBox = nullptr;
+	UPROPERTY(EditInstanceOnly)
+	bool IsClimbable = false;
+	UPROPERTY(EditInstanceOnly)
+	bool IsDebug = false;
 };

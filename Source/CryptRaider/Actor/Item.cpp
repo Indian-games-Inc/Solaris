@@ -24,7 +24,14 @@ FItemData AItem::Pick()
 	return this->ItemData;
 }
 
-UStaticMeshComponent* AItem::GetBody() const
+void AItem::DisablePhysics() const
 {
-	return Body;
+	Body->SetSimulatePhysics(false);
+	Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AItem::EnablePhysics() const
+{
+	Body->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Body->OnActorEnableCollisionChanged();
 }
