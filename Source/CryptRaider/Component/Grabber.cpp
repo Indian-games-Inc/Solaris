@@ -89,7 +89,8 @@ void UGrabber::Release()
 		Actor->Tags.Remove(GrabbedTag);
 
 		// Enable collision with Pawns back
-		Grabbed->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		Grabbed->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block); \
+		
 
 		// Remove inertia from object
 		Grabbed->SetPhysicsLinearVelocity(FVector::Zero());
