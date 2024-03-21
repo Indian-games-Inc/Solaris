@@ -8,7 +8,7 @@
 #include "GlueTrigger.generated.h"
 
 
-class AItem;
+class ABaseInteractible;
 class UBoxComponent;
 
 UCLASS()
@@ -23,7 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
-	AItem* SelectOverlappingItems();
+	ABaseInteractible* SelectOverlappingItems();
 
 	/* Timeline events*/
 	UFUNCTION()
@@ -43,7 +43,7 @@ protected:
 private:
 	UPROPERTY()
 	USceneComponent* Root = nullptr;
-	AItem* GluedItem = nullptr;
+	ABaseInteractible* GluedItem = nullptr;
 	FTimeline Timeline;
 	bool IsGlued = false;
 	const FName GrabbedTag = "Grabbed";

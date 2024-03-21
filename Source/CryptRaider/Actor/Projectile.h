@@ -3,21 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Item.h"
-#include "ProjectileItem.generated.h"
+#include "BaseInteractible.h"
+#include "Projectile.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRYPTRAIDER_API AProjectileItem : public AItem
+class CRYPTRAIDER_API AProjectile : public ABaseInteractible
 {
 	GENERATED_BODY()
 
 public:
+	UFUNCTION()
 	virtual void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 								UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-								const FHitResult& Hit) override;
+								const FHitResult& Hit);
+
+	virtual void Interact() override {}
+
+protected:
+	virtual void BeginPlay() override;
 
 private:
 	UFUNCTION()

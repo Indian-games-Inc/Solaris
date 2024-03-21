@@ -4,7 +4,7 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
-#include "Physics/ImmediatePhysics/ImmediatePhysicsShared/ImmediatePhysicsCore.h"
+#include "CryptRaider/Actor/BaseInteractible.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -52,6 +52,11 @@ UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 
 void UGrabber::Grab(const FHitResult& HitResult)
 {
+	if (const auto* Projectile = Cast<ABaseInteractible>(HitResult.GetActor()); !Projectile) {
+		UE_LOG(LogTemp, Warning, TEXT("Failed to Grab actor, it's not a Projectile"));
+		return;
+	}
+	
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
 	if (!PhysicsHandle)
 		return;

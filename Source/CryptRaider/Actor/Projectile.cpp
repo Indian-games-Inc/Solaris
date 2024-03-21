@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ProjectileItem.h"
+#include "Projectile.h"
 
 #include "Destructible.h"
 #include "Field/FieldSystemActor.h"
 
-void AProjectileItem::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
                                      UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (auto* OtherDestructibleActor = Cast<ADestructible>(OtherActor); OtherDestructibleActor)
@@ -17,7 +17,17 @@ void AProjectileItem::OnComponentHit(UPrimitiveComponent* HitComp, AActor* Other
 	}
 }
 
-void AProjectileItem::AddForce(const FVector& Location) const
+void AProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+	if (!Body) {
+		UE_LOG(LogTemp, Warning, TEXT("Failed to bind OnComponentHit, Body isn't initialized"))
+	}
+
+	Body->OnComponentHit.AddDynamic(this, &AProjectile::OnComponentHit);
+}
+
+void AProjectile::AddForce(const FVector& Location) const
 {
 	AFieldSystemActor* MasterFieldActor = GetWorld()->SpawnActor<AFieldSystemActor>(
 		MasterFieldClass,
