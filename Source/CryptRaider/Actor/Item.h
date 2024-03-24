@@ -19,9 +19,6 @@ public:
 	// Sets default values for this actor's properties
 	AItem();
 
-public:
-	virtual void Interact() override {};
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

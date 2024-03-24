@@ -17,10 +17,8 @@ class CRYPTRAIDER_API AProjectile : public ABaseInteractible
 public:
 	UFUNCTION()
 	virtual void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
-								UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-								const FHitResult& Hit);
-
-	virtual void Interact() override {}
+	                            UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+	                            const FHitResult& Hit);
 
 protected:
 	virtual void BeginPlay() override;

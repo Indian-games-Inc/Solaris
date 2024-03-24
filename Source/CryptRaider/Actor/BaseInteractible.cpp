@@ -18,13 +18,17 @@ ABaseInteractible::ABaseInteractible()
 void ABaseInteractible::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ABaseInteractible::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABaseInteractible::Interact()
+{
+	// Should be blank
 }
 
 void ABaseInteractible::DisablePhysics() const
