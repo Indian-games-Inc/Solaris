@@ -41,6 +41,7 @@ protected:
 	                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 private:
+	UPROPERTY()
 	USceneComponent* Root = nullptr;
 	AItem* GluedItem = nullptr;
 	FTimeline Timeline;
