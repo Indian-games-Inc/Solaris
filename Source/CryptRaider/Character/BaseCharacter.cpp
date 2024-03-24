@@ -18,9 +18,9 @@
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(RootComponent);
@@ -32,10 +32,10 @@ ABaseCharacter::ABaseCharacter()
 
 	Hand = CreateDefaultSubobject<UHand>(TEXT("Hand"));
 	Hand->SetupAttachment(FirstPersonCameraComponent);
-	
+
 	Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
 	Grabber->SetupAttachment(Hand);
-	
+
 	Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
 	Picker->SetupAttachment(Hand);
 
@@ -65,7 +65,6 @@ void ABaseCharacter::BeginPlay()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -101,11 +100,22 @@ void ABaseCharacter::Move(const FInputActionValue& Value)
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
+	if (!Controller)
+	{
+		return;
+	}
+
+	if (!IsOnLadder)
 	{
 		// add movement 
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
+	}
+	else
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		AddMovementInput(GetActorUpVector(), MovementVector.Y);
+		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 	}
 }
 
@@ -130,9 +140,12 @@ void ABaseCharacter::Jump()
 
 void ABaseCharacter::OnCrouch(const FInputActionValue& Value)
 {
-	if (bIsCrouched) {
+	if (bIsCrouched)
+	{
 		UnCrouch();
-	} else {
+	}
+	else
+	{
 		Crouch();
 	}
 }
@@ -140,13 +153,15 @@ void ABaseCharacter::OnCrouch(const FInputActionValue& Value)
 void ABaseCharacter::Grab(const FInputActionValue& Value)
 {
 	if (!Grabber) { return; }
-	
+
 	if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
 	{
-		 if(!Grabber->IsGrabbing()) {
-			Grabber->Grab(HitResult.GetValue());	
+		if (!Grabber->IsGrabbing())
+		{
+			Grabber->Grab(HitResult.GetValue());
 		}
-		else {
+		else
+		{
 			Grabber->Release();
 		}
 	}
@@ -180,7 +195,17 @@ void ABaseCharacter::PickUp(const FHitResult& HitResult)
 
 		if (const auto& Item = Picker->PickItem(HitResult))
 		{
-			Inventory->AddItem(Item.GetValue());	
+			Inventory->AddItem(Item.GetValue());
 		}
 	}
+}
+
+UGrabber* ABaseCharacter::GetGrabber()
+{
+	return Grabber;
+}
+
+void ABaseCharacter::SetOnLadder(bool Value)
+{
+	IsOnLadder = Value;
 }

@@ -27,11 +27,16 @@ public:
 
 	UFUNCTION()
 	virtual void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
-								UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-								const FHitResult& Hit) {};
+	                            UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+	                            const FHitResult& Hit)
+	{
+	};
+
+	void DisablePhysics() const;
+	void EnablePhysics() const;
 
 private:
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Body;
 	// //all item specs
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

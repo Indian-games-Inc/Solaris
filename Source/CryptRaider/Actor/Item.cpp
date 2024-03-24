@@ -23,3 +23,15 @@ FItemData AItem::Pick()
 	Destroy();
 	return this->ItemData;
 }
+
+void AItem::DisablePhysics() const
+{
+	Body->SetSimulatePhysics(false);
+	Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AItem::EnablePhysics() const
+{
+	Body->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Body->OnActorEnableCollisionChanged();
+}

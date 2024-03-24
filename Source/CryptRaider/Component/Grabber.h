@@ -36,7 +36,7 @@ public:
 	void Throw();
 
 	UFUNCTION(BlueprintCallable)
-	bool IsGrabbing();
+	bool IsGrabbing() const;
 
 private:
 	UPrimitiveComponent* GetGrabbedItem() const;

@@ -105,7 +105,7 @@ void UGrabber::Throw()
 	}
 }
 
-bool UGrabber::IsGrabbing()
+bool UGrabber::IsGrabbing() const
 {
 	return GetGrabbedItem() != nullptr;
 }

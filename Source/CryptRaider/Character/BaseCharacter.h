@@ -26,6 +26,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	class UGrabber* GetGrabber();
+
+	void SetOnLadder(bool Value);
+
 protected:
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
@@ -46,6 +50,8 @@ protected:
 	void PickUp(const FHitResult& HitResult);
 	
 private:
+	bool IsOnLadder;
+
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
