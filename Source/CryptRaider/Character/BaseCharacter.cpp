@@ -154,16 +154,16 @@ void ABaseCharacter::Grab(const FInputActionValue& Value)
 {
 	if (!Grabber) { return; }
 
-	if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
+	if (!Grabber->IsGrabbing())
 	{
-		if (!Grabber->IsGrabbing())
+		if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
 		{
 			Grabber->Grab(HitResult.GetValue());
 		}
-		else
-		{
-			Grabber->Release();
-		}
+	}
+	else
+	{
+		Grabber->Release();
 	}
 }
 
