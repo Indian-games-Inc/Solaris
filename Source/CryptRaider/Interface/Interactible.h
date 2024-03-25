@@ -24,4 +24,5 @@ class CRYPTRAIDER_API IInteractible
 public:
 	UFUNCTION()
 	virtual void Interact() = 0;
+
 };

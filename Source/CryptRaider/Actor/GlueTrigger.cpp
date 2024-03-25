@@ -1,6 +1,6 @@
 ﻿#include "GlueTrigger.h"
 
-#include "Item.h"
+#include "BaseInteractible.h"
 #include "Components/BoxComponent.h"
 #include "CryptRaider/Character/BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -122,7 +122,7 @@ void AGlueTrigger::TickActor(float DeltaTime, ELevelTick TickType, FActorTickFun
 	}
 }
 
-AItem* AGlueTrigger::SelectOverlappingItems()
+ABaseInteractible* AGlueTrigger::SelectOverlappingItems()
 {
 	if (!ItemClass)
 	{
@@ -142,7 +142,7 @@ AItem* AGlueTrigger::SelectOverlappingItems()
 	{
 		if (!Actor->Tags.Contains(GrabbedTag))
 		{
-			return Cast<AItem>(Actor);
+			return Cast<ABaseInteractible>(Actor);
 		}
 	}
 	return nullptr;
