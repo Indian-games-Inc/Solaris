@@ -25,7 +25,7 @@ void UInventory::AddItem(const FInventoryItemWrapper& NewItem)
 	}
 }
 
-TArray<FInventoryItemWrapper> UInventory::GetInventoryItems()
+TArray<FInventoryItemWrapper> UInventory::GetItems()
 {
 	return Items;
 }
@@ -53,10 +53,8 @@ int UInventory::ToFlatIndex(int I, int J)
 void UInventory::SwapItems(int OldIndex, int NewIndex)
 {
 	const FInventoryItemWrapper ReplacementItem = Items[OldIndex];
-	const FInventoryItemWrapper ReplacedItem = Items[NewIndex];
-
+	Items[OldIndex] = Items[NewIndex];
 	Items[NewIndex] = ReplacementItem;
-	Items[OldIndex] = ReplacedItem;
 }
 
 FInventoryItemWrapper UInventory::GetItemOnIndex(int Index)
@@ -64,7 +62,7 @@ FInventoryItemWrapper UInventory::GetItemOnIndex(int Index)
 	return Items[Index];
 }
 
-FInventoryItemWrapper UInventory::RemoveItemFromInventory(int Index)
+FInventoryItemWrapper UInventory::RemoveItem(int Index)
 {
 	ItemsCount--;
 	auto Item = Items[Index];

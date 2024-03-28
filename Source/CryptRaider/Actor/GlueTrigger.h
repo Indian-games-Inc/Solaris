@@ -60,7 +60,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* LadderBox = nullptr;
 	UPROPERTY(EditInstanceOnly)
-	bool IsClimbable = false;
+	bool IsClimbable = true;
 	UPROPERTY(EditInstanceOnly)
-	bool IsDebug = false;
+	bool IsDebug = true;
 };
