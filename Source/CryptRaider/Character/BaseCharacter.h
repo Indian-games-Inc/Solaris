@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class IInteractible;
+class UInputAction;
+
 UCLASS()
 class CRYPTRAIDER_API ABaseCharacter : public ACharacter
 {
@@ -26,9 +29,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	class UGrabber* GetGrabber();
+	class UGrabber* GetGrabber() const;
 
 	void SetOnLadder(bool Value);
+
+public:
+	UFUNCTION(BlueprintCallable)
+	FText HintMessage() const;
 
 protected:
 	/** Called for movement input */
@@ -48,6 +55,11 @@ protected:
 	void Interact(const FInputActionValue& Value);
 
 	void PickUp(const FHitResult& HitResult);
+
+private:
+	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
+
+	FText ConstructHintFor(const IInteractible* Interactible) const;
 	
 private:
 	bool IsOnLadder;
