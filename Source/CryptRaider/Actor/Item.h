@@ -26,6 +26,9 @@ protected:
 public:
 	FItemData Pick();
 
+	virtual void Interact() override;
+	virtual FString HintMessage() const override;
+
 private:
 	// all item specs
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

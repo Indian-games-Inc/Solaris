@@ -20,3 +20,13 @@ FItemData AItem::Pick()
 	Destroy();
 	return this->ItemData;
 }
+
+void AItem::Interact()
+{
+	Super::Interact();
+}
+
+FString AItem::HintMessage() const
+{
+	return "Pick up";
+}
