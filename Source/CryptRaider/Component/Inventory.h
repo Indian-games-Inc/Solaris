@@ -21,7 +21,7 @@ public:
 	void AddItem(const FInventoryItemWrapper& Item);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FInventoryItemWrapper> GetInventoryItems();
+	TArray<FInventoryItemWrapper> GetItems();
 
 	UFUNCTION(BlueprintCallable)
 	int GetRows();
@@ -42,7 +42,7 @@ public:
 	void SwapItems(int OldIndex, int NewIndex);
 
 	UFUNCTION(BlueprintCallable)
-	FInventoryItemWrapper RemoveItemFromInventory(int Index);
+	FInventoryItemWrapper RemoveItem(int Index);
 
 	UFUNCTION(BlueprintCallable)
 	bool IsFull();
