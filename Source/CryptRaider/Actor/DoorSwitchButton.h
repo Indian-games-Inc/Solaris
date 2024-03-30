@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CryptRaider/Interface/Interactible.h"
+#include "BaseInteractible.h"
 #include "GameFramework/Actor.h"
 #include "DoorSwitchButton.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API ADoorSwitchButton : public AActor, public IInteractible
+class CRYPTRAIDER_API ADoorSwitchButton : public ABaseInteractible
 {
 	GENERATED_BODY()
 
@@ -18,7 +18,9 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void Interact() override;
+	virtual void Interact() override;
+
+	virtual FString HintMessage() const override;
 
 private:
 	UPROPERTY(EditInstanceOnly)

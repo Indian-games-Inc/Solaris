@@ -20,6 +20,10 @@ public:
 	                            UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	                            const FHitResult& Hit);
 
+public:
+	virtual void Interact() override;
+	virtual FString HintMessage() const override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -33,4 +37,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float MasterFieldDestructionDelay = 5.0f;
+
+	FName GrabbedTag = "Grabbed";
 };

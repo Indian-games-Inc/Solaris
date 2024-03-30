@@ -17,6 +17,16 @@ void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	}
 }
 
+void AProjectile::Interact()
+{
+	Super::Interact();
+}
+
+FString AProjectile::HintMessage() const
+{
+	return Tags.Contains(GrabbedTag) ? "Release" : "Grab";
+}
+
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();

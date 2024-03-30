@@ -7,6 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
+#include "CryptRaider/Actor/Projectile.h"
 #include "CryptRaider/Component/Hand.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Picker.h"
@@ -200,7 +202,7 @@ void ABaseCharacter::PickUp(const FHitResult& HitResult)
 	}
 }
 
-UGrabber* ABaseCharacter::GetGrabber()
+UGrabber* ABaseCharacter::GetGrabber() const
 {
 	return Grabber;
 }
@@ -208,4 +210,58 @@ UGrabber* ABaseCharacter::GetGrabber()
 void ABaseCharacter::SetOnLadder(bool Value)
 {
 	IsOnLadder = Value;
+}
+
+TOptional<FKey> ABaseCharacter::GetKeyByAction(const UInputAction* Action) const
+{
+	// TODO: not the best logic, but at least it does its work, refactor in future 
+	for (const FEnhancedActionKeyMapping& Mapping : DefaultMappingContext->GetMappings())
+	{
+		if (Mapping.Action.Get() == Action)
+		{
+			return Mapping.Key;
+		}
+	}
+	return NullOpt;
+}
+
+FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
+{
+	const UInputAction* Action;
+	if (Cast<AProjectile>(Interactible)) {
+		Action = GrabAction;
+	} else {
+		Action = InteractAction;
+	}
+	
+	if (const auto& Key = GetKeyByAction(Action))
+	{
+		const FString Result = FString::Printf(
+			TEXT("[%s] %s"),
+			*Key->ToString(),
+			*Interactible->HintMessage()
+		);
+		return FText::FromString(Result);
+	}
+	
+	return FText::FromString("");
+}
+
+FText ABaseCharacter::HintMessage() const
+{
+	if (!Hand)
+	{
+		return FText::GetEmpty();
+	}
+
+	const auto& Mappings = DefaultMappingContext->GetMappings();
+
+	if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
+	{
+		if (const auto* Interactible = Cast<IInteractible>(HitResult->GetActor()); Interactible)
+		{
+			return ConstructHintFor(Interactible);
+		}
+	}
+	return FText::GetEmpty();
 }
