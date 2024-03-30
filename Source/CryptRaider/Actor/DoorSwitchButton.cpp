@@ -25,3 +25,12 @@ void ADoorSwitchButton::Interact()
 		Door->Close();
 	}
 }
+
+FString ADoorSwitchButton::HintMessage() const
+{
+	if (Door->IsClosed())
+	{
+		return "Open";
+	}
+	return "Close";
+}
