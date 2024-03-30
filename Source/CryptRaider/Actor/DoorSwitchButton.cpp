@@ -28,9 +28,5 @@ void ADoorSwitchButton::Interact()
 
 FString ADoorSwitchButton::HintMessage() const
 {
-	if (Door->IsClosed())
-	{
-		return "Open";
-	}
-	return "Close";
+	return Door->IsClosed() ? "Open" : "Close";
 }

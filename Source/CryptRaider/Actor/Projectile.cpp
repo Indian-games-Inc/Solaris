@@ -24,11 +24,7 @@ void AProjectile::Interact()
 
 FString AProjectile::HintMessage() const
 {
-	if (Tags.Contains(GrabbedTag))
-	{
-		return "Release";
-	}
-	return "Grab";
+	return Tags.Contains(GrabbedTag) ? "Release" : "Grab";
 }
 
 void AProjectile::BeginPlay()
