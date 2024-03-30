@@ -31,6 +31,11 @@ void ABaseInteractible::Interact()
 	// Should be blank
 }
 
+FString ABaseInteractible::HintMessage() const
+{
+	return "Interact";
+}
+
 void ABaseInteractible::DisablePhysics() const
 {
 	Body->SetSimulatePhysics(false);

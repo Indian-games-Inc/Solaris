@@ -25,4 +25,7 @@ public:
 	UFUNCTION()
 	virtual void Interact() = 0;
 
+	UFUNCTION()
+	virtual FString HintMessage() const = 0;
+
 };

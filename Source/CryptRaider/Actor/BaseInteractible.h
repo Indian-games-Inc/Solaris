@@ -25,6 +25,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Interact() override;
+	virtual FString HintMessage() const override;
 
 	void DisablePhysics() const;
 	void EnablePhysics() const;
