@@ -207,6 +207,11 @@ UGrabber* ABaseCharacter::GetGrabber() const
 	return Grabber;
 }
 
+UInventory* ABaseCharacter::GetInventory() const
+{
+	return Inventory;
+}
+
 void ABaseCharacter::SetOnLadder(bool Value)
 {
 	IsOnLadder = Value;
@@ -228,12 +233,15 @@ TOptional<FKey> ABaseCharacter::GetKeyByAction(const UInputAction* Action) const
 FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 {
 	const UInputAction* Action;
-	if (Cast<AProjectile>(Interactible)) {
+	if (Cast<AProjectile>(Interactible))
+	{
 		Action = GrabAction;
-	} else {
+	}
+	else
+	{
 		Action = InteractAction;
 	}
-	
+
 	if (const auto& Key = GetKeyByAction(Action))
 	{
 		const FString Result = FString::Printf(
@@ -243,7 +251,7 @@ FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 		);
 		return FText::FromString(Result);
 	}
-	
+
 	return FText::FromString("");
 }
 
