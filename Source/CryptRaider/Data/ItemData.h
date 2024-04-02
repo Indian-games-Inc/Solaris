@@ -16,6 +16,8 @@ struct CRYPTRAIDER_API FItemData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FString ID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

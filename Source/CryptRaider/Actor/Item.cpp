@@ -6,13 +6,15 @@
 // Sets default values
 AItem::AItem()
 {
+	ItemData.Name = GetName();
+	ItemData.ID = GetName();
+	ItemData.Model = DuplicateObject<UStaticMesh>(Body->GetStaticMesh(), nullptr);
 }
 
 // Called when the game starts or when spawned
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
-	ItemData.Model = DuplicateObject<UStaticMesh>(Body->GetStaticMesh(), nullptr);
 }
 
 FItemData AItem::Pick()
