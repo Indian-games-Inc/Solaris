@@ -8,20 +8,27 @@
 // Sets default values
 ADoorSwitchButton::ADoorSwitchButton()
 {
+	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
+	SetRootComponent(Root);
+
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	SetRootComponent(Mesh);
+	Mesh->SetupAttachment(RootComponent);
 }
 
 void ADoorSwitchButton::Interact()
 {
-	if (!Door) {
+	if (!Door)
+	{
 		UE_LOG(LogActor, Warning, TEXT("Failed to interact, Door is not set"));
 		return;
 	}
-	
-	if (Door->IsClosed()) {
+
+	if (Door->IsClosed())
+	{
 		Door->Open();
-	} else {
+	}
+	else
+	{
 		Door->Close();
 	}
 }

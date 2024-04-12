@@ -27,6 +27,8 @@ protected:
 	class ADoor* Door;
 
 private:
+	USceneComponent* Root = nullptr;
+
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 };

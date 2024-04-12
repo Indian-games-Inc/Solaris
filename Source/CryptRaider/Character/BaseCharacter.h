@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CryptRaider/Actor/DoorPinLock.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
@@ -22,7 +23,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -33,6 +34,9 @@ public:
 	class UInventory* GetInventory() const;
 
 	void SetOnLadder(bool Value);
+
+	void SetPinLock(ADoorPinLock* PinLock);
+	bool IsInPinLock();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -46,7 +50,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void Jump() override;
-	
+
 	/** Called for crouch input */
 	void OnCrouch(const FInputActionValue& Value);
 
@@ -54,16 +58,26 @@ protected:
 	void Grab(const FInputActionValue& Value);
 	void Throw(const FInputActionValue& Value);
 	void Interact(const FInputActionValue& Value);
-
 	void PickUp(const FHitResult& HitResult);
+	
+	/** Called for movement input */
+	void PinZero(const struct FInputActionValue& Value);
+	void PinOne(const FInputActionValue& Value);
+	void PinTwo(const FInputActionValue& Value);
+	void PinEnter(const struct FInputActionValue& Value);
+	void PinExit(const struct FInputActionValue& Value);
+	void PinRemove(const FInputActionValue& Value);
 
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
 	FText ConstructHintFor(const IInteractible* Interactible) const;
-	
+
 private:
 	bool IsOnLadder;
+
+	/** Should really be changed to some general entity is in GUI or sorta **/
+	ADoorPinLock* PinLock = nullptr;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -86,7 +100,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UInventory* Inventory;
-	
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -117,4 +131,24 @@ private:
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
+
+	/** PinZeroAction Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* PinZeroAction;
+	/** PinOneAction Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* PinOneAction;
+	/** PinTwoAction Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* PinTwoAction;
+	
+	/** PinEnterAction Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* PinEnterAction;
+	/** PinExitAction Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* PinExitAction;
+	/** PinRemoveAction Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* PinRemoveAction;
 };

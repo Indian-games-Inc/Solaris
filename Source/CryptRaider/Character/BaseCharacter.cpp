@@ -94,8 +94,18 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ABaseCharacter::Grab);
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &ABaseCharacter::Throw);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABaseCharacter::Interact);
+
+		// PinCode
+		EnhancedInputComponent->BindAction(PinZeroAction, ETriggerEvent::Started, this, &ABaseCharacter::PinZero);
+		EnhancedInputComponent->BindAction(PinOneAction, ETriggerEvent::Started, this, &ABaseCharacter::PinOne);
+		EnhancedInputComponent->BindAction(PinTwoAction, ETriggerEvent::Started, this, &ABaseCharacter::PinTwo);
+
+		EnhancedInputComponent->BindAction(PinEnterAction, ETriggerEvent::Started, this, &ABaseCharacter::PinEnter);
+		EnhancedInputComponent->BindAction(PinExitAction, ETriggerEvent::Started, this, &ABaseCharacter::PinExit);
+		EnhancedInputComponent->BindAction(PinRemoveAction, ETriggerEvent::Started, this, &ABaseCharacter::PinRemove);
 	}
 }
+
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
 {
@@ -217,6 +227,7 @@ void ABaseCharacter::SetOnLadder(bool Value)
 	IsOnLadder = Value;
 }
 
+
 TOptional<FKey> ABaseCharacter::GetKeyByAction(const UInputAction* Action) const
 {
 	// TODO: not the best logic, but at least it does its work, refactor in future 
@@ -272,4 +283,70 @@ FText ABaseCharacter::HintMessage() const
 		}
 	}
 	return FText::GetEmpty();
+}
+
+/** Pin code part **/
+
+void ABaseCharacter::SetPinLock(ADoorPinLock* PinLockRef)
+{
+	PinLock = PinLockRef;
+	Controller->SetIgnoreMoveInput(PinLock != nullptr);
+	Controller->SetIgnoreLookInput(PinLock != nullptr);
+}
+
+//TODO: really needed?
+bool ABaseCharacter::IsInPinLock()
+{
+	return PinLock != nullptr;
+}
+
+//TODO: how to adapt 0 - 1 - 2 -...- 9 to one function
+void ABaseCharacter::PinZero(const FInputActionValue& Value)
+{
+	if (PinLock)
+	{
+		PinLock->PressButton("0");
+	}
+}
+
+void ABaseCharacter::PinOne(const FInputActionValue& Value)
+{
+	if (PinLock)
+	{
+		PinLock->PressButton("1");
+	}
+}
+
+void ABaseCharacter::PinTwo(const FInputActionValue& Value)
+{
+	if (PinLock)
+	{
+		PinLock->PressButton("2");
+	}
+}
+
+
+void ABaseCharacter::PinEnter(const FInputActionValue& Value)
+{
+	if (PinLock)
+	{
+		PinLock->EnterCode();
+		PinExit(Value);
+	}
+}
+
+void ABaseCharacter::PinExit(const FInputActionValue& Value)
+{
+	if (PinLock)
+	{
+		this->SetPinLock(nullptr);
+	}
+}
+
+void ABaseCharacter::PinRemove(const FInputActionValue& Value)
+{
+	if (PinLock)
+	{
+		PinLock->RemoveLastChar();
+	}
 }

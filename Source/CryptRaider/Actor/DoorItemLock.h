@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "DoorSwitchButton.h"
-#include "DoorLocker.generated.h"
+#include "DoorItemLock.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API ADoorLocker : public ADoorSwitchButton
+class CRYPTRAIDER_API ADoorItemLock : public ADoorSwitchButton
 {
 	GENERATED_BODY()
 

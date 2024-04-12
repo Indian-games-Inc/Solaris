@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DoorLocker.h"
+#include "DoorItemLock.h"
 
 #include "Door.h"
 #include "CryptRaider/Character/BaseCharacter.h"
 #include "CryptRaider/Component/Inventory.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
 
-void ADoorLocker::Interact()
+void ADoorItemLock::Interact()
 {
 	if (!Door || ItemID.IsEmpty())
 	{
@@ -22,7 +22,7 @@ void ADoorLocker::Interact()
 	}
 }
 
-FString ADoorLocker::HintMessage() const
+FString ADoorItemLock::HintMessage() const
 {
 	if (!HasKey())
 	{
@@ -32,7 +32,7 @@ FString ADoorLocker::HintMessage() const
 	return Door->IsClosed() ? "Unlock" : "Block";
 }
 
-bool ADoorLocker::HasKey() const
+bool ADoorItemLock::HasKey() const
 {
 	auto Items = Cast<ABaseCharacter>(
 		             GetWorld()->
