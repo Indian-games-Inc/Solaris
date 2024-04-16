@@ -2,7 +2,7 @@
 
 #include "BaseInteractible.h"
 #include "Components/BoxComponent.h"
-#include "CryptRaider/Character/BaseCharacter.h"
+#include "CryptRaider/Player/BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 

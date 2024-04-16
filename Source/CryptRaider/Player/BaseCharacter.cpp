@@ -53,14 +53,14 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
-			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+	// if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	// {
+	// 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+	// 		UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	// 	{
+	// 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	// 	}
+	// }
 }
 
 // Called every frame
@@ -75,26 +75,26 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Move);
-
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Look);
-
-		// Crouching
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &ABaseCharacter::OnCrouch);
-
-		// Interaction with world
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ABaseCharacter::Grab);
-		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &ABaseCharacter::Throw);
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABaseCharacter::Interact);
-	}
+	// if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	// {
+	// 	//Jumping
+	// 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	// 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	//
+	// 	//Moving
+	// 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Move);
+	//
+	// 	//Looking
+	// 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Look);
+	//
+	// 	// Crouching
+	// 	EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &ABaseCharacter::OnCrouch);
+	//
+	// 	// Interaction with world
+	// 	EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ABaseCharacter::Grab);
+	// 	EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &ABaseCharacter::Throw);
+	// 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABaseCharacter::Interact);
+	// }
 }
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
@@ -215,53 +215,53 @@ void ABaseCharacter::SetOnLadder(bool Value)
 TOptional<FKey> ABaseCharacter::GetKeyByAction(const UInputAction* Action) const
 {
 	// TODO: not the best logic, but at least it does its work, refactor in future 
-	for (const FEnhancedActionKeyMapping& Mapping : DefaultMappingContext->GetMappings())
-	{
-		if (Mapping.Action.Get() == Action)
-		{
-			return Mapping.Key;
-		}
-	}
+	// for (const FEnhancedActionKeyMapping& Mapping : DefaultMappingContext->GetMappings())
+	// {
+	// 	if (Mapping.Action.Get() == Action)
+	// 	{
+	// 		return Mapping.Key;
+	// 	}
+	// }
 	return NullOpt;
 }
 
 FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 {
-	const UInputAction* Action;
-	if (Cast<AProjectile>(Interactible)) {
-		Action = GrabAction;
-	} else {
-		Action = InteractAction;
-	}
-	
-	if (const auto& Key = GetKeyByAction(Action))
-	{
-		const FString Result = FString::Printf(
-			TEXT("[%s] %s"),
-			*Key->ToString(),
-			*Interactible->HintMessage()
-		);
-		return FText::FromString(Result);
-	}
+	// const UInputAction* Action;
+	// if (Cast<AProjectile>(Interactible)) {
+	// 	Action = GrabAction;
+	// } else {
+	// 	Action = InteractAction;
+	// }
+	//
+	// if (const auto& Key = GetKeyByAction(Action))
+	// {
+	// 	const FString Result = FString::Printf(
+	// 		TEXT("[%s] %s"),
+	// 		*Key->ToString(),
+	// 		*Interactible->HintMessage()
+	// 	);
+	// 	return FText::FromString(Result);
+	// }
 	
 	return FText::FromString("");
 }
 
 FText ABaseCharacter::HintMessage() const
 {
-	if (!Hand)
-	{
-		return FText::GetEmpty();
-	}
-
-	const auto& Mappings = DefaultMappingContext->GetMappings();
-
-	if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
-	{
-		if (const auto* Interactible = Cast<IInteractible>(HitResult->GetActor()); Interactible)
-		{
-			return ConstructHintFor(Interactible);
-		}
-	}
+	// if (!Hand)
+	// {
+	// 	return FText::GetEmpty();
+	// }
+	//
+	// const auto& Mappings = DefaultMappingContext->GetMappings();
+	//
+	// if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
+	// {
+	// 	if (const auto* Interactible = Cast<IInteractible>(HitResult->GetActor()); Interactible)
+	// 	{
+	// 		return ConstructHintFor(Interactible);
+	// 	}
+	// }
 	return FText::GetEmpty();
 }
