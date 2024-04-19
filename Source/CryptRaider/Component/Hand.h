@@ -29,6 +29,7 @@ public:
 	bool HasInteractableOnSight() const;
 	
 	TOptional<FHitResult> GetInteractableInReach() const;
+	TOptional<FHitResult> GetInteractableInReach(FVector Start, FVector En) const;
 
 private:
 	UPROPERTY(EditAnywhere)

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "CryptRaider/Actor/Item.h"
+#include "CryptRaider/Actor/Item/Item.h"
 #include "ItemData.h"
 #include "InventoryItemWrapper.generated.h"
 

@@ -48,6 +48,29 @@ TOptional<FHitResult> UHand::GetInteractableInReach() const
 
 	if (HasHit)
 	{
+		// for debug purposes
+		// DrawDebugLine(GetWorld(), Start, End, FColor::Red, true, 1.0f, 0, 1.0f);
+		return HitResult;
+	}
+
+	return {};
+}
+
+TOptional<FHitResult> UHand::GetInteractableInReach(FVector Start, FVector End) const
+{
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(0.5);
+	FHitResult HitResult;
+	bool HasHit = GetWorld()->SweepSingleByChannel(
+		HitResult, Start, End,
+		FQuat::Identity,
+		ECC_GameTraceChannel2,
+		Sphere
+	);
+
+	if (HasHit)
+	{
+		// for debug purposes
+		// DrawDebugLine(GetWorld(), Start, End, FColor::Red, true, 1.0f, 0, 1.0f);
 		return HitResult;
 	}
 

@@ -8,7 +8,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
-#include "CryptRaider/Actor/Projectile.h"
+#include "CryptRaider/Actor/Destructible/Projectile.h"
+#include "CryptRaider/Actor/Door/DoorPinLock.h"
 #include "CryptRaider/Component/Hand.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Picker.h"
@@ -16,6 +17,9 @@
 #include "CryptRaider/Component/Inventory.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
 #include "GameFramework/CharacterMovementComponent.h"
+
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -95,17 +99,10 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &ABaseCharacter::Throw);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABaseCharacter::Interact);
 
-		// PinCode
-		EnhancedInputComponent->BindAction(PinZeroAction, ETriggerEvent::Started, this, &ABaseCharacter::PinZero);
-		EnhancedInputComponent->BindAction(PinOneAction, ETriggerEvent::Started, this, &ABaseCharacter::PinOne);
-		EnhancedInputComponent->BindAction(PinTwoAction, ETriggerEvent::Started, this, &ABaseCharacter::PinTwo);
-
-		EnhancedInputComponent->BindAction(PinEnterAction, ETriggerEvent::Started, this, &ABaseCharacter::PinEnter);
-		EnhancedInputComponent->BindAction(PinExitAction, ETriggerEvent::Started, this, &ABaseCharacter::PinExit);
-		EnhancedInputComponent->BindAction(PinRemoveAction, ETriggerEvent::Started, this, &ABaseCharacter::PinRemove);
+		//Mouse handling for PinLocks
+		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, this, &ABaseCharacter::MouseClick);
 	}
 }
-
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
 {
@@ -131,6 +128,14 @@ void ABaseCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+FVector ABaseCharacter::GetWorldLocationFromCursor(FVector& WorldDirection)
+{
+	FVector WorldLocation;
+	const auto PlayerController = Cast<APlayerController>(Controller);
+	PlayerController->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+	return WorldLocation;
+}
+
 void ABaseCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
@@ -138,6 +143,20 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
+		if (PinLock)
+		{
+			FVector WorldDirection;
+			FVector Start = GetWorldLocationFromCursor(WorldDirection);
+			FVector End = Start + WorldDirection * 70;
+
+			if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(Start, End); HitResult.IsSet())
+			{
+				auto Hit = HitResult.GetValue();
+				PinLock->SetLightPosition(Hit.Location);
+			}
+			return;
+		}
+
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
@@ -227,7 +246,6 @@ void ABaseCharacter::SetOnLadder(bool Value)
 	IsOnLadder = Value;
 }
 
-
 TOptional<FKey> ABaseCharacter::GetKeyByAction(const UInputAction* Action) const
 {
 	// TODO: not the best logic, but at least it does its work, refactor in future 
@@ -286,67 +304,40 @@ FText ABaseCharacter::HintMessage() const
 }
 
 /** Pin code part **/
-
 void ABaseCharacter::SetPinLock(ADoorPinLock* PinLockRef)
 {
 	PinLock = PinLockRef;
 	Controller->SetIgnoreMoveInput(PinLock != nullptr);
-	Controller->SetIgnoreLookInput(PinLock != nullptr);
-}
-
-//TODO: really needed?
-bool ABaseCharacter::IsInPinLock()
-{
-	return PinLock != nullptr;
-}
-
-//TODO: how to adapt 0 - 1 - 2 -...- 9 to one function
-void ABaseCharacter::PinZero(const FInputActionValue& Value)
-{
+	const auto PlayerController = Cast<APlayerController>(Controller);
 	if (PinLock)
 	{
-		PinLock->PressButton("0");
+		//switch camera to pin lock
+		PlayerController->SetViewTargetWithBlend(PinLock, 0.1);
+	}
+	else
+	{
+		//switch camera to player
+		Cast<APlayerController>(Controller)->SetViewTargetWithBlend(this);
 	}
 }
 
-void ABaseCharacter::PinOne(const FInputActionValue& Value)
+bool ABaseCharacter::IsInPinLock() const
 {
-	if (PinLock)
-	{
-		PinLock->PressButton("1");
-	}
+	return PinLock ? true : false;
 }
 
-void ABaseCharacter::PinTwo(const FInputActionValue& Value)
+void ABaseCharacter::MouseClick(const FInputActionValue& Value)
 {
 	if (PinLock)
 	{
-		PinLock->PressButton("2");
-	}
-}
-
-
-void ABaseCharacter::PinEnter(const FInputActionValue& Value)
-{
-	if (PinLock)
-	{
-		PinLock->EnterCode();
-		PinExit(Value);
-	}
-}
-
-void ABaseCharacter::PinExit(const FInputActionValue& Value)
-{
-	if (PinLock)
-	{
-		this->SetPinLock(nullptr);
-	}
-}
-
-void ABaseCharacter::PinRemove(const FInputActionValue& Value)
-{
-	if (PinLock)
-	{
-		PinLock->RemoveLastChar();
+		FVector WorldDirection;
+		FVector Start = GetWorldLocationFromCursor(WorldDirection);
+		FVector End = Start + WorldDirection * 70;
+		if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(Start, End); HitResult.IsSet())
+		{
+			auto Hit = HitResult.GetValue();
+			UE_LOG(LogTemp, Warning, TEXT("B: %s"), *Hit.BoneName.ToString());
+			PinLock->PressButton(Hit.BoneName.ToString());
+		}
 	}
 }

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CryptRaider/Actor/DoorPinLock.h"
+#include "CryptRaider/Actor/Door/DoorPinLock.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
@@ -36,7 +36,7 @@ public:
 	void SetOnLadder(bool Value);
 
 	void SetPinLock(ADoorPinLock* PinLock);
-	bool IsInPinLock();
+	bool IsInPinLock() const;
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -45,6 +45,8 @@ public:
 protected:
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
+	FVector GetWorldLocationFromCursor(FVector& WorldDirection);
+	void DoWork(FVector& WorldLocation, FVector& WorldDirection);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
@@ -58,15 +60,8 @@ protected:
 	void Grab(const FInputActionValue& Value);
 	void Throw(const FInputActionValue& Value);
 	void Interact(const FInputActionValue& Value);
+	void MouseClick(const FInputActionValue& Value);
 	void PickUp(const FHitResult& HitResult);
-	
-	/** Called for movement input */
-	void PinZero(const struct FInputActionValue& Value);
-	void PinOne(const FInputActionValue& Value);
-	void PinTwo(const FInputActionValue& Value);
-	void PinEnter(const struct FInputActionValue& Value);
-	void PinExit(const struct FInputActionValue& Value);
-	void PinRemove(const FInputActionValue& Value);
 
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
@@ -131,16 +126,6 @@ private:
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
-
-	/** PinZeroAction Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* PinZeroAction;
-	/** PinOneAction Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* PinOneAction;
-	/** PinTwoAction Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* PinTwoAction;
 	
 	/** PinEnterAction Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -151,4 +136,7 @@ private:
 	/** PinRemoveAction Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* PinRemoveAction;
+	/** MouseClickAction Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* MouseClickAction;
 };

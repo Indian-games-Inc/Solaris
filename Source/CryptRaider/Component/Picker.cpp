@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Picker.h"
-#include "../Actor/Item.h"
+#include "../Actor/Item/Item.h"
 #include "../Data/InventoryItemWrapper.h"
 
 
