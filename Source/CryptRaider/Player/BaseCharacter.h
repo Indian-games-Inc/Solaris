@@ -26,9 +26,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	class UGrabber* GetGrabber() const;
 
 	void SetOnLadder(bool Value);
@@ -46,20 +43,15 @@ public:
 
 	void Jump() override;
 	
-	/** Called for crouch input */
-	void OnCrouch(const FInputActionValue& Value);
+	/** Called for crouch */
+	void OnCrouch();
 
 	/** Called for interaction with world objects */
-	void Grab(const FInputActionValue& Value);
-	void Throw(const FInputActionValue& Value);
-	void Interact(const FInputActionValue& Value);
+	void Grab();
+	void Throw();
+	void Interact();
 
-	void PickUp(const FHitResult& HitResult);
-
-private:
-	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
-
-	FText ConstructHintFor(const IInteractible* Interactible) const;
+	TOptional<struct FInventoryItemWrapper> PickUp();
 	
 private:
 	bool IsOnLadder;
@@ -82,38 +74,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UInteractor* Interactor;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UInventory* Inventory;
-	
-	/** MappingContext */
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	// class UInputMappingContext* DefaultMappingContext;
-	//
-	// /** Look Input Action */
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	// class UInputAction* LookAction;
-	//
-	// /** Jump Input Action */
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	// UInputAction* JumpAction;
-	//
-	// /** Move Input Action */
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	// UInputAction* MoveAction;
-	//
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	// UInputAction* CrouchAction;
-	//
-	// /** Grab Input Action */
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	// UInputAction* GrabAction;
-	//
-	// /** Throw Input Action */
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	// UInputAction* ThrowAction;
-	//
-	// /** Interact Input Action */
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	// UInputAction* InteractAction;
 };
