@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Inventory.h"
-#include "../Data/InventoryItemWrapper.h"
+#include "CryptRaider/Data/InventoryItemWrapper.h"
 
 void UInventory::InitItemsArray()
 {

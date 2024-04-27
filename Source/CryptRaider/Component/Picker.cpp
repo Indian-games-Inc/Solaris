@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Picker.h"
-#include "../Actor/Item.h"
-#include "../Data/InventoryItemWrapper.h"
+#include "CryptRaider/Actor/Item.h"
+#include "CryptRaider/Data/InventoryItemWrapper.h"
 
 
 TOptional<FInventoryItemWrapper> UPicker::PickItem(const FHitResult& HitResult)
