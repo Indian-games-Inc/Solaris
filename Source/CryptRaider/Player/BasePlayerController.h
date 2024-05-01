@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Misc/Optional.h"
+
 #include "BasePlayerController.generated.h"
+
+class UInputAction;
 
 /**
  * 
@@ -25,6 +29,10 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable)
 	FText HintMessage() const;
+
+	TOptional<FKey> GrabKey() const;
+	TOptional<FKey> ThrowKey() const;
+	TOptional<FKey> InteractKey() const;
 	
 private:
 	/** Called for movement input */
@@ -43,6 +51,8 @@ private:
 	void Grab();
 	void Throw();
 	void Interact();
+
+	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

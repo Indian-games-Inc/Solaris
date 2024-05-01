@@ -138,3 +138,31 @@ FText ABasePlayerController::HintMessage() const // TODO: Add Action mapping bas
 	}
 	return FText::GetEmpty();
 }
+
+TOptional<FKey> ABasePlayerController::GetKeyByAction(const UInputAction* Action) const
+{
+	// TODO: not the best logic, but at least it does its work, refactor in future 
+	for (const FEnhancedActionKeyMapping& Mapping : DefaultMappingContext->GetMappings())
+	{
+		if (Mapping.Action.Get() == Action)
+		{
+			return Mapping.Key;
+		}
+	}
+	return NullOpt;
+}
+
+TOptional<FKey> ABasePlayerController::GrabKey() const
+{
+	return GetKeyByAction(GrabAction);
+}
+
+TOptional<FKey> ABasePlayerController::ThrowKey() const
+{
+	return GetKeyByAction(ThrowAction);
+}
+
+TOptional<FKey> ABasePlayerController::InteractKey() const
+{
+	return GetKeyByAction(InteractAction);
+}

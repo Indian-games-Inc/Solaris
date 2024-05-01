@@ -3,8 +3,10 @@
 
 #include "BaseCharacter.h"
 
+#include "BasePlayerController.h"
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
+#include "CryptRaider/Actor/Projectile.h"
 #include "CryptRaider/Component/Hand.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Picker.h"
@@ -165,6 +167,33 @@ void ABaseCharacter::SetOnLadder(bool Value)
 	IsOnLadder = Value;
 }
 
+FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
+{
+	const auto* BaseController = Cast<ABasePlayerController>(GetController());
+	if (!BaseController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to contruct Hint message, failed to cast Player Controller"));
+		return FText::FromString("");
+	}
+	
+	TOptional<FKey> Key;
+	if (Cast<AProjectile>(Interactible)) {
+		Key = BaseController->GrabKey();
+	} else {
+		Key = BaseController->InteractKey();
+	}
+
+	if (!Key.IsSet())
+		return FText::FromString("");
+	
+	const FString Result = FString::Printf(
+		TEXT("[%s] %s"),
+		*Key->ToString(),
+		*Interactible->HintMessage()
+	);
+	return FText::FromString(Result);
+}
+
 FText ABaseCharacter::HintMessage() const
 {
 	if (!Hand)
@@ -176,7 +205,7 @@ FText ABaseCharacter::HintMessage() const
 	{
 		if (const auto* Interactible = Cast<IInteractible>(HitResult->GetActor()); Interactible)
 		{
-			return FText::FromString(Interactible->HintMessage());
+			return ConstructHintFor(Interactible);
 		}
 	}
 	return FText::GetEmpty();

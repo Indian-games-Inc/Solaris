@@ -52,6 +52,8 @@ public:
 	void Interact();
 
 	TOptional<struct FInventoryItemWrapper> PickUp();
+
+	FText ConstructHintFor(const IInteractible* Interactible) const;
 	
 private:
 	bool IsOnLadder;
