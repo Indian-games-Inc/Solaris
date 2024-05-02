@@ -30,6 +30,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	class UGrabber* GetGrabber() const;
+	class UInventory* GetInventory() const;
 
 	void SetOnLadder(bool Value);
 
