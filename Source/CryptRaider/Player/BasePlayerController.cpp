@@ -166,3 +166,8 @@ TOptional<FKey> ABasePlayerController::InteractKey() const
 {
 	return GetKeyByAction(InteractAction);
 }
+
+UInventory* ABasePlayerController::GetInventory() const
+{
+	return Inventory;
+}

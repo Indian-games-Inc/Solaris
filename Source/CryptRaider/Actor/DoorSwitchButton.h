@@ -22,10 +22,11 @@ public:
 
 	virtual FString HintMessage() const override;
 
-private:
+protected:
 	UPROPERTY(EditInstanceOnly)
 	class ADoor* Door;
 
+private:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 };

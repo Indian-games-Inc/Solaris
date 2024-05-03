@@ -8,6 +8,7 @@
 
 #include "BasePlayerController.generated.h"
 
+class UInventory;
 class UInputAction;
 
 /**
@@ -33,6 +34,8 @@ public:
 	TOptional<FKey> GrabKey() const;
 	TOptional<FKey> ThrowKey() const;
 	TOptional<FKey> InteractKey() const;
+
+	UInventory* GetInventory() const;
 	
 private:
 	/** Called for movement input */
@@ -52,11 +55,12 @@ private:
 	void Throw();
 	void Interact();
 
+private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UInventory* Inventory;
+	UInventory* Inventory;
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
