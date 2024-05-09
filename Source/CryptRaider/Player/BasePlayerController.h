@@ -3,89 +3,64 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "BaseCharacter.generated.h"
+#include "GameFramework/PlayerController.h"
+#include "Misc/Optional.h"
 
-class IInteractible;
+#include "BasePlayerController.generated.h"
+
+class UInventory;
 class UInputAction;
 
+/**
+ * 
+ */
 UCLASS()
-class CRYPTRAIDER_API ABaseCharacter : public ACharacter
+class CRYPTRAIDER_API ABasePlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ABaseCharacter();
-
+	ABasePlayerController();
+	
 protected:
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	class UGrabber* GetGrabber() const;
-	class UInventory* GetInventory() const;
-
-	void SetOnLadder(bool Value);
+	virtual void SetupInputComponent() override;
 
 public:
 	UFUNCTION(BlueprintCallable)
 	FText HintMessage() const;
 
-protected:
+	TOptional<FKey> GrabKey() const;
+	TOptional<FKey> ThrowKey() const;
+	TOptional<FKey> InteractKey() const;
+
+	UInventory* GetInventory() const;
+	
+private:
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-	void Jump() override;
+	void Jump();
+	void StopJumping();
 	
-	/** Called for crouch input */
-	void OnCrouch(const FInputActionValue& Value);
-
+	/** Called for crouch */
+	void OnCrouch();
+	
 	/** Called for interaction with world objects */
-	void Grab(const FInputActionValue& Value);
-	void Throw(const FInputActionValue& Value);
-	void Interact(const FInputActionValue& Value);
-
-	void PickUp(const FHitResult& HitResult);
+	void Grab();
+	void Throw();
+	void Interact();
 
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
-	FText ConstructHintFor(const IInteractible* Interactible) const;
-	
 private:
-	bool IsOnLadder;
-
-	/** First person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FirstPersonCameraComponent;
-
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent* SkeletalMeshComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UHand* Hand;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UGrabber* Grabber;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UPicker* Picker;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UInteractor* Interactor;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UInventory* Inventory;
+	UInventory* Inventory;
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -103,6 +78,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	/** Crouch Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* CrouchAction;
 

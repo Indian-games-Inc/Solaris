@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Item.h"
-#include "../Data/ItemData.h"
+#include "CryptRaider/Data/ItemData.h"
 
 // Sets default values
 AItem::AItem()

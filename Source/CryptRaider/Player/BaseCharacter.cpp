@@ -3,17 +3,14 @@
 
 #include "BaseCharacter.h"
 
+#include "BasePlayerController.h"
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "InputMappingContext.h"
 #include "CryptRaider/Actor/Projectile.h"
 #include "CryptRaider/Component/Hand.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Picker.h"
 #include "CryptRaider/Component/Interactor.h"
-#include "CryptRaider/Component/Inventory.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -44,57 +41,19 @@ ABaseCharacter::ABaseCharacter()
 	Interactor = CreateDefaultSubobject<UInteractor>(TEXT("Interactor"));
 	Interactor->SetupAttachment(Hand);
 
-	Inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
+
 }
 
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
-			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
 }
 
 // Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-// Called to bind functionality to input
-void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Move);
-
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Look);
-
-		// Crouching
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &ABaseCharacter::OnCrouch);
-
-		// Interaction with world
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ABaseCharacter::Grab);
-		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &ABaseCharacter::Throw);
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABaseCharacter::Interact);
-	}
 }
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
@@ -140,7 +99,7 @@ void ABaseCharacter::Jump()
 	Super::Jump();
 }
 
-void ABaseCharacter::OnCrouch(const FInputActionValue& Value)
+void ABaseCharacter::OnCrouch()
 {
 	if (bIsCrouched)
 	{
@@ -152,7 +111,7 @@ void ABaseCharacter::OnCrouch(const FInputActionValue& Value)
 	}
 }
 
-void ABaseCharacter::Grab(const FInputActionValue& Value)
+void ABaseCharacter::Grab()
 {
 	if (!Grabber) { return; }
 
@@ -169,13 +128,13 @@ void ABaseCharacter::Grab(const FInputActionValue& Value)
 	}
 }
 
-void ABaseCharacter::Throw(const FInputActionValue& Value)
+void ABaseCharacter::Throw()
 {
 	if (Grabber)
 		Grabber->Throw();
 }
 
-void ABaseCharacter::Interact(const FInputActionValue& Value)
+void ABaseCharacter::Interact()
 {
 	if (const auto& HitResult = Hand->GetInteractableInReach())
 	{
@@ -183,23 +142,19 @@ void ABaseCharacter::Interact(const FInputActionValue& Value)
 		{
 			Interactor->Interact(HitResult.GetValue());
 		}
-
-		PickUp(HitResult.GetValue());
 	}
 }
 
-void ABaseCharacter::PickUp(const FHitResult& HitResult)
+TOptional<FInventoryItemWrapper> ABaseCharacter::PickUp()
 {
-	if (Picker)
+	if (const auto& HitResult = Hand->GetInteractableInReach())
 	{
-		if (Inventory->IsFull())
-			return;
-
-		if (const auto& Item = Picker->PickItem(HitResult))
+		if (Picker)
 		{
-			Inventory->AddItem(Item.GetValue());
+			return Picker->PickItem(HitResult.GetValue());
 		}
 	}
+	return {};
 }
 
 UGrabber* ABaseCharacter::GetGrabber() const
@@ -207,52 +162,36 @@ UGrabber* ABaseCharacter::GetGrabber() const
 	return Grabber;
 }
 
-UInventory* ABaseCharacter::GetInventory() const
-{
-	return Inventory;
-}
-
 void ABaseCharacter::SetOnLadder(bool Value)
 {
 	IsOnLadder = Value;
 }
 
-TOptional<FKey> ABaseCharacter::GetKeyByAction(const UInputAction* Action) const
-{
-	// TODO: not the best logic, but at least it does its work, refactor in future 
-	for (const FEnhancedActionKeyMapping& Mapping : DefaultMappingContext->GetMappings())
-	{
-		if (Mapping.Action.Get() == Action)
-		{
-			return Mapping.Key;
-		}
-	}
-	return NullOpt;
-}
-
 FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 {
-	const UInputAction* Action;
-	if (Cast<AProjectile>(Interactible))
+	const auto* BaseController = Cast<ABasePlayerController>(GetController());
+	if (!BaseController)
 	{
-		Action = GrabAction;
+		UE_LOG(LogTemp, Warning, TEXT("Failed to contruct Hint message, failed to cast Player Controller"));
+		return FText::FromString("");
 	}
-	else
-	{
-		Action = InteractAction;
-	}
-
-	if (const auto& Key = GetKeyByAction(Action))
-	{
-		const FString Result = FString::Printf(
-			TEXT("[%s] %s"),
-			*Key->ToString(),
-			*Interactible->HintMessage()
-		);
-		return FText::FromString(Result);
+	
+	TOptional<FKey> Key;
+	if (Cast<AProjectile>(Interactible)) {
+		Key = BaseController->GrabKey();
+	} else {
+		Key = BaseController->InteractKey();
 	}
 
-	return FText::FromString("");
+	if (!Key.IsSet())
+		return FText::FromString("");
+	
+	const FString Result = FString::Printf(
+		TEXT("[%s] %s"),
+		*Key->ToString(),
+		*Interactible->HintMessage()
+	);
+	return FText::FromString(Result);
 }
 
 FText ABaseCharacter::HintMessage() const
@@ -261,9 +200,7 @@ FText ABaseCharacter::HintMessage() const
 	{
 		return FText::GetEmpty();
 	}
-
-	const auto& Mappings = DefaultMappingContext->GetMappings();
-
+	
 	if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
 	{
 		if (const auto* Interactible = Cast<IInteractible>(HitResult->GetActor()); Interactible)

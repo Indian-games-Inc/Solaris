@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseInteractible.h"
-#include "../Data/ItemData.h"
+#include "CryptRaider/Data/ItemData.h"
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
