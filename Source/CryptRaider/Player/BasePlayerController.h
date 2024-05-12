@@ -28,6 +28,9 @@ protected:
 	virtual void SetupInputComponent() override;
 
 public:
+	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
+	
+public:
 	UFUNCTION(BlueprintCallable)
 	FText HintMessage() const;
 
@@ -93,4 +96,9 @@ private:
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
+
+	FTimerHandle RestartTimer;
+	
+	UPROPERTY(EditAnywhere)
+	float RestartDelay = 5.f;
 };

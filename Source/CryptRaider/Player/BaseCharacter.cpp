@@ -6,12 +6,14 @@
 #include "BasePlayerController.h"
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "CryptRaider/Actor/Projectile.h"
 #include "CryptRaider/Component/Hand.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Picker.h"
 #include "CryptRaider/Component/Interactor.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
+#include "CryptRaider/GameMode/DefaultGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -40,14 +42,13 @@ ABaseCharacter::ABaseCharacter()
 
 	Interactor = CreateDefaultSubobject<UInteractor>(TEXT("Interactor"));
 	Interactor->SetupAttachment(Hand);
-
-
 }
 
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	Health = MaxHealth;
 }
 
 // Called every frame
@@ -167,6 +168,42 @@ void ABaseCharacter::SetOnLadder(bool Value)
 	IsOnLadder = Value;
 }
 
+float ABaseCharacter::TakeDamage(float Damage,
+                                 const FDamageEvent& DamageEvent,
+                                 AController* EventInstigator,
+                                 AActor* DamageCauser)
+{
+	float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	DamageToApply = FMath::Min(Health, DamageToApply);
+	Health -= DamageToApply;
+
+	UE_LOG(LogTemp, Warning, TEXT("Damage applied, Health: %f"), Health);
+	
+	if (IsDead())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Oops you are dead"));
+		if (ADefaultGameMode* GameMode = GetWorld()->GetAuthGameMode<ADefaultGameMode>(); GameMode)
+		{
+			GameMode->PawnKilled(this);
+		}
+		DetachFromControllerPendingDestroy();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	
+	return DamageToApply;
+}
+
+bool ABaseCharacter::IsDead() const
+{
+	return Health <= 0;
+}
+
+float ABaseCharacter::GetHealthPercent() const
+{
+	return Health / MaxHealth;
+}
+
 FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 {
 	const auto* BaseController = Cast<ABasePlayerController>(GetController());
@@ -175,17 +212,20 @@ FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 		UE_LOG(LogTemp, Warning, TEXT("Failed to contruct Hint message, failed to cast Player Controller"));
 		return FText::FromString("");
 	}
-	
+
 	TOptional<FKey> Key;
-	if (Cast<AProjectile>(Interactible)) {
+	if (Cast<AProjectile>(Interactible))
+	{
 		Key = BaseController->GrabKey();
-	} else {
+	}
+	else
+	{
 		Key = BaseController->InteractKey();
 	}
 
 	if (!Key.IsSet())
 		return FText::FromString("");
-	
+
 	const FString Result = FString::Printf(
 		TEXT("[%s] %s"),
 		*Key->ToString(),
@@ -200,7 +240,7 @@ FText ABaseCharacter::HintMessage() const
 	{
 		return FText::GetEmpty();
 	}
-	
+
 	if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
 	{
 		if (const auto* Interactible = Cast<IInteractible>(HitResult->GetActor()); Interactible)
