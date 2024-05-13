@@ -44,7 +44,7 @@ void ADoorPinLock::HandleButtonPress(const FString& BoneName)
 		if (CodeBuffer.Len() > 0)
 			CodeBuffer.RemoveAt(CodeBuffer.Len() - 1, 1);
 	}
-	else
+	else if (BoneName.IsNumeric())
 	{
 		CodeBuffer.Append(BoneName);
 	}
