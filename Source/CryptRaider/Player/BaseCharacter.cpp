@@ -270,3 +270,8 @@ void ABaseCharacter::InteractWithPinLock(FVector& Start, FVector& End, ADoorPinL
 		PinLock->PressButton(Hit.BoneName.ToString());
 	}
 }
+
+void ABaseCharacter::SetOnLadder(bool Value)
+{
+	IsOnLadder = Value;
+}

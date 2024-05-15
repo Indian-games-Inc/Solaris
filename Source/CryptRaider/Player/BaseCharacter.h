@@ -35,6 +35,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	FText HintMessage() const;
 	void InteractWithPinLock(FVector& Start, FVector& End, ADoorPinLock* PinLock);
+	void SetOnLadder(bool Value);
 
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;

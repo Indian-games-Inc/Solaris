@@ -38,10 +38,9 @@ public:
 
 	UInventory* GetInventory() const;
 
-	void SetOnLadder(bool Value);
 	void SetPinLock(ADoorPinLock* PinLock);
 	bool IsInPinLock() const;
-	FVector GetWorldLocationFromCursor(FVector& WorldDirection);
+	FVector GetWorldLocationFromCursor(FVector& WorldDirection) const;
 	
 private:
 	/** Called for movement input */
@@ -66,7 +65,6 @@ private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
 private:
-	bool IsOnLadder;
 
 	/** Should really be changed to some general entity is in GUI or sorta **/
 	ADoorPinLock* PinLock = nullptr;

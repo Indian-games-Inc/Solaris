@@ -155,15 +155,14 @@ void AGlueTrigger::OnLadderComponentBeginOverlap(UPrimitiveComponent* Overlapped
 	if (IsClimbable)
 	{
 		auto* Character = Cast<ABaseCharacter>(OtherActor);
-		auto* Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
 		if (IsGlued)
 		{
-			Controller->SetOnLadder(true);
+			Character->SetOnLadder(true);
 			GluedItem->DisablePhysics();
 		}
 		else
 		{
-			Controller->SetOnLadder(false);
+			Character->SetOnLadder(false);
 			Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 		}
 	}
@@ -175,8 +174,7 @@ void AGlueTrigger::OnLadderComponentEndOverlap(UPrimitiveComponent* OverlappedCo
 	if (IsClimbable)
 	{
 		auto* Character = Cast<ABaseCharacter>(OtherActor);
-		auto* Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
-		Controller->SetOnLadder(false);
+		Character->SetOnLadder(false);
 		Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 		if (GluedItem)
 		{

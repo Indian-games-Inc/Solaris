@@ -221,12 +221,7 @@ void ABasePlayerController::MouseClick()
 	}
 }
 
-void ABasePlayerController::SetOnLadder(bool Value)
-{
-	IsOnLadder = Value;
-}
-
-FVector ABasePlayerController::GetWorldLocationFromCursor(FVector& WorldDirection)
+FVector ABasePlayerController::GetWorldLocationFromCursor(FVector& WorldDirection) const
 {
 	FVector WorldLocation;
 	DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
