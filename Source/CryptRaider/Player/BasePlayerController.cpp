@@ -66,6 +66,7 @@ void ABasePlayerController::SetupInputComponent()
 		                                   &ABasePlayerController::Throw);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this,
 		                                   &ABasePlayerController::Interact);
+		// Interaction with PinLock
 		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, this,
 								   &ABasePlayerController::MouseClick);
 	}
@@ -196,7 +197,7 @@ void ABasePlayerController::SetPinLock(ADoorPinLock* PinLockRef)
 	else
 	{
 		//switch camera to player
-		SetViewTargetWithBlend(this);
+		SetViewTargetWithBlend(GetCharacter());
 	}
 }
 
