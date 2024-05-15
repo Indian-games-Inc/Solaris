@@ -46,7 +46,6 @@ protected:
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
 	FVector GetWorldLocationFromCursor(FVector& WorldDirection);
-	void DoWork(FVector& WorldLocation, FVector& WorldDirection);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
@@ -126,17 +125,8 @@ private:
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
-	
-	/** PinEnterAction Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* PinEnterAction;
-	/** PinExitAction Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* PinExitAction;
-	/** PinRemoveAction Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* PinRemoveAction;
-	/** MouseClickAction Input Action */
+
+	/** Mouse Click Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MouseClickAction;
 };
