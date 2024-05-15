@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../Interface/BaseInteractible.h"
-#include "../../Data/ItemData.h"
+#include "BaseInteractible.h"
+#include "CryptRaider/Data/ItemData.h"
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 

@@ -26,6 +26,7 @@ protected:
 	UPROPERTY(EditInstanceOnly)
 	class ADoor* Door;
 
+private:
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* Mesh;
 
