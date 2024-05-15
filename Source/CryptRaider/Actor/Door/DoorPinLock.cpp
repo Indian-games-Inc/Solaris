@@ -5,7 +5,8 @@
 #include "Door.h"
 #include "Camera/CameraComponent.h"
 #include "Components/PointLightComponent.h"
-#include "CryptRaider/Character/BaseCharacter.h"
+#include "CryptRaider/Player/BaseCharacter.h"
+#include "CryptRaider/Player/BasePlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
 
 ADoorPinLock::ADoorPinLock()
@@ -29,8 +30,8 @@ void ADoorPinLock::Interact()
 		return;
 	}
 
-	const auto Player = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	Player->SetPinLock(Player->IsInPinLock() ? nullptr : this);
+	const auto PlayerController = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
+	PlayerController->SetPinLock(PlayerController->IsInPinLock() ? nullptr : this);
 }
 
 void ADoorPinLock::HandleButtonPress(const FString& BoneName)
@@ -71,8 +72,8 @@ void ADoorPinLock::EnterCode() const
 	if (CodeBuffer.Equals(PinCode) && Door)
 	{
 		Door->IsClosed() ? Door->Open() : Door->Close();
-		const auto Player = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-		Player->SetPinLock(nullptr);
+		const auto PlayerController = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
+		PlayerController->SetPinLock(nullptr);
 	}
 }
 

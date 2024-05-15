@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class ADoorPinLock;
 class IInteractible;
 class UInputAction;
 
@@ -28,13 +29,12 @@ public:
 
 	class UGrabber* GetGrabber() const;
 
-	void SetOnLadder(bool Value);
-
 	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
 	UFUNCTION(BlueprintPure)
 	FText HintMessage() const;
+	void InteractWithPinLock(FVector& Start, FVector& End, ADoorPinLock* PinLock);
 
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
@@ -47,7 +47,7 @@ public:
 	void Move(const struct FInputActionValue& Value);
 
 	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value, ADoorPinLock* PinLock);
 
 	void Jump() override;
 	

@@ -4,9 +4,10 @@
 #include "DoorItemLock.h"
 
 #include "Door.h"
-#include "CryptRaider/Character/BaseCharacter.h"
+#include "CryptRaider/Player/BaseCharacter.h"
 #include "CryptRaider/Component/Inventory.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
+#include "CryptRaider/Player/BasePlayerController.h"
 
 void ADoorItemLock::Interact()
 {
@@ -41,10 +42,9 @@ FString ADoorItemLock::HintMessage() const
 
 bool ADoorItemLock::HasKey() const
 {
-	auto Items = Cast<ABaseCharacter>(
+	auto Items = Cast<ABasePlayerController>(
 		             GetWorld()->
-		             GetFirstPlayerController()->
-		             GetCharacter())->
+		             GetFirstPlayerController())->
 	             GetInventory()->
 	             GetItems();
 

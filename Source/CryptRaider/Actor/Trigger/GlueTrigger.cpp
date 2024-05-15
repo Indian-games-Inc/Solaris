@@ -3,6 +3,7 @@
 #include "../../Interface/BaseInteractible.h"
 #include "Components/BoxComponent.h"
 #include "CryptRaider/Player/BaseCharacter.h"
+#include "CryptRaider/Player/BasePlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -41,10 +42,9 @@ AGlueTrigger::AGlueTrigger()
 
 void AGlueTrigger::MoveUpdate(float Alpha)
 {
-	
 	FVector Location = FMath::Lerp(GluedItem->GetActorTransform().GetLocation(),
 	                               Target->GetComponentTransform().GetLocation(), Alpha);
-	
+
 	//TODO: Rotations should be picked for the closest angle 
 	FRotator Rotation = UKismetMathLibrary::RLerp(FRotator(GluedItem->GetActorTransform().GetRotation()),
 	                                              FRotator(Target->GetComponentTransform().GetRotation()), Alpha,
@@ -155,14 +155,15 @@ void AGlueTrigger::OnLadderComponentBeginOverlap(UPrimitiveComponent* Overlapped
 	if (IsClimbable)
 	{
 		auto* Character = Cast<ABaseCharacter>(OtherActor);
+		auto* Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
 		if (IsGlued)
 		{
-			Character->SetOnLadder(true);
+			Controller->SetOnLadder(true);
 			GluedItem->DisablePhysics();
 		}
 		else
 		{
-			Character->SetOnLadder(false);
+			Controller->SetOnLadder(false);
 			Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 		}
 	}
@@ -174,7 +175,8 @@ void AGlueTrigger::OnLadderComponentEndOverlap(UPrimitiveComponent* OverlappedCo
 	if (IsClimbable)
 	{
 		auto* Character = Cast<ABaseCharacter>(OtherActor);
-		Character->SetOnLadder(false);
+		auto* Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
+		Controller->SetOnLadder(false);
 		Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 		if (GluedItem)
 		{

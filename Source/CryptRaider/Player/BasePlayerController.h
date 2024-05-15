@@ -8,6 +8,7 @@
 
 #include "BasePlayerController.generated.h"
 
+class ADoorPinLock;
 class UInventory;
 class UInputAction;
 
@@ -40,12 +41,12 @@ public:
 	void SetOnLadder(bool Value);
 	void SetPinLock(ADoorPinLock* PinLock);
 	bool IsInPinLock() const;
+	FVector GetWorldLocationFromCursor(FVector& WorldDirection);
 	
 private:
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
-	FVector GetWorldLocationFromCursor(FVector& WorldDirection);
-
+	
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
@@ -60,7 +61,6 @@ private:
 	void Throw();
 	void Interact();
 	void MouseClick();
-	void PickUp();
 
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
