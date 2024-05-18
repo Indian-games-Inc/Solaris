@@ -68,7 +68,7 @@ void ABasePlayerController::SetupInputComponent()
 		                                   &ABasePlayerController::Interact);
 		// Interaction with PinLock
 		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, this,
-								   &ABasePlayerController::MouseClick);
+		                                   &ABasePlayerController::MouseClick);
 	}
 }
 
@@ -84,7 +84,7 @@ void ABasePlayerController::Look(const FInputActionValue& Value)
 {
 	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
 	{
-		PlayerCharacter->Look(Value, PinLock);
+		PlayerCharacter->Look(Value);
 	}
 }
 
@@ -141,6 +141,11 @@ void ABasePlayerController::Interact()
 	}
 }
 
+void ABasePlayerController::MouseClick()
+{
+	Cast<ABaseCharacter>(GetCharacter())->MouseClick();
+}
+
 FText ABasePlayerController::HintMessage() const // TODO: Add Action mapping based Hint construction
 {
 	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
@@ -181,44 +186,6 @@ TOptional<FKey> ABasePlayerController::InteractKey() const
 UInventory* ABasePlayerController::GetInventory() const
 {
 	return Inventory;
-}
-
-/** Pin code part **/
-void ABasePlayerController::SetPinLock(ADoorPinLock* PinLockRef)
-{
-	PinLock = PinLockRef;
-	this->SetIgnoreMoveInput(PinLock != nullptr);
-	const auto PlayerController = Cast<ABasePlayerController>(this);
-	if (PinLock)
-	{
-		//switch camera to pin lock
-		PlayerController->SetViewTargetWithBlend(PinLock, 0.1);
-	}
-	else
-	{
-		//switch camera to player
-		SetViewTargetWithBlend(GetCharacter());
-	}
-}
-
-bool ABasePlayerController::IsInPinLock() const
-{
-	return PinLock ? true : false;
-}
-
-void ABasePlayerController::MouseClick()
-{
-	if (PinLock)
-	{
-		FVector WorldDirection;
-		FVector Start = GetWorldLocationFromCursor(WorldDirection);
-		FVector End = Start + WorldDirection * 70;
-
-		if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-		{
-			PlayerCharacter->InteractWithPinLock(Start, End, PinLock);
-		}
-	}
 }
 
 FVector ABasePlayerController::GetWorldLocationFromCursor(FVector& WorldDirection) const

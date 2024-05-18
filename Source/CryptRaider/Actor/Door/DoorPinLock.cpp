@@ -19,7 +19,11 @@ ADoorPinLock::ADoorPinLock()
 
 FString ADoorPinLock::HintMessage() const
 {
-	return Door->IsClosed() ? "Insert code" : "Block";
+	if (CodeBuffer.Equals(PinCode))
+	{
+		return Door->IsClosed() ? "Unblock" : "Block";
+	}
+	return "Insert code";
 }
 
 void ADoorPinLock::Interact()
@@ -30,8 +34,8 @@ void ADoorPinLock::Interact()
 		return;
 	}
 
-	const auto PlayerController = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
-	PlayerController->SetPinLock(PlayerController->IsInPinLock() ? nullptr : this);
+	const auto BaseCharacter = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	BaseCharacter->SetPinLock(BaseCharacter->IsInPinLock() ? nullptr : this);
 }
 
 void ADoorPinLock::HandleButtonPress(const FString& BoneName)
@@ -72,8 +76,8 @@ void ADoorPinLock::EnterCode() const
 	if (CodeBuffer.Equals(PinCode) && Door)
 	{
 		Door->IsClosed() ? Door->Open() : Door->Close();
-		const auto PlayerController = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
-		PlayerController->SetPinLock(nullptr);
+		const auto BaseCharacter = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+		BaseCharacter->SetPinLock(nullptr);
 	}
 }
 

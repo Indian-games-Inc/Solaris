@@ -19,15 +19,14 @@ class CRYPTRAIDER_API ABasePlayerController : public APlayerController
 
 public:
 	ABasePlayerController();
-	
-protected:
 
+protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
 public:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
-	
+
 public:
 	UFUNCTION(BlueprintCallable)
 	FText HintMessage() const;
@@ -37,24 +36,21 @@ public:
 	TOptional<FKey> InteractKey() const;
 
 	UInventory* GetInventory() const;
-
-	void SetPinLock(ADoorPinLock* PinLock);
-	bool IsInPinLock() const;
 	FVector GetWorldLocationFromCursor(FVector& WorldDirection) const;
-	
+
 private:
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
-	
+
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
 	void Jump();
 	void StopJumping();
-	
+
 	/** Called for crouch */
 	void OnCrouch();
-	
+
 	/** Called for interaction with world objects */
 	void Grab();
 	void Throw();
@@ -65,13 +61,9 @@ private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
 private:
-
-	/** Should really be changed to some general entity is in GUI or sorta **/
-	ADoorPinLock* PinLock = nullptr;
-	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UInventory* Inventory;
-	
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -109,7 +101,7 @@ private:
 	UInputAction* MouseClickAction;
 
 	FTimerHandle RestartTimer;
-	
+
 	UPROPERTY(EditAnywhere)
 	float RestartDelay = 5.f;
 };

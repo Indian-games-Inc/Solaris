@@ -82,7 +82,7 @@ void ABaseCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ABaseCharacter::Look(const FInputActionValue& Value, ADoorPinLock* PinLock)
+void ABaseCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -95,10 +95,10 @@ void ABaseCharacter::Look(const FInputActionValue& Value, ADoorPinLock* PinLock)
 			FVector Start = Cast<ABasePlayerController>(Controller)->GetWorldLocationFromCursor(WorldDirection);
 			FVector End = Start + WorldDirection * 70;
 
-			if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(Start, End); HitResult.IsSet())
+			if (TOptional<FHitResult> HitResult = Hand->GetInteractableWithCoords(Start, End); HitResult.IsSet())
 			{
 				auto Hit = HitResult.GetValue();
-				PinLock->SetLightPosition(Hit.Location);
+				PinLock->SetLightPosition(Hit.Location - WorldDirection * 1.5);
 			}
 			return;
 		}
@@ -261,9 +261,9 @@ FText ABaseCharacter::HintMessage() const
 	return FText::GetEmpty();
 }
 
-void ABaseCharacter::InteractWithPinLock(FVector& Start, FVector& End, ADoorPinLock* PinLock)
+void ABaseCharacter::InteractWithPinLock(FVector& Start, FVector& End)
 {
-	if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(Start, End); HitResult.IsSet())
+	if (TOptional<FHitResult> HitResult = Hand->GetInteractableWithCoords(Start, End); HitResult.IsSet())
 	{
 		auto Hit = HitResult.GetValue();
 		UE_LOG(LogTemp, Warning, TEXT("B: %s"), *Hit.BoneName.ToString());
@@ -274,4 +274,38 @@ void ABaseCharacter::InteractWithPinLock(FVector& Start, FVector& End, ADoorPinL
 void ABaseCharacter::SetOnLadder(bool Value)
 {
 	IsOnLadder = Value;
+}
+
+/** Pin code part **/
+void ABaseCharacter::SetPinLock(ADoorPinLock* PinLockRef)
+{
+	PinLock = PinLockRef;
+	const auto PlayerController = Cast<ABasePlayerController>(GetController());
+	PlayerController->SetIgnoreMoveInput(PinLock != nullptr);
+	if (PinLock)
+	{
+		//switch camera to pin lock
+		PlayerController->SetViewTargetWithBlend(PinLock, 0.1);
+	}
+	else
+	{
+		//switch camera to player
+		PlayerController->SetViewTargetWithBlend(this);
+	}
+}
+
+bool ABaseCharacter::IsInPinLock() const
+{
+	return PinLock ? true : false;
+}
+
+void ABaseCharacter::MouseClick()
+{
+	if (PinLock)
+	{
+		FVector WorldDirection;
+		FVector Start = Cast<ABasePlayerController>(GetController())->GetWorldLocationFromCursor(WorldDirection);
+		FVector End = Start + WorldDirection * 70;
+		InteractWithPinLock(Start, End);
+	}
 }

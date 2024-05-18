@@ -11,13 +11,11 @@ UHand::UHand()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
 // Called when the game starts
 void UHand::BeginPlay()
 {
 	Super::BeginPlay();
 }
-
 
 // Called every frame
 void UHand::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -30,14 +28,10 @@ bool UHand::HasInteractableOnSight() const
 	return GetInteractableInReach().IsSet();
 }
 
-TOptional<FHitResult> UHand::GetInteractableInReach() const
+TOptional<FHitResult> UHand::LineTrace(FVector Start, FVector End, int Radius) const
 {
 	FHitResult HitResult;
-
-	FVector Start = GetComponentLocation() + GetForwardVector();
-	FVector End = Start + GetForwardVector() * MaxInteractDistance;
-
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(InteractRadius);
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(Radius);
 
 	bool HasHit = GetWorld()->SweepSingleByChannel(
 		HitResult, Start, End,
@@ -49,30 +43,21 @@ TOptional<FHitResult> UHand::GetInteractableInReach() const
 	if (HasHit)
 	{
 		// for debug purposes
-		// DrawDebugLine(GetWorld(), Start, End, FColor::Red, true, 1.0f, 0, 1.0f);
+		// DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 0.1f);
 		return HitResult;
 	}
 
 	return {};
 }
 
-TOptional<FHitResult> UHand::GetInteractableInReach(FVector Start, FVector End) const
+TOptional<FHitResult> UHand::GetInteractableInReach() const
 {
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(0.5);
-	FHitResult HitResult;
-	bool HasHit = GetWorld()->SweepSingleByChannel(
-		HitResult, Start, End,
-		FQuat::Identity,
-		ECC_GameTraceChannel2,
-		Sphere
-	);
+	FVector Start = GetComponentLocation() + GetForwardVector();
+	FVector End = Start + GetForwardVector() * MaxInteractDistance;
+	return LineTrace(Start, End, InteractRadius);
+}
 
-	if (HasHit)
-	{
-		// for debug purposes
-		// DrawDebugLine(GetWorld(), Start, End, FColor::Red, true, 1.0f, 0, 1.0f);
-		return HitResult;
-	}
-
-	return {};
+TOptional<FHitResult> UHand::GetInteractableWithCoords(FVector Start, FVector End) const
+{
+	return LineTrace(Start, End, 0.5f);
 }

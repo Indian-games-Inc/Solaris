@@ -27,9 +27,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool HasInteractableOnSight() const;
-	
 	TOptional<FHitResult> GetInteractableInReach() const;
-	TOptional<FHitResult> GetInteractableInReach(FVector Start, FVector En) const;
+	TOptional<FHitResult> GetInteractableWithCoords(FVector Start, FVector End) const;
+
+private:
+	TOptional<FHitResult> LineTrace(FVector Start, FVector End, int Radius) const;
 
 private:
 	UPROPERTY(EditAnywhere)
