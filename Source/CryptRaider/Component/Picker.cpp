@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Picker.h"
-#include "CryptRaider/Actor/Item.h"
+#include "CryptRaider/Actor/Item/Item.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
 
 

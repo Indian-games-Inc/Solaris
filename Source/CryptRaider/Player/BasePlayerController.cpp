@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "BaseCharacter.h"
+#include "CryptRaider/Actor/Door/DoorPinLock.h"
 #include "CryptRaider/Component/Inventory.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
 
@@ -32,7 +33,7 @@ void ABasePlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-	ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
@@ -65,6 +66,9 @@ void ABasePlayerController::SetupInputComponent()
 		                                   &ABasePlayerController::Throw);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this,
 		                                   &ABasePlayerController::Interact);
+		// Interaction with PinLock
+		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, this,
+		                                   &ABasePlayerController::MouseClick);
 	}
 }
 
@@ -137,6 +141,11 @@ void ABasePlayerController::Interact()
 	}
 }
 
+void ABasePlayerController::MouseClick()
+{
+	Cast<ABaseCharacter>(GetCharacter())->MouseClick();
+}
+
 FText ABasePlayerController::HintMessage() const // TODO: Add Action mapping based Hint construction
 {
 	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
@@ -177,4 +186,11 @@ TOptional<FKey> ABasePlayerController::InteractKey() const
 UInventory* ABasePlayerController::GetInventory() const
 {
 	return Inventory;
+}
+
+FVector ABasePlayerController::GetWorldLocationFromCursor(FVector& WorldDirection) const
+{
+	FVector WorldLocation;
+	DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+	return WorldLocation;
 }

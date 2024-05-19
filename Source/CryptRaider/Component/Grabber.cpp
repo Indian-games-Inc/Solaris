@@ -4,8 +4,7 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
-#include "CryptRaider/Actor/BaseInteractible.h"
-#include "CryptRaider/Actor/Projectile.h"
+#include "CryptRaider/Actor/Destructible/Projectile.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()

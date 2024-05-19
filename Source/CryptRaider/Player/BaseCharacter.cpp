@@ -7,7 +7,8 @@
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "CryptRaider/Actor/Projectile.h"
+#include "CryptRaider/Actor/Destructible/Projectile.h"
+#include "CryptRaider/Actor/Door/DoorPinLock.h"
 #include "CryptRaider/Component/Hand.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Picker.h"
@@ -88,6 +89,20 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
+		if (PinLock != nullptr)
+		{
+			FVector WorldDirection;
+			FVector Start = Cast<ABasePlayerController>(Controller)->GetWorldLocationFromCursor(WorldDirection);
+			FVector End = Start + WorldDirection * 70;
+
+			if (TOptional<FHitResult> HitResult = Hand->GetInteractableWithCoords(Start, End); HitResult.IsSet())
+			{
+				auto Hit = HitResult.GetValue();
+				PinLock->SetLightPosition(Hit.Location - WorldDirection * 1.5);
+			}
+			return;
+		}
+
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
@@ -163,11 +178,6 @@ UGrabber* ABaseCharacter::GetGrabber() const
 	return Grabber;
 }
 
-void ABaseCharacter::SetOnLadder(bool Value)
-{
-	IsOnLadder = Value;
-}
-
 float ABaseCharacter::TakeDamage(float Damage,
                                  const FDamageEvent& DamageEvent,
                                  AController* EventInstigator,
@@ -179,7 +189,7 @@ float ABaseCharacter::TakeDamage(float Damage,
 	Health -= DamageToApply;
 
 	UE_LOG(LogTemp, Warning, TEXT("Damage applied, Health: %f"), Health);
-	
+
 	if (IsDead())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Oops you are dead"));
@@ -190,7 +200,7 @@ float ABaseCharacter::TakeDamage(float Damage,
 		DetachFromControllerPendingDestroy();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	
+
 	return DamageToApply;
 }
 
@@ -249,4 +259,53 @@ FText ABaseCharacter::HintMessage() const
 		}
 	}
 	return FText::GetEmpty();
+}
+
+void ABaseCharacter::InteractWithPinLock(FVector& Start, FVector& End)
+{
+	if (TOptional<FHitResult> HitResult = Hand->GetInteractableWithCoords(Start, End); HitResult.IsSet())
+	{
+		auto Hit = HitResult.GetValue();
+		UE_LOG(LogTemp, Warning, TEXT("B: %s"), *Hit.BoneName.ToString());
+		PinLock->PressButton(Hit.BoneName.ToString());
+	}
+}
+
+void ABaseCharacter::SetOnLadder(bool Value)
+{
+	IsOnLadder = Value;
+}
+
+/** Pin code part **/
+void ABaseCharacter::SetPinLock(ADoorPinLock* PinLockRef)
+{
+	PinLock = PinLockRef;
+	const auto PlayerController = Cast<ABasePlayerController>(GetController());
+	PlayerController->SetIgnoreMoveInput(PinLock != nullptr);
+	if (PinLock)
+	{
+		//switch camera to pin lock
+		PlayerController->SetViewTargetWithBlend(PinLock, 0.1);
+	}
+	else
+	{
+		//switch camera to player
+		PlayerController->SetViewTargetWithBlend(this);
+	}
+}
+
+bool ABaseCharacter::IsInPinLock() const
+{
+	return PinLock ? true : false;
+}
+
+void ABaseCharacter::MouseClick()
+{
+	if (PinLock)
+	{
+		FVector WorldDirection;
+		FVector Start = Cast<ABasePlayerController>(GetController())->GetWorldLocationFromCursor(WorldDirection);
+		FVector End = Start + WorldDirection * 70;
+		InteractWithPinLock(Start, End);
+	}
 }
