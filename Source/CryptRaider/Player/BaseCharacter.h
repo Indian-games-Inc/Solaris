@@ -33,16 +33,20 @@ public:
 	                         AActor* DamageCauser) override;
 
 public:
-	UFUNCTION(BlueprintPure)
-	FText HintMessage() const;
 	void InteractWithPinLock(FVector& Start, FVector& End);
 	void SetOnLadder(bool Value);
+
+	UFUNCTION(BlueprintPure)
+	FText HintMessage() const;
 
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
 
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
+
+	UFUNCTION(BlueprintPure)
+	bool IsInPinLock() const;
 
 public:
 	/** Called for movement input */
@@ -65,7 +69,6 @@ public:
 	TOptional<struct FInventoryItemWrapper> PickUp();
 	FText ConstructHintFor(const IInteractible* Interactible) const;
 	void SetPinLock(ADoorPinLock* PinLock);
-	bool IsInPinLock() const;
 
 private:
 	/** Should really be changed to some general entity is in GUI or sorta **/
