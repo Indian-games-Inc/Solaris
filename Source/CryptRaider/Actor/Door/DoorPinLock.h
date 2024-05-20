@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "DoorButton.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/WidgetComponent.h"
+#include "CryptRaider/Interface/PinLock.h"
 #include "DoorPinLock.generated.h"
 
 class UPointLightComponent;
@@ -14,7 +16,7 @@ class UCameraComponent;
  * Pin lock for door
  */
 UCLASS()
-class CRYPTRAIDER_API ADoorPinLock : public ADoorButton
+class CRYPTRAIDER_API ADoorPinLock : public ADoorButton, public IPinLock
 {
 	GENERATED_BODY()
 	ADoorPinLock();
@@ -26,14 +28,24 @@ class CRYPTRAIDER_API ADoorPinLock : public ADoorButton
 
 public:
 	virtual void PressButton(const FString& BoneName);
-	void SetLightPosition(FVector Position) const;
+	void SetLightPosition(const FVector& Position) const;
 	void EnterCode() const;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	virtual EPinLockStatus Status() const override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual FString EnteredCode() const override;
 
 private:
 	FString CodeBuffer;
 
 	UPROPERTY(EditAnywhere)
 	FString PinCode;
+
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess = "true"))
+	int32 BufferSize = 4;
 
 	UPROPERTY(EditAnywhere)
 	UCameraComponent* CloseUpCamera;
@@ -42,4 +54,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TMap<FString, UAnimSequence*> AnimationMap;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UWidgetComponent* Screen;
 };
