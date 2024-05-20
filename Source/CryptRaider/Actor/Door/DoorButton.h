@@ -22,6 +22,8 @@ public:
 
 	virtual FString HintMessage() const override;
 
+	virtual bool IsActive() const override;
+
 protected:
 	UPROPERTY(EditInstanceOnly)
 	class ADoor* Door;

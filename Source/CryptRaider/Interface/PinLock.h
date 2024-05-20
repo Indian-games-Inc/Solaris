@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "Interactible.generated.h"
+#include "CryptRaider/Data/PinLockStatus.h"
+#include "PinLock.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE()
-class UInteractible : public UInterface
+class UPinLock : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,19 +17,15 @@ class UInteractible : public UInterface
 /**
  * 
  */
-class CRYPTRAIDER_API IInteractible
+class CRYPTRAIDER_API IPinLock
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	UFUNCTION()
-	virtual void Interact() = 0;
-
-	UFUNCTION()
-	virtual FString HintMessage() const = 0;
-
-	UFUNCTION()
-	virtual bool IsActive() const = 0;
-
+	UFUNCTION(NotBlueprintable)
+	virtual EPinLockStatus Status() const = 0;
+	
+	UFUNCTION(NotBlueprintable)
+	virtual FString EnteredCode() const = 0;
 };

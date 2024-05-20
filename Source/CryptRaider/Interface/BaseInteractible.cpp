@@ -26,6 +26,11 @@ void ABaseInteractible::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+bool ABaseInteractible::IsActive() const
+{
+	return true;
+}
+
 void ABaseInteractible::Interact()
 {
 	// Should be blank

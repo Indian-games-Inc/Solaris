@@ -216,11 +216,14 @@ float ABaseCharacter::GetHealthPercent() const
 
 FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 {
+	if (!Interactible->IsActive())
+		return FText::GetEmpty();
+
 	const auto* BaseController = Cast<ABasePlayerController>(GetController());
 	if (!BaseController)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to contruct Hint message, failed to cast Player Controller"));
-		return FText::FromString("");
+		return FText::GetEmpty();
 	}
 
 	TOptional<FKey> Key;
@@ -234,7 +237,7 @@ FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 	}
 
 	if (!Key.IsSet())
-		return FText::FromString("");
+		return FText::GetEmpty();
 
 	const FString Result = FString::Printf(
 		TEXT("[%s] %s"),
