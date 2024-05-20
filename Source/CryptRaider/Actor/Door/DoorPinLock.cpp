@@ -37,6 +37,11 @@ void ADoorPinLock::Interact()
 	}
 }
 
+bool ADoorPinLock::IsActive() const
+{
+	return Status() != EPinLockStatus::OPEN;
+}
+
 void ADoorPinLock::HandleButtonPress(const FString& BoneName)
 {
 	if (BoneName.Equals("enter"))

@@ -28,4 +28,7 @@ public:
 	UFUNCTION()
 	virtual FString HintMessage() const = 0;
 
+	UFUNCTION()
+	virtual bool IsActive() const = 0;
+
 };

@@ -42,3 +42,8 @@ FString ADoorButton::HintMessage() const
 	
 	return Door->IsClosed() ? "Open" : "Close";
 }
+
+bool ADoorButton::IsActive() const
+{
+	return true;
+}

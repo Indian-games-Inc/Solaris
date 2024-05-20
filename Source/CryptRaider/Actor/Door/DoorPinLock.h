@@ -22,11 +22,14 @@ class CRYPTRAIDER_API ADoorPinLock : public ADoorButton, public IPinLock
 	ADoorPinLock();
 
 	virtual void BeginPlay() override;
-	virtual FString HintMessage() const override;
-	virtual void Interact() override;
+
 	void HandleButtonPress(const FString& BoneName);
 
 public:
+	virtual FString HintMessage() const override;
+	virtual void Interact() override;
+	virtual bool IsActive() const override;
+	
 	virtual void PressButton(const FString& BoneName);
 	void SetLightPosition(const FVector& Position) const;
 	void EnterCode() const;

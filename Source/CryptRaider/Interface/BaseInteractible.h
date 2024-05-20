@@ -26,6 +26,7 @@ public:
 
 	virtual void Interact() override;
 	virtual FString HintMessage() const override;
+	virtual bool IsActive() const override;
 
 	void DisablePhysics() const;
 	void EnablePhysics() const;
