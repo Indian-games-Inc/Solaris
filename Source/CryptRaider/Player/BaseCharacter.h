@@ -7,7 +7,7 @@
 #include "BaseCharacter.generated.h"
 
 class ADoorPinLock;
-class IInteractible;
+class IInteractable;
 class UInputAction;
 
 UCLASS()
@@ -63,7 +63,7 @@ public:
 	void MouseClick();
 
 	TOptional<struct FInventoryItemWrapper> PickUp();
-	FText ConstructHintFor(const IInteractible* Interactible) const;
+	FText ConstructHintFor(const IInteractable* Interactable) const;
 	void SetPinLock(ADoorPinLock* PinLock);
 	bool IsInPinLock() const;
 

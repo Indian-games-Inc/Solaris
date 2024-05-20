@@ -3,18 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CryptRaider/Interface/Interactible.h"
+#include "CryptRaider/Interface/Interactable.h"
 #include "GameFramework/Actor.h"
-#include "BaseInteractible.generated.h"
+#include "BaseInteractable.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API ABaseInteractible : public AActor, public IInteractible
+class CRYPTRAIDER_API ABaseInteractable : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ABaseInteractible();
+	ABaseInteractable();
 
 protected:
 	// Called when the game starts or when spawned
