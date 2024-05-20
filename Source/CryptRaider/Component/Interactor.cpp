@@ -3,11 +3,11 @@
 
 #include "Interactor.h"
 
-#include "CryptRaider/Interface/Interactible.h"
+#include "CryptRaider/Interface/Interactable.h"
 
 void UInteractor::Interact(const FHitResult& HitResult)
 {
-	if (IInteractible* Actor = Cast<IInteractible>(HitResult.GetActor()))
+	if (IInteractable* Actor = Cast<IInteractable>(HitResult.GetActor()))
 	{
 		Actor->Interact();
 	}

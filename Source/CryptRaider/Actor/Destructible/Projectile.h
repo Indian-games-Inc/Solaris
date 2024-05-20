@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../Interface/BaseInteractible.h"
+#include "../../Interface/BaseInteractable.h"
 #include "Projectile.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRYPTRAIDER_API AProjectile : public ABaseInteractible
+class CRYPTRAIDER_API AProjectile : public ABaseInteractable
 {
 	GENERATED_BODY()
 

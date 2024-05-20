@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BaseInteractible.h"
+#include "BaseInteractable.h"
 
 
 // Sets default values
-ABaseInteractible::ABaseInteractible()
+ABaseInteractable::ABaseInteractable()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -15,39 +15,39 @@ ABaseInteractible::ABaseInteractible()
 }
 
 // Called when the game starts or when spawned
-void ABaseInteractible::BeginPlay()
+void ABaseInteractable::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame
-void ABaseInteractible::Tick(float DeltaTime)
+void ABaseInteractable::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-bool ABaseInteractible::IsActive() const
+bool ABaseInteractable::IsActive() const
 {
 	return true;
 }
 
-void ABaseInteractible::Interact()
+void ABaseInteractable::Interact()
 {
 	// Should be blank
 }
 
-FString ABaseInteractible::HintMessage() const
+FString ABaseInteractable::HintMessage() const
 {
 	return "Interact";
 }
 
-void ABaseInteractible::DisablePhysics() const
+void ABaseInteractable::DisablePhysics() const
 {
 	Body->SetSimulatePhysics(false);
 	Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void ABaseInteractible::EnablePhysics() const
+void ABaseInteractable::EnablePhysics() const
 {
 	Body->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Body->OnActorEnableCollisionChanged();
