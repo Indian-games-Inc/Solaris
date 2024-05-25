@@ -6,8 +6,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/PointLightComponent.h"
 #include "CryptRaider/Player/BaseCharacter.h"
-#include "CryptRaider/Player/BasePlayerController.h"
-#include "Kismet/KismetMathLibrary.h"
 
 ADoorPinLock::ADoorPinLock()
 {
@@ -15,27 +13,33 @@ ADoorPinLock::ADoorPinLock()
 	CloseUpCamera->SetupAttachment(RootComponent);
 	CursorLight = CreateDefaultSubobject<UPointLightComponent>("CursorLight");
 	CursorLight->SetupAttachment(RootComponent);
+
+	Screen = CreateDefaultSubobject<UWidgetComponent>("Screen");
+	Screen->SetupAttachment(RootComponent);
+	Screen->SetVisibility(true);
 }
 
 FString ADoorPinLock::HintMessage() const
 {
-	if (CodeBuffer.Equals(PinCode))
+	if (!Door->IsClosed())
 	{
-		return Door->IsClosed() ? "Unblock" : "Block";
+		return "";
 	}
 	return "Insert code";
 }
 
 void ADoorPinLock::Interact()
 {
-	if (CodeBuffer.Equals(PinCode) && Door)
+	if (Status() != EPinLockStatus::OPEN)
 	{
-		Door->IsClosed() ? Door->Open() : Door->Close();
-		return;
+		const auto BaseCharacter = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+		BaseCharacter->SetPinLock(BaseCharacter->IsInPinLock() ? nullptr : this);
 	}
+}
 
-	const auto BaseCharacter = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	BaseCharacter->SetPinLock(BaseCharacter->IsInPinLock() ? nullptr : this);
+bool ADoorPinLock::IsActive() const
+{
+	return Status() != EPinLockStatus::OPEN;
 }
 
 void ADoorPinLock::HandleButtonPress(const FString& BoneName)
@@ -46,12 +50,18 @@ void ADoorPinLock::HandleButtonPress(const FString& BoneName)
 	}
 	else if (BoneName.Equals("del"))
 	{
-		if (CodeBuffer.Len() > 0)
+		if (!CodeBuffer.IsEmpty())
+		{
 			CodeBuffer.RemoveAt(CodeBuffer.Len() - 1, 1);
+		}
 	}
 	else if (BoneName.IsNumeric())
 	{
-		CodeBuffer.Append(BoneName);
+		if (CodeBuffer.Len() < BufferSize)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Buffer len: %d"), CodeBuffer.Len());
+			CodeBuffer.Append(BoneName);
+		}
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Inserted PIN code is: %s"), *CodeBuffer);
@@ -81,7 +91,21 @@ void ADoorPinLock::EnterCode() const
 	}
 }
 
-void ADoorPinLock::SetLightPosition(FVector Position) const
+EPinLockStatus ADoorPinLock::Status() const
+{
+	if (Door->IsClosed())
+	{
+		return EPinLockStatus::CLOSED;
+	}
+	return EPinLockStatus::OPEN;
+}
+
+FString ADoorPinLock::EnteredCode() const
+{
+	return CodeBuffer;
+}
+
+void ADoorPinLock::SetLightPosition(const FVector& Position) const
 {
 	CursorLight->SetWorldLocation(Position);
 }
