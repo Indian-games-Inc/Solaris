@@ -7,9 +7,6 @@
 #include "GameFramework/Actor.h"
 #include "DialogTrigger.generated.h"
 
-/*
- *TODO: all triggers one parent ???
- */
 UCLASS()
 class CRYPTRAIDER_API ADialogTrigger : public AActor
 {
@@ -27,27 +24,29 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
-	                           AActor* OtherActor,
-	                           UPrimitiveComponent* OtherComp,
-	                           int32 OtherBodyIndex,
-	                           bool bFromSweep,
-	                           const FHitResult& SweepResult);
+protected:
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
+	FDataTableRowHandle DialogRow;
 
-	UFUNCTION()
-	void OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
-	                         AActor* OtherActor,
-	                         UPrimitiveComponent* OtherComp,
-	                         int32 OtherBodyIndex);
+	/*If option checked, the trigger would produce sub only once*/
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite,
+		Category="Dialog Trigger|Repeatable")
+	bool IsPlayedOnce = true;
+	/*If option checked, the trigger would produce sub every Play Back Cooldown (seconds) and will pick it from Dialog Row list, Dialog Row will be ignored*/
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite,
+		Category="Dialog Trigger|Repeatable")
+	bool IsRandomPicked;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite,
+		Category="Dialog Trigger|Repeatable")
+	float PlayBackCooldown;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite,
+		Category="Dialog Trigger|Repeatable")
+	TArray<FDataTableRowHandle> DialogRowList = {};
 
 private:
 	UPROPERTY()
 	USceneComponent* Root;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* TriggerBox;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FDataTableRowHandle DialogRowId;
 };

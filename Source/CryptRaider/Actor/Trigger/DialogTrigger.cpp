@@ -4,8 +4,6 @@
 #include "DialogTrigger.h"
 
 #include "Components/BoxComponent.h"
-#include "CryptRaider/Player/BaseCharacter.h"
-
 
 // Sets default values
 ADialogTrigger::ADialogTrigger()
@@ -24,34 +22,10 @@ ADialogTrigger::ADialogTrigger()
 void ADialogTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ADialogTrigger::OnTriggerBeginOverlap);
-	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &ADialogTrigger::OnTriggerEndOverlap);
 }
 
 // Called every frame
 void ADialogTrigger::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void ADialogTrigger::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
-                                           AActor* OtherActor,
-                                           UPrimitiveComponent* OtherComp,
-                                           int32 OtherBodyIndex,
-                                           bool bFromSweep,
-                                           const FHitResult& SweepResult)
-{
-	// if (auto* Player = Cast<ABaseCharacter>(OtherActor))
-	// {
-	UE_LOG(LogTemp, Warning, TEXT("Oops you are dead"));
-	// }
-}
-
-void ADialogTrigger::OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
-                                         AActor* OtherActor,
-                                         UPrimitiveComponent* OtherComp,
-                                         int32 OtherBodyIndex)
-{
-	//
 }
