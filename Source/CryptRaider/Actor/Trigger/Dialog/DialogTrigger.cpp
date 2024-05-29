@@ -2,7 +2,6 @@
 
 
 #include "DialogTrigger.h"
-
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -22,6 +21,18 @@ ADialogTrigger::ADialogTrigger()
 void ADialogTrigger::BeginPlay()
 {
 	Super::BeginPlay();
+	
+}
+
+// This method should be overriden in inheritors
+FDataTableRowHandle ADialogTrigger::PickDialog()
+{
+	return {};
+}
+
+void ADialogTrigger::SwitchTrigger(bool State)
+{
+	TriggerBox->SetGenerateOverlapEvents(State);
 }
 
 // Called every frame
@@ -29,3 +40,4 @@ void ADialogTrigger::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
