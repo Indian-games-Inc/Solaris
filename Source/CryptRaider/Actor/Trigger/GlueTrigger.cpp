@@ -158,7 +158,7 @@ void AGlueTrigger::OnLadderComponentBeginOverlap(UPrimitiveComponent* Overlapped
 		if (IsGlued)
 		{
 			Character->SetOnLadder(true);
-			GluedItem->DisablePhysics();
+			// GluedItem->DisablePhysics();
 		}
 		else
 		{
