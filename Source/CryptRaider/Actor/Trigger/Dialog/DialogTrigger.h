@@ -30,6 +30,6 @@ public:
 protected:
 	UPROPERTY()
 	USceneComponent* Root;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category="Dialog Trigger")
 	class UBoxComponent* TriggerBox;
 };
