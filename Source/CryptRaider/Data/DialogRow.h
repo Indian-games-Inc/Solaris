@@ -15,4 +15,6 @@ struct CRYPTRAIDER_API FDialogRow : public FTableRowBase
 	FSlateColor Color;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FDataTableRowHandle NextDialog;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* YourSound;
 };
