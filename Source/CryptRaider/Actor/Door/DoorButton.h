@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../Interface/BaseInteractible.h"
+#include "../../Interface/BaseInteractable.h"
 #include "GameFramework/Actor.h"
 #include "DoorButton.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API ADoorButton : public AActor, public IInteractible
+class CRYPTRAIDER_API ADoorButton : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 

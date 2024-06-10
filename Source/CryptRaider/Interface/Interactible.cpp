@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Interactible.h"
+#include "Interactable.h"
 
 
-// Add default functionality here for any IInteractible functions that are not pure virtual.
+// Add default functionality here for any IInteractable functions that are not pure virtual.
