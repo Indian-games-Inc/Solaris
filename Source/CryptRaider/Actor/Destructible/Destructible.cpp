@@ -5,24 +5,31 @@
 #include "TimerManager.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 
+ADestructible::ADestructible()
+{
+	GetGeometryCollectionComponent()->bNotifyBreaks = true;
+	GetGeometryCollectionComponent()->bNotifyGlobalBreaks = true;
+	GetGeometryCollectionComponent()->OnChaosBreakEvent.AddDynamic(this, &ADestructible::OnBreakEvent);
+}
+
 void ADestructible::OnDestroy()
 {
-	FTimerHandle CollisionDisableTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(CollisionDisableTimerHandle, this,
-		&ADestructible::DelayedDisableCollision, CollisionDisableDelay, false);
+	GetGeometryCollectionComponent()->CrumbleActiveClusters();
+	DisableCollision();
 
 	FTimerHandle DestroyTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this,
 		&ADestructible::DelayedDestroy, DestroyDelay, false);
 }
 
-// Called when the game starts or when spawned
-void ADestructible::BeginPlay()
+void ADestructible::OnBreakEvent(const FChaosBreakEvent& BreakEvent)
 {
-	Super::BeginPlay();
+	// Can't set timers in delegates directly...
+	// For some reason timers in delegates aren't working
+	OnDestroy();
 }
 
-void ADestructible::DelayedDisableCollision()
+void ADestructible::DisableCollision()
 {
 	FCollisionResponseContainer CollisionResponses;
 	
