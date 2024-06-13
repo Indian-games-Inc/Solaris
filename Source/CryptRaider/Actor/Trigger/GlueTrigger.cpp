@@ -2,8 +2,6 @@
 
 #include "../../Interface/BaseInteractable.h"
 #include "Components/BoxComponent.h"
-#include "CryptRaider/Player/BaseCharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -15,21 +13,17 @@ AGlueTrigger::AGlueTrigger()
 
 	Target = CreateDefaultSubobject<UStaticMeshComponent>(FName("Target"));
 	Target->SetupAttachment(RootComponent);
-	LadderBox = CreateDefaultSubobject<UBoxComponent>(FName("Ladder Box"));
-	LadderBox->ShapeColor = FColor(0, 0, 255);
-	LadderBox->SetupAttachment(RootComponent);
-
-	LadderBox->SetGenerateOverlapEvents(true);
 
 	FCollisionResponseContainer TriggerBoxCollisionResponses;
 	TriggerBoxCollisionResponses.SetResponse(ECC_GameTraceChannel1, ECR_Overlap);
 	TriggerBoxCollisionResponses.SetResponse(ECC_Pawn, ECR_Ignore);
 	TriggerBox->SetCollisionResponseToChannels(TriggerBoxCollisionResponses);
 
-	FCollisionResponseContainer LadderBoxCollisionResponses;
-	LadderBoxCollisionResponses.SetResponse(ECC_WorldDynamic, ECR_Ignore);
-	LadderBoxCollisionResponses.SetResponse(ECC_Pawn, ECR_Overlap);
-	LadderBox->SetCollisionResponseToChannels(LadderBoxCollisionResponses);
+	TriggerBox->SetVisibility(IsDebug);
+	Target->SetVisibility(IsDebug);
+
+	TriggerBox->SetHiddenInGame(!IsDebug);
+	Target->SetHiddenInGame(!IsDebug);
 }
 
 void AGlueTrigger::MoveUpdate(float Alpha)
@@ -69,27 +63,11 @@ void AGlueTrigger::BeginPlay()
 
 	Timeline.AddInterpFloat(FloatCurve, ProgressUpdate);
 	Timeline.SetTimelineFinishedFunc(ProgressFinished);
-
-	// Register overlap events for MeshComponent
-	LadderBox->OnComponentBeginOverlap.AddDynamic(this, &AGlueTrigger::OnBeginOverlap);
-	LadderBox->OnComponentEndOverlap.AddDynamic(this, &AGlueTrigger::OnEndOverlap);
 }
 
-void AGlueTrigger::OnConstruction(const FTransform& Transform)
+void AGlueTrigger::Tick(float DeltaTime)
 {
-	Super::OnConstruction(Transform);
-	TriggerBox->SetVisibility(IsDebug);
-	Target->SetVisibility(IsDebug);
-	LadderBox->SetVisibility(IsDebug && IsClimbable);
-
-	TriggerBox->SetHiddenInGame(!IsDebug);
-	Target->SetHiddenInGame(!IsDebug);
-	LadderBox->SetHiddenInGame(!(IsDebug && IsClimbable));
-}
-
-void AGlueTrigger::TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction)
-{
-	Super::TickActor(DeltaTime, TickType, ThisTickFunction);
+	Super::Tick(DeltaTime);
 	Timeline.TickTimeline(DeltaTime);
 
 	if (!GluedObject.IsValid())
@@ -109,7 +87,7 @@ void AGlueTrigger::TickActor(float DeltaTime, ELevelTick TickType, FActorTickFun
 		if (GluedObject->Tags.Contains(GrabbedTag))
 		{
 			IsGlued = false;
-			GluedObject = nullptr;
+			GluedObject.Reset();
 		}
 	}
 }
@@ -119,7 +97,7 @@ TSoftObjectPtr<ABaseInteractable> AGlueTrigger::GetOverlappingObject()
 	if (!GluedObjectClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Please specify Glued item Class in GlueTrigger with name %s"), *GetName());
-		return nullptr;
+		return {};
 	}
 
 	TArray<AActor*> Actors;
@@ -127,53 +105,26 @@ TSoftObjectPtr<ABaseInteractable> AGlueTrigger::GetOverlappingObject()
 
 	if (Actors.IsEmpty())
 	{
-		return nullptr;
+		return {};
 	}
 
-	for (const auto& Actor : Actors)
+	for (const auto Actor : Actors)
 	{
 		if (!Actor->Tags.Contains(GrabbedTag))
 		{
-			return Cast<ABaseInteractable>(Actor);
+			return TSoftObjectPtr<ABaseInteractable> { Cast<ABaseInteractable>(Actor) };
 		}
 	}
-	return nullptr;
+	return {};
 }
 
 void AGlueTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                   const FHitResult& SweepResult)
 {
-	if (IsClimbable)
-	{
-		if (auto* Character = Cast<ABaseCharacter>(OtherActor))
-		{
-			if (IsGlued)
-			{
-				Character->SetOnLadder(true);
-			}
-			else
-			{
-				Character->SetOnLadder(false);
-				Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-			}
-		}
-	}
 }
 
 void AGlueTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (IsClimbable)
-	{
-		if (auto* Character = Cast<ABaseCharacter>(OtherActor))
-		{
-			Character->SetOnLadder(false);
-			Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-		}
-	}
-	if (GluedObject.IsValid())
-	{
-		GluedObject->EnablePhysics();
-	}
 }

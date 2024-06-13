@@ -23,10 +23,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void OnConstruction(const FTransform& Transform) override;
-
-	virtual void TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
-
 	TSoftObjectPtr<ABaseInteractable> GetOverlappingObject();
 
 	/* Timeline events*/
@@ -43,6 +39,17 @@ protected:
 	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	
+protected:
+	UPROPERTY(VisibleAnywhere)
+	bool IsGlued = false;
+
+	UPROPERTY(EditInstanceOnly)
+	bool IsDebug = true;
+
 private:
 	UPROPERTY(EditInstanceOnly)
 	TSubclassOf<AActor> GluedObjectClass;
@@ -58,16 +65,4 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Target;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UBoxComponent* LadderBox = nullptr;
-
-	UPROPERTY(VisibleAnywhere)
-	bool IsGlued = false;
-
-	UPROPERTY(EditInstanceOnly)
-	bool IsClimbable = true;
-
-	UPROPERTY(EditInstanceOnly)
-	bool IsDebug = true;
 };
