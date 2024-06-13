@@ -3,8 +3,6 @@
 
 #include "OverTimeDamageTrigger.h"
 #include "Kismet/GameplayStatics.h"
-
-#include "Components/BoxComponent.h"
 #include "CryptRaider/Player/BaseCharacter.h"
 
 
