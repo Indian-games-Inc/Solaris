@@ -45,6 +45,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
 
+	float GetMaxHealth() const;
+	float GetHealth() const;
+
 	UFUNCTION(BlueprintPure)
 	bool IsInPinLock() const;
 
@@ -69,6 +72,7 @@ public:
 	TOptional<struct FInventoryItemWrapper> PickUp();
 	FText ConstructHintFor(const IInteractable* Interactable) const;
 	void SetPinLock(ADoorPinLock* PinLock);
+	bool IsInPinLock() const;
 
 private:
 	/** Should really be changed to some general entity is in GUI or sorta **/
