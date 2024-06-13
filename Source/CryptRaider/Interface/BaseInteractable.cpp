@@ -45,6 +45,7 @@ void ABaseInteractable::DisablePhysics() const
 {
 	Body->SetSimulatePhysics(false);
 	Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Body->OnActorEnableCollisionChanged();
 }
 
 void ABaseInteractable::EnablePhysics() const

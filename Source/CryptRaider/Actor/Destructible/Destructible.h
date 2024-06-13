@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Chaos/ChaosGameplayEventDispatcher.h"
 #include "GameFramework/Actor.h"
 #include "GeometryCollection/GeometryCollectionActor.h"
 #include "Destructible.generated.h"
@@ -13,21 +14,20 @@ class CRYPTRAIDER_API ADestructible : public AGeometryCollectionActor
 	GENERATED_BODY()
 
 public:
+	ADestructible();
+	
 	virtual void OnDestroy();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 private:
-	void DelayedDisableCollision();
+	UFUNCTION()
+	virtual void OnBreakEvent(const FChaosBreakEvent& BreakEvent);
 	
+	void DisableCollision();
+
+	UFUNCTION()
 	void DelayedDestroy();
 
 private:
 	UPROPERTY(EditAnywhere)
-	float CollisionDisableDelay = 2.0f;
-
-	UPROPERTY(EditAnywhere)
-	float DestroyDelay = 10.0f;
+	float DestroyDelay = 60.0f;
 };
