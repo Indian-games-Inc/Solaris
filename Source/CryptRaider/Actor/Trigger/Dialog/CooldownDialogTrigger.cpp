@@ -4,6 +4,5 @@
 
 FDataTableRowHandle ACooldownDialogTrigger::PickDialog()
 {
-	const FRandomStream RandomStream(FDateTime::Now().GetTicks());
-	return DialogRowList[RandomStream.RandRange(0, DialogRowList.Num() - 1)];
+	return DialogRow;
 }

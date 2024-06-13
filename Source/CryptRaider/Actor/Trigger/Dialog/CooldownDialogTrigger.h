@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DialogTrigger.h"
+#include "SingleDialogTrigger.h"
 #include "GameFramework/Actor.h"
 #include "CooldownDialogTrigger.generated.h"
 
@@ -14,9 +15,10 @@ class CRYPTRAIDER_API ACooldownDialogTrigger : public ADialogTrigger
 
 protected:
 	virtual FDataTableRowHandle PickDialog() override;
-	
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
-	TArray<FDataTableRowHandle> DialogRowList = {};
+	FDataTableRowHandle DialogRow;
+	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
 	float PlayBackCooldown;
 };
