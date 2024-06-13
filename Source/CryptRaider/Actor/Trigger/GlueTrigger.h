@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseTrigger.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Actor.h"
 #include "GlueTrigger.generated.h"
@@ -12,7 +13,7 @@ class ABaseInteractable;
 class UBoxComponent;
 
 UCLASS()
-class CRYPTRAIDER_API AGlueTrigger : public AActor
+class CRYPTRAIDER_API AGlueTrigger : public ABaseTrigger
 {
 	GENERATED_BODY()
 
@@ -21,9 +22,12 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
 	virtual void OnConstruction(const FTransform& Transform) override;
+
 	virtual void TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
-	ABaseInteractable* SelectOverlappingItems();
+
+	TSoftObjectPtr<ABaseInteractable> GetOverlappingObject();
 
 	/* Timeline events*/
 	UFUNCTION()
@@ -32,35 +36,38 @@ protected:
 	void MoveFinished();
 
 	/* Overlapping LadderBox events */
-	UFUNCTION()
-	void OnLadderComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	                                   const FHitResult& SweepResult);
-	UFUNCTION()
-	void OnLadderComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                            const FHitResult& SweepResult) override;
+	
+	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 private:
-	UPROPERTY()
-	USceneComponent* Root = nullptr;
-	ABaseInteractable* GluedItem = nullptr;
+	UPROPERTY(EditInstanceOnly)
+	TSubclassOf<AActor> GluedObjectClass;
+
+	TSoftObjectPtr<ABaseInteractable> GluedObject = nullptr;
+
 	FTimeline Timeline;
-	bool IsGlued = false;
 	const FName GrabbedTag = "Grabbed";
 
 	/* Configurable values*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UCurveFloat* FloatCurve;
-	UPROPERTY(EditInstanceOnly)
-	TSubclassOf<AActor> ItemClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Target;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UBoxComponent* TriggerBox = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* LadderBox = nullptr;
+
+	UPROPERTY(VisibleAnywhere)
+	bool IsGlued = false;
+
 	UPROPERTY(EditInstanceOnly)
 	bool IsClimbable = true;
+
 	UPROPERTY(EditInstanceOnly)
 	bool IsDebug = true;
 };

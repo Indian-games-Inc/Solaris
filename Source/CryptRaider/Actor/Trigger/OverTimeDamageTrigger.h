@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseTrigger.h"
 #include "GameFramework/Actor.h"
 #include "OverTimeDamageTrigger.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API AOverTimeDamageTrigger : public AActor
+class CRYPTRAIDER_API AOverTimeDamageTrigger : public ABaseTrigger
 {
 	GENERATED_BODY()
 
@@ -22,32 +23,19 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION()
-	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
-	                           AActor* OtherActor,
-	                           UPrimitiveComponent* OtherComp,
-	                           int32 OtherBodyIndex,
-	                           bool bFromSweep,
-	                           const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
-	                         AActor* OtherActor,
-	                         UPrimitiveComponent* OtherComp,
-	                         int32 OtherBodyIndex);
+	
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                            const FHitResult& SweepResult) override;
+	
+	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 // private:
 	UFUNCTION()
 	void DealDamageTo(AActor* OtherActor);
 
 private:
-	UPROPERTY()
-	USceneComponent* Root;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UBoxComponent* TriggerBox;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float Damage = 10.f;
 
@@ -56,6 +44,4 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float DamageDelay = 1.f;
-
-	
 };

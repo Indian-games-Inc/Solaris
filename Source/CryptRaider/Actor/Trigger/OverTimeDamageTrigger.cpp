@@ -13,21 +13,12 @@ AOverTimeDamageTrigger::AOverTimeDamageTrigger()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
-	SetRootComponent(Root);
-
-	TriggerBox = CreateDefaultSubobject<UBoxComponent>(FName("Trigger Box"));
-	TriggerBox->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AOverTimeDamageTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AOverTimeDamageTrigger::OnTriggerBeginOverlap);
-	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &AOverTimeDamageTrigger::OnTriggerEndOverlap);
 }
 
 // Called every frame
@@ -36,7 +27,7 @@ void AOverTimeDamageTrigger::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AOverTimeDamageTrigger::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+void AOverTimeDamageTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
                                                    AActor* OtherActor,
                                                    UPrimitiveComponent* OtherComp,
                                                    int32 OtherBodyIndex,
@@ -52,7 +43,7 @@ void AOverTimeDamageTrigger::OnTriggerBeginOverlap(UPrimitiveComponent* Overlapp
 	}
 }
 
-void AOverTimeDamageTrigger::OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
+void AOverTimeDamageTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComponent,
                                                  AActor* OtherActor,
                                                  UPrimitiveComponent* OtherComp,
                                                  int32 OtherBodyIndex)

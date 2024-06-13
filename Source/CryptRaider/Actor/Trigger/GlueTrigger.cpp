@@ -3,25 +3,22 @@
 #include "../../Interface/BaseInteractable.h"
 #include "Components/BoxComponent.h"
 #include "CryptRaider/Player/BaseCharacter.h"
-#include "CryptRaider/Player/BasePlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
 AGlueTrigger::AGlueTrigger()
 {
-	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
-	SetRootComponent(Root);
+	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
+	// off to improve performance if you don't need them.
+	PrimaryActorTick.bCanEverTick = true;
 
-	TriggerBox = CreateDefaultSubobject<UBoxComponent>(FName("Trigger Box"));
-	TriggerBox->SetupAttachment(RootComponent);
 	Target = CreateDefaultSubobject<UStaticMeshComponent>(FName("Target"));
 	Target->SetupAttachment(RootComponent);
 	LadderBox = CreateDefaultSubobject<UBoxComponent>(FName("Ladder Box"));
 	LadderBox->ShapeColor = FColor(0, 0, 255);
 	LadderBox->SetupAttachment(RootComponent);
 
-	TriggerBox->SetGenerateOverlapEvents(true);
 	LadderBox->SetGenerateOverlapEvents(true);
 
 	FCollisionResponseContainer TriggerBoxCollisionResponses;
@@ -33,34 +30,29 @@ AGlueTrigger::AGlueTrigger()
 	LadderBoxCollisionResponses.SetResponse(ECC_WorldDynamic, ECR_Ignore);
 	LadderBoxCollisionResponses.SetResponse(ECC_Pawn, ECR_Overlap);
 	LadderBox->SetCollisionResponseToChannels(LadderBoxCollisionResponses);
-
-
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryActorTick.bCanEverTick = true;
 }
 
 void AGlueTrigger::MoveUpdate(float Alpha)
 {
-	FVector Location = FMath::Lerp(GluedItem->GetActorTransform().GetLocation(),
+	FVector Location = FMath::Lerp(GluedObject->GetActorTransform().GetLocation(),
 	                               Target->GetComponentTransform().GetLocation(), Alpha);
 
 	//TODO: Rotations should be picked for the closest angle 
-	FRotator Rotation = UKismetMathLibrary::RLerp(FRotator(GluedItem->GetActorTransform().GetRotation()),
+	FRotator Rotation = UKismetMathLibrary::RLerp(FRotator(GluedObject->GetActorTransform().GetRotation()),
 	                                              FRotator(Target->GetComponentTransform().GetRotation()), Alpha,
 	                                              true);
-	GluedItem->SetActorLocationAndRotation(Location, Rotation);
+	GluedObject->SetActorLocationAndRotation(Location, Rotation);
 }
 
 void AGlueTrigger::MoveFinished()
 {
-	GluedItem->EnablePhysics();
+	GluedObject->EnablePhysics();
 }
 
 void AGlueTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!ItemClass)
+	if (!GluedObjectClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Please specify Glued item Class in GlueTrigger with name %s"), *GetName());
 	}
@@ -79,8 +71,8 @@ void AGlueTrigger::BeginPlay()
 	Timeline.SetTimelineFinishedFunc(ProgressFinished);
 
 	// Register overlap events for MeshComponent
-	LadderBox->OnComponentBeginOverlap.AddDynamic(this, &AGlueTrigger::OnLadderComponentBeginOverlap);
-	LadderBox->OnComponentEndOverlap.AddDynamic(this, &AGlueTrigger::OnLadderComponentEndOverlap);
+	LadderBox->OnComponentBeginOverlap.AddDynamic(this, &AGlueTrigger::OnBeginOverlap);
+	LadderBox->OnComponentEndOverlap.AddDynamic(this, &AGlueTrigger::OnEndOverlap);
 }
 
 void AGlueTrigger::OnConstruction(const FTransform& Transform)
@@ -100,45 +92,45 @@ void AGlueTrigger::TickActor(float DeltaTime, ELevelTick TickType, FActorTickFun
 	Super::TickActor(DeltaTime, TickType, ThisTickFunction);
 	Timeline.TickTimeline(DeltaTime);
 
-	if (!GluedItem)
+	if (!GluedObject.IsValid())
 	{
-		GluedItem = SelectOverlappingItems();
+		GluedObject = GetOverlappingObject();
 	}
 
-	if (GluedItem)
+	if (GluedObject.IsValid())
 	{
 		if (!IsGlued)
 		{
-			GluedItem->DisablePhysics();
+			GluedObject->DisablePhysics();
 			IsGlued = true;
 			Timeline.PlayFromStart();
 		}
 
-		if (GluedItem->Tags.Contains(GrabbedTag))
+		if (GluedObject->Tags.Contains(GrabbedTag))
 		{
 			IsGlued = false;
-			GluedItem = nullptr;
+			GluedObject = nullptr;
 		}
 	}
 }
 
-ABaseInteractable* AGlueTrigger::SelectOverlappingItems()
+TSoftObjectPtr<ABaseInteractable> AGlueTrigger::GetOverlappingObject()
 {
-	if (!ItemClass)
+	if (!GluedObjectClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Please specify Glued item Class in GlueTrigger with name %s"), *GetName());
 		return nullptr;
 	}
 
 	TArray<AActor*> Actors;
-	TriggerBox->GetOverlappingActors(Actors, ItemClass);
+	TriggerBox->GetOverlappingActors(Actors, GluedObjectClass);
 
 	if (Actors.IsEmpty())
 	{
 		return nullptr;
 	}
 
-	for (auto Actor : Actors)
+	for (const auto& Actor : Actors)
 	{
 		if (!Actor->Tags.Contains(GrabbedTag))
 		{
@@ -148,37 +140,40 @@ ABaseInteractable* AGlueTrigger::SelectOverlappingItems()
 	return nullptr;
 }
 
-void AGlueTrigger::OnLadderComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                                 const FHitResult& SweepResult)
+void AGlueTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                  const FHitResult& SweepResult)
 {
 	if (IsClimbable)
 	{
-		auto* Character = Cast<ABaseCharacter>(OtherActor);
-		if (IsGlued)
+		if (auto* Character = Cast<ABaseCharacter>(OtherActor))
 		{
-			Character->SetOnLadder(true);
-			// GluedItem->DisablePhysics();
+			if (IsGlued)
+			{
+				Character->SetOnLadder(true);
+			}
+			else
+			{
+				Character->SetOnLadder(false);
+				Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+			}
 		}
-		else
+	}
+}
+
+void AGlueTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (IsClimbable)
+	{
+		if (auto* Character = Cast<ABaseCharacter>(OtherActor))
 		{
 			Character->SetOnLadder(false);
 			Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 		}
 	}
-}
-
-void AGlueTrigger::OnLadderComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (IsClimbable)
+	if (GluedObject.IsValid())
 	{
-		auto* Character = Cast<ABaseCharacter>(OtherActor);
-		Character->SetOnLadder(false);
-		Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-		if (GluedItem)
-		{
-			GluedItem->EnablePhysics();
-		}
+		GluedObject->EnablePhysics();
 	}
 }
