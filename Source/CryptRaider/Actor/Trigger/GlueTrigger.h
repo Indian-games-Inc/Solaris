@@ -19,6 +19,7 @@ class CRYPTRAIDER_API AGlueTrigger : public ABaseTrigger
 
 public:
 	AGlueTrigger();
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
 	virtual void BeginPlay() override;

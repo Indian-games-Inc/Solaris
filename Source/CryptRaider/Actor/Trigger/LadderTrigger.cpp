@@ -22,7 +22,12 @@ ALadderTrigger::ALadderTrigger()
 	LadderBoxCollisionResponses.SetResponse(ECC_WorldDynamic, ECR_Ignore);
 	LadderBoxCollisionResponses.SetResponse(ECC_Pawn, ECR_Overlap);
 	LadderBox->SetCollisionResponseToChannels(LadderBoxCollisionResponses);
-	
+}
+
+void ALadderTrigger::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
 	LadderBox->SetVisibility(IsDebug);
 	LadderBox->SetHiddenInGame(!IsDebug);
 }
@@ -31,7 +36,7 @@ ALadderTrigger::ALadderTrigger()
 void ALadderTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// Register overlap events for MeshComponent
 	LadderBox->OnComponentBeginOverlap.AddDynamic(this, &ALadderTrigger::OnBeginOverlap);
 	LadderBox->OnComponentEndOverlap.AddDynamic(this, &ALadderTrigger::OnEndOverlap);

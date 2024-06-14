@@ -18,6 +18,11 @@ AGlueTrigger::AGlueTrigger()
 	TriggerBoxCollisionResponses.SetResponse(ECC_GameTraceChannel1, ECR_Overlap);
 	TriggerBoxCollisionResponses.SetResponse(ECC_Pawn, ECR_Ignore);
 	TriggerBox->SetCollisionResponseToChannels(TriggerBoxCollisionResponses);
+}
+
+void AGlueTrigger::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
 
 	TriggerBox->SetVisibility(IsDebug);
 	Target->SetVisibility(IsDebug);

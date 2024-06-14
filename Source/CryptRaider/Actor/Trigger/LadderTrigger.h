@@ -14,6 +14,7 @@ class CRYPTRAIDER_API ALadderTrigger : public AGlueTrigger
 public:
 	// Sets default values for this actor's properties
 	ALadderTrigger();
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
 	// Called when the game starts or when spawned
