@@ -71,12 +71,11 @@ public:
 
 	TOptional<struct FInventoryItemWrapper> PickUp();
 	FText ConstructHintFor(const IInteractable* Interactable) const;
-	void SetPinLock(ADoorPinLock* PinLock);
-	bool IsInPinLock() const;
+	void SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLock);
 
 private:
 	/** Should really be changed to some general entity is in GUI or sorta **/
-	ADoorPinLock* PinLock = nullptr;
+	TSoftObjectPtr<ADoorPinLock> PinLock = nullptr;
 
 	bool IsOnLadder;
 
