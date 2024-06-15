@@ -57,6 +57,8 @@ private:
 	void Interact();
 	void MouseClick();
 
+	void ToggleFlashlight();
+
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
@@ -99,6 +101,10 @@ private:
 	/** Mouse Click Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MouseClickAction;
+
+	/** Toggle Flashlight Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* ToggleFlashlightAction;
 
 	FTimerHandle RestartTimer;
 
