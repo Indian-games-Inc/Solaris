@@ -14,6 +14,7 @@ class CRYPTRAIDER_API ACooldownDialogTrigger : public ADialogTrigger
 	GENERATED_BODY()
 
 protected:
+	virtual void SwitchTriggerState() override;
 	virtual FDataTableRowHandle PickDialog() override;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
@@ -21,4 +22,8 @@ protected:
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
 	float PlayBackCooldown;
+
+private:
+	// Timer handle for managing delay
+	FTimerHandle DelayTimerHandle;
 };

@@ -1,43 +1,11 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "DialogTrigger.h"
-#include "Components/BoxComponent.h"
 
-// Sets default values
-ADialogTrigger::ADialogTrigger()
+void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                    const FHitResult& SweepResult)
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
-	SetRootComponent(Root);
-
-	TriggerBox = CreateDefaultSubobject<UBoxComponent>(FName("Trigger Box"));
-	TriggerBox->SetupAttachment(RootComponent);
+	SendDialogToHUD(GetWorld()->GetFirstPlayerController()->GetHUD(), PickDialog());
+	SwitchTriggerState();
 }
-
-// Called when the game starts or when spawned
-void ADialogTrigger::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// This method should be overriden in inheritors
-FDataTableRowHandle ADialogTrigger::PickDialog()
-{
-	return {};
-}
-
-void ADialogTrigger::SwitchTrigger(bool State)
-{
-	TriggerBox->SetGenerateOverlapEvents(State);
-}
-
-// Called every frame
-void ADialogTrigger::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

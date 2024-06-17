@@ -8,7 +8,7 @@
 #include "SingleDialogTrigger.generated.h"
 
 /*
- * Plays subs only once
+ * Plays DialogRow only once
  */
 UCLASS()
 class CRYPTRAIDER_API ASingleDialogTrigger : public ADialogTrigger
@@ -16,6 +16,7 @@ class CRYPTRAIDER_API ASingleDialogTrigger : public ADialogTrigger
 	GENERATED_BODY()
 
 protected:
+	virtual void SwitchTriggerState() override;
 	virtual FDataTableRowHandle PickDialog() override;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
