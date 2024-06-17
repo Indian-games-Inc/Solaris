@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseTrigger.h"
+#include "../BaseTrigger.h"
 #include "GameFramework/Actor.h"
 #include "OverTimeDamageTrigger.generated.h"
 
