@@ -214,6 +214,16 @@ float ABaseCharacter::GetHealthPercent() const
 	return Health / MaxHealth;
 }
 
+float ABaseCharacter::GetMaxHealth() const
+{
+	return MaxHealth;
+}
+
+float ABaseCharacter::GetHealth() const
+{
+	return Health;
+}
+
 FText ABaseCharacter::ConstructHintFor(const IInteractable* Interactable) const
 {
 	if (!Interactable->IsActive())
@@ -280,7 +290,7 @@ void ABaseCharacter::SetOnLadder(bool Value)
 }
 
 /** Pin code part **/
-void ABaseCharacter::SetPinLock(ADoorPinLock* PinLockRef)
+void ABaseCharacter::SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLockRef)
 {
 	PinLock = PinLockRef;
 	const auto PlayerController = Cast<ABasePlayerController>(GetController());
@@ -288,7 +298,7 @@ void ABaseCharacter::SetPinLock(ADoorPinLock* PinLockRef)
 	if (PinLock)
 	{
 		//switch camera to pin lock
-		PlayerController->SetViewTargetWithBlend(PinLock, 0.1);
+		PlayerController->SetViewTargetWithBlend(PinLock.Get(), 0.1);
 	}
 	else
 	{
