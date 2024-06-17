@@ -80,5 +80,6 @@ DerivedDataCache/*
 # TEMP MedivalDungeon package
 Content/MedievalDungeon/*
 Content/SpaceshipInterior/*
+Content/LightProfilePack/*
 Content/Map/_GENERATED/*
 

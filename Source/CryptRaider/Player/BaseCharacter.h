@@ -68,6 +68,7 @@ public:
 	void Throw();
 	void Interact();
 	void MouseClick();
+	void ToggleFlashlight();
 
 	TOptional<struct FInventoryItemWrapper> PickUp();
 	FText ConstructHintFor(const IInteractable* Interactable) const;
@@ -83,6 +84,15 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Flashlight, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* FlashlightArm;
+
+	UPROPERTY(EditDefaultsOnly, Category=Flashlight)
+	TSubclassOf<class AFlashlight> FlashlightClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Flashlight, meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Flashlight;
+	
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* SkeletalMeshComponent;
 

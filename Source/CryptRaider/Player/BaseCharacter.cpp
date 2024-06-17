@@ -16,6 +16,8 @@
 #include "CryptRaider/Data/InventoryItemWrapper.h"
 #include "CryptRaider/GameMode/DefaultGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "CryptRaider/Component/Flashlight.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -29,6 +31,14 @@ ABaseCharacter::ABaseCharacter()
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
+	FlashlightArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Fashlight Arm"));
+	FlashlightArm->SetupAttachment(FirstPersonCameraComponent);
+	FlashlightArm->SetRelativeLocation(FVector(0, 0.f, -30.f));
+
+	Flashlight = CreateDefaultSubobject<UChildActorComponent>(TEXT("Flashlight"));
+	Flashlight->SetupAttachment(FlashlightArm);
+	Flashlight->SetChildActorClass(FlashlightClass);
+	
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMesh");
 	SkeletalMeshComponent->SetupAttachment(FirstPersonCameraComponent);
 
@@ -320,5 +330,13 @@ void ABaseCharacter::MouseClick()
 		FVector Start = Cast<ABasePlayerController>(GetController())->GetWorldLocationFromCursor(WorldDirection);
 		FVector End = Start + WorldDirection * 70;
 		InteractWithPinLock(Start, End);
+	}
+}
+
+void ABaseCharacter::ToggleFlashlight()
+{
+	if (auto* FlashlightActor = Cast<AFlashlight>(Flashlight->GetChildActor()))
+	{
+		FlashlightActor->Toggle();
 	}
 }

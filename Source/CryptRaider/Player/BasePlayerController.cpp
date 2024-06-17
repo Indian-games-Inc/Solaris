@@ -7,7 +7,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "BaseCharacter.h"
-#include "CryptRaider/Actor/Door/DoorPinLock.h"
 #include "CryptRaider/Component/Inventory.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
 
@@ -69,6 +68,10 @@ void ABasePlayerController::SetupInputComponent()
 		// Interaction with PinLock
 		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, this,
 		                                   &ABasePlayerController::MouseClick);
+
+		// Toggle Flashlight
+		EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, this,
+		                                   &ABasePlayerController::ToggleFlashlight);
 	}
 }
 
@@ -143,7 +146,18 @@ void ABasePlayerController::Interact()
 
 void ABasePlayerController::MouseClick()
 {
-	Cast<ABaseCharacter>(GetCharacter())->MouseClick();
+	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
+	{
+		PlayerCharacter->MouseClick();
+	}
+}
+
+void ABasePlayerController::ToggleFlashlight()
+{
+	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
+	{
+		PlayerCharacter->ToggleFlashlight();
+	}
 }
 
 FText ABasePlayerController::HintMessage() const // TODO: Add Action mapping based Hint construction
