@@ -3,22 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DialogTrigger.h"
+#include "Cooldownable.h"
 #include "GameFramework/Actor.h"
-#include "SingleDialogTrigger.generated.h"
+#include "CooldownFire.generated.h"
 
-/*
- * Plays DialogRow only once
- */
 UCLASS()
-class CRYPTRAIDER_API ASingleDialogTrigger : public ADialogTrigger
+class CRYPTRAIDER_API ACooldownFire final : public ACooldownable
 {
 	GENERATED_BODY()
 
 protected:
-	virtual void SwitchTriggerState() override;
 	virtual FDataTableRowHandle PickDialog() override;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
 	FDataTableRowHandle DialogRow;
+	
+private:
+	FTimerHandle DelayTimerHandle;
 };

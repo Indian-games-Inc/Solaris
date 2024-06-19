@@ -9,3 +9,12 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	SendDialogToHUD(GetWorld()->GetFirstPlayerController()->GetHUD(), PickDialog());
 	SwitchTriggerState();
 }
+
+FDataTableRowHandle ADialogTrigger::PickDialog()
+{
+	return {};
+}
+
+void ADialogTrigger::SwitchTriggerState()
+{
+}

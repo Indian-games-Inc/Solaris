@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "DialogTrigger.h"
-#include "SingleDialogTrigger.h"
 #include "GameFramework/Actor.h"
-#include "CooldownDialogTrigger.generated.h"
+#include "SingleFire.generated.h"
 
+/*
+ * Plays DialogRow only once
+ */
 UCLASS()
-class CRYPTRAIDER_API ACooldownDialogTrigger : public ADialogTrigger
+class CRYPTRAIDER_API ASingleFire final : public ADialogTrigger
 {
 	GENERATED_BODY()
 
@@ -19,11 +21,4 @@ protected:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
 	FDataTableRowHandle DialogRow;
-	
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
-	float PlayBackCooldown;
-
-private:
-	// Timer handle for managing delay
-	FTimerHandle DelayTimerHandle;
 };

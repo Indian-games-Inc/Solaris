@@ -1,14 +1,14 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SingleDialogTrigger.h"
+#include "SingleFire.h"
 
 #include "Components/BoxComponent.h"
 
 /**
  * Returns false, and assures that dialog is triggered only once
  */
-void ASingleDialogTrigger::SwitchTriggerState()
+void ASingleFire::SwitchTriggerState()
 {
 	TriggerBox->SetGenerateOverlapEvents(false);
 }
@@ -17,7 +17,7 @@ void ASingleDialogTrigger::SwitchTriggerState()
  * Simply returns attached DialogRow
  * @return FDataTableRowHandle attached to trigger
  */
-FDataTableRowHandle ASingleDialogTrigger::PickDialog()
+FDataTableRowHandle ASingleFire::PickDialog()
 {
 	return DialogRow;
 }
