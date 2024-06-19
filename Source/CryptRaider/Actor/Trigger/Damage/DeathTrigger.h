@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseTrigger.h"
+#include "../BaseTrigger.h"
 #include "DeathTrigger.generated.h"
 
 UCLASS()
