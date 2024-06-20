@@ -1,8 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "CooldownFire.h"
+#include "SingleCooldownDialogTrigger.h"
 
-FDataTableRowHandle ACooldownFire::PickDialog()
+FDataTableRowHandle ASingleCooldownDialogTrigger::PickDialog()
 {
 	return DialogRow;
 }

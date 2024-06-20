@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "DialogTrigger.h"
-#include "Cooldownable.generated.h"
+#include "CooldownDialogTrigger.generated.h"
 
 UCLASS()
-class ACooldownable : public ADialogTrigger
+class ACooldownDialogTrigger : public ADialogTrigger
 {
 	GENERATED_BODY()
 

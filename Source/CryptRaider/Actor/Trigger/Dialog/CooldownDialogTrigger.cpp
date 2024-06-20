@@ -1,8 +1,8 @@
-﻿#include "Cooldownable.h"
+﻿#include "CooldownDialogTrigger.h"
 
 #include "Components/BoxComponent.h"
 
-void ACooldownable::SwitchTriggerState()
+void ACooldownDialogTrigger::SwitchTriggerState()
 {
 	TriggerBox->SetGenerateOverlapEvents(false);
 	GetWorldTimerManager().SetTimer(DelayTimerHandle, [this]()

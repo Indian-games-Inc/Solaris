@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Cooldownable.h"
-#include "CooldownFire.h"
-#include "RandomCooldownFire.generated.h"
+#include "CooldownDialogTrigger.h"
+#include "RandomCooldownDialogTrigger.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API ARandomCooldownFire final : public ACooldownable
+class CRYPTRAIDER_API ARandomCooldownDialogTrigger final : public ACooldownDialogTrigger
 {
 	GENERATED_BODY()
 

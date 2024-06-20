@@ -1,9 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "RandomCooldownFire.h"
+#include "RandomCooldownDialogTrigger.h"
 
-FDataTableRowHandle ARandomCooldownFire::PickDialog()
+FDataTableRowHandle ARandomCooldownDialogTrigger::PickDialog()
 {
 	const FRandomStream RandomStream(FDateTime::Now().GetTicks());
 	return DialogRowList[RandomStream.RandRange(0, DialogRowList.Num() - 1)];
