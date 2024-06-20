@@ -3,15 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DialogTrigger.h"
+#include "CooldownDialogTrigger.h"
 #include "GameFramework/Actor.h"
-#include "SingleDialogTrigger.generated.h"
+#include "SingleCooldownDialogTrigger.generated.h"
 
-/*
- * Plays subs only once
- */
 UCLASS()
-class CRYPTRAIDER_API ASingleDialogTrigger : public ADialogTrigger
+class CRYPTRAIDER_API ASingleCooldownDialogTrigger final : public ACooldownDialogTrigger
 {
 	GENERATED_BODY()
 

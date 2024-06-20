@@ -3,33 +3,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CryptRaider/Actor/Trigger/BaseTrigger.h"
 #include "GameFramework/Actor.h"
 #include "DialogTrigger.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API ADialogTrigger : public AActor
+class CRYPTRAIDER_API ADialogTrigger : public ABaseTrigger
 {
 	GENERATED_BODY()
 
-public:
-	// Sets default values for this actor's properties
-	ADialogTrigger();
-
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	UFUNCTION(BlueprintCallable)
+	/** Pure Blueprint Event **/
+	UFUNCTION(BlueprintImplementableEvent)
+	void SendDialogToHUD(AHUD* HUD, FDataTableRowHandle DialogRowHandle);
+
+	/**
+	 * Base Begin overlap function for Dialog Triggers:
+	 * all inheritors should implement PickDialog(), SwitchTriggerState()
+	 */
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                            const FHitResult& SweepResult);
+
+	/** Functions used in OnBeginOverlap **/
 	virtual FDataTableRowHandle PickDialog();
-	UFUNCTION(BlueprintCallable)
-	virtual void SwitchTrigger(bool State);
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-protected:
-	UPROPERTY()
-	USceneComponent* Root;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category="Dialog Trigger")
-	class UBoxComponent* TriggerBox;
+	virtual void SwitchTriggerState();
 };
