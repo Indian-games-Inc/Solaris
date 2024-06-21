@@ -1,9 +1,12 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "CooldownDialogTrigger.h"
 
-#include "CooldownDialogTrigger.h"
+#include "Components/BoxComponent.h"
 
-FDataTableRowHandle ACooldownDialogTrigger::PickDialog()
+void ACooldownDialogTrigger::SwitchTriggerState()
 {
-	const FRandomStream RandomStream(FDateTime::Now().GetTicks());
-	return DialogRowList[RandomStream.RandRange(0, DialogRowList.Num() - 1)];
+	TriggerBox->SetGenerateOverlapEvents(false);
+	GetWorldTimerManager().SetTimer(DelayTimerHandle, [this]()
+	{
+		TriggerBox->SetGenerateOverlapEvents(true);
+	}, PlayBackCooldown, false);
 }

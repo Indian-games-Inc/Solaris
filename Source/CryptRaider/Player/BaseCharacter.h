@@ -7,7 +7,7 @@
 #include "BaseCharacter.generated.h"
 
 class ADoorPinLock;
-class IInteractible;
+class IInteractable;
 class UInputAction;
 
 UCLASS()
@@ -45,6 +45,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
 
+	float GetMaxHealth() const;
+	float GetHealth() const;
+
 	UFUNCTION(BlueprintPure)
 	bool IsInPinLock() const;
 
@@ -67,12 +70,12 @@ public:
 	void MouseClick();
 
 	TOptional<struct FInventoryItemWrapper> PickUp();
-	FText ConstructHintFor(const IInteractible* Interactible) const;
-	void SetPinLock(ADoorPinLock* PinLock);
+	FText ConstructHintFor(const IInteractable* Interactable) const;
+	void SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLock);
 
 private:
 	/** Should really be changed to some general entity is in GUI or sorta **/
-	ADoorPinLock* PinLock = nullptr;
+	TSoftObjectPtr<ADoorPinLock> PinLock = nullptr;
 
 	bool IsOnLadder;
 

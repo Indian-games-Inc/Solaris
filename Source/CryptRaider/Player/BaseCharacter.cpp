@@ -214,9 +214,19 @@ float ABaseCharacter::GetHealthPercent() const
 	return Health / MaxHealth;
 }
 
-FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
+float ABaseCharacter::GetMaxHealth() const
 {
-	if (!Interactible->IsActive())
+	return MaxHealth;
+}
+
+float ABaseCharacter::GetHealth() const
+{
+	return Health;
+}
+
+FText ABaseCharacter::ConstructHintFor(const IInteractable* Interactable) const
+{
+	if (!Interactable->IsActive())
 		return FText::GetEmpty();
 
 	const auto* BaseController = Cast<ABasePlayerController>(GetController());
@@ -227,7 +237,7 @@ FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 	}
 
 	TOptional<FKey> Key;
-	if (Cast<AProjectile>(Interactible))
+	if (Cast<AProjectile>(Interactable))
 	{
 		Key = BaseController->GrabKey();
 	}
@@ -242,7 +252,7 @@ FText ABaseCharacter::ConstructHintFor(const IInteractible* Interactible) const
 	const FString Result = FString::Printf(
 		TEXT("[%s] %s"),
 		*Key->ToString(),
-		*Interactible->HintMessage()
+		*Interactable->HintMessage()
 	);
 	return FText::FromString(Result);
 }
@@ -256,9 +266,9 @@ FText ABaseCharacter::HintMessage() const
 
 	if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
 	{
-		if (const auto* Interactible = Cast<IInteractible>(HitResult->GetActor()); Interactible)
+		if (const auto* Interactable = Cast<IInteractable>(HitResult->GetActor()); Interactable)
 		{
-			return ConstructHintFor(Interactible);
+			return ConstructHintFor(Interactable);
 		}
 	}
 	return FText::GetEmpty();
@@ -280,7 +290,7 @@ void ABaseCharacter::SetOnLadder(bool Value)
 }
 
 /** Pin code part **/
-void ABaseCharacter::SetPinLock(ADoorPinLock* PinLockRef)
+void ABaseCharacter::SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLockRef)
 {
 	PinLock = PinLockRef;
 	const auto PlayerController = Cast<ABasePlayerController>(GetController());
@@ -288,7 +298,7 @@ void ABaseCharacter::SetPinLock(ADoorPinLock* PinLockRef)
 	if (PinLock)
 	{
 		//switch camera to pin lock
-		PlayerController->SetViewTargetWithBlend(PinLock, 0.1);
+		PlayerController->SetViewTargetWithBlend(PinLock.Get(), 0.1);
 	}
 	else
 	{

@@ -1,0 +1,56 @@
+﻿@startuml
+
+title Dialog Triggers Class Diagram
+
+class ADialogTrigger {
+    +void SendDialogToHUD(AHUD* HUD, FDataTableRowHandle DialogRowHandle)
+    +void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                         const FHitResult& SweepResult)
+    +FDataTableRowHandle PickDialog()
+    +void SwitchTriggerState()
+}
+
+class ACooldownDialogTrigger {
+    +void SwitchTriggerState()
+    -float PlayBackCooldown
+    -FTimerHandle DelayTimerHandle
+}
+
+class ARandomCooldownDialogTrigger {
+    +FDataTableRowHandle PickDialog()
+    -TArray<FDataTableRowHandle> DialogRowList
+}
+
+class ASingleCooldownDialogTrigger {
+    +FDataTableRowHandle PickDialog()
+    -FDataTableRowHandle DialogRow
+}
+
+class ASingleShotDialogTrigger {
+    +void SwitchTriggerState()
+    +FDataTableRowHandle PickDialog()
+    -FDataTableRowHandle DialogRow
+}
+
+note bottom of ARandomCooldownDialogTrigger
+Used to execute random Dialog chain from List infinite times,
+the delay is set with PlaybackCooldown value.
+end note
+
+note bottom of ASingleCooldownDialogTrigger
+Used to execute one Dialog chain infinite times,
+the delay is set with PlaybackCooldown value.
+end note
+
+note bottom of ASingleShotDialogTrigger
+Used to trigger Single Dialog chain only once.
+After that trigger will be disabled.
+end note
+
+ADialogTrigger <|-- ACooldownDialogTrigger
+ACooldownDialogTrigger <|-- ARandomCooldownDialogTrigger
+ACooldownDialogTrigger <|-- ASingleCooldownDialogTrigger
+ADialogTrigger <|-- ASingleShotDialogTrigger
+
+@enduml

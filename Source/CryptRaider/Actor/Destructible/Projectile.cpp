@@ -12,8 +12,6 @@ void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	if (auto* OtherDestructibleActor = Cast<ADestructible>(OtherActor); OtherDestructibleActor)
 	{
 		AddForce(Hit.Location);
-
-		OtherDestructibleActor->OnDestroy();
 	}
 }
 
