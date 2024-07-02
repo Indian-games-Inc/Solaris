@@ -3,12 +3,17 @@
 title Dialog Triggers Class Diagram
 
 class ADialogTrigger {
-    +void SendDialogToHUD(AHUD* HUD, FDataTableRowHandle DialogRowHandle)
-    +void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                         const FHitResult& SweepResult)
-    +FDataTableRowHandle PickDialog()
-    +void SwitchTriggerState()
+    + void SendDialogToHUD(AHUD* HUD, FDataTableRowHandle DialogRowHandle)
+    + void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                          const FHitResult& SweepResult)
+    + FDataTableRowHandle PickDialog()
+    + void SwitchTriggerState()
+    + void SendDialog(ABasePlayerController* Controller)
+    
+    # bool InventoryAware
+    # bool HasItem
+    # FString ItemId
 }
 
 class ACooldownDialogTrigger {
@@ -32,6 +37,11 @@ class ASingleShotDialogTrigger {
     +FDataTableRowHandle PickDialog()
     -FDataTableRowHandle DialogRow
 }
+
+note left of ADialogTrigger
+Basic Dialog trigger, holds main function, 
+fields to be Inventory aware
+end note
 
 note bottom of ARandomCooldownDialogTrigger
 Used to execute random Dialog chain from List infinite times,
