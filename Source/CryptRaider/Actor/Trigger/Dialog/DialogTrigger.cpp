@@ -2,13 +2,27 @@
 
 #include "DialogTrigger.h"
 
-#include "CryptRaider/Component/Inventory.h"
+#include "CryptRaider/Actor/Trigger/State/BaseTriggerStateStrategy.h"
 #include "CryptRaider/Player/BasePlayerController.h"
 
-void ADialogTrigger::SendDialog(ABasePlayerController* Controller)
+ADialogTrigger::ADialogTrigger()
 {
-	SendDialogToHUD(Controller->GetHUD(), PickDialog());
-	SwitchTriggerState();
+	DialogStrategy = CreateDefaultSubobject<UBaseTriggerDialogStrategy>(TEXT("Dialog Strategy"));
+
+	StateStrategy = CreateDefaultSubobject<UBaseTriggerStateStrategy>(TEXT("State Strategy"));
+}
+
+void ADialogTrigger::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	if (DialogStrategyClass)
+	{
+		DialogStrategy = NewObject<UBaseTriggerDialogStrategy>(this, DialogStrategyClass);
+	}
+	if (StateStrategyClass)
+	{
+		StateStrategy = NewObject<UBaseTriggerStateStrategy>(this, StateStrategyClass);
+	}
 }
 
 void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -16,29 +30,16 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
                                     const FHitResult& SweepResult)
 {
 	const auto Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
-	if (InventoryAware)
-	{
-		/**
-		 * If item stored in Inventory and Has Item checked -> true
-		 * If no item and not checked -> true
-		 * otherwise should be false
-		 */
-		if (Controller->GetInventory()->HasItem(ItemId) == HasItem)
-		{
-			SendDialog(Controller);
-		}
-	}
-	else
+
+	if (StateStrategy->IsActive())
 	{
 		SendDialog(Controller);
 	}
+
+	StateStrategy->OnTrigger();
 }
 
-FDataTableRowHandle ADialogTrigger::PickDialog()
+void ADialogTrigger::SendDialog(ABasePlayerController* Controller)
 {
-	return {};
-}
-
-void ADialogTrigger::SwitchTriggerState()
-{
+	SendDialogToHUD(Controller->GetHUD(), DialogStrategy->GetDialog());
 }

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseTriggerDialogStrategy.h"
+#include "CryptRaider/Actor/Trigger/State/BaseTriggerStateStrategy.h"
 #include "CryptRaider/Actor/Trigger/BaseTrigger.h"
 #include "CryptRaider/Player/BasePlayerController.h"
 #include "GameFramework/Actor.h"
@@ -13,7 +15,10 @@ class CRYPTRAIDER_API ADialogTrigger : public ABaseTrigger
 {
 	GENERATED_BODY()
 
-	void SendDialog(ABasePlayerController* Controller);
+
+public:
+	ADialogTrigger();
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
 	/** Pure Blueprint Event **/
@@ -28,18 +33,18 @@ protected:
 	                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                            const FHitResult& SweepResult);
 
-	/** Functions used in OnBeginOverlap */
-	virtual FDataTableRowHandle PickDialog();
-	virtual void SwitchTriggerState();
+	void SendDialog(ABasePlayerController* Controller);
 
-	/** Enables to add condition related to the item */
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
-	bool InventoryAware;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Dialog", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<UBaseTriggerDialogStrategy> DialogStrategyClass;
 
-	/** If checked, then works only when player have an item, otherwise makes sure that player don't have item */
-	UPROPERTY(EditInstanceOnly, Category="Dialog Trigger", meta=(EditCondition="InventoryAware"))
-	bool HasItem;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Dialog", meta=(AllowPrivateAccess = "true"))
+	UBaseTriggerDialogStrategy* DialogStrategy;
 
-	UPROPERTY(EditInstanceOnly, Category="Dialog Trigger", meta=(EditCondition="InventoryAware"))
-	FString ItemId;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<UBaseTriggerStateStrategy> StateStrategyClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State", meta=(AllowPrivateAccess = "true"))
+	UBaseTriggerStateStrategy* StateStrategy;
 };
