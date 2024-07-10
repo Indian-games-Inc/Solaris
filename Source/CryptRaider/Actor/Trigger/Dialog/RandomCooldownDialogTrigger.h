@@ -12,7 +12,7 @@ class CRYPTRAIDER_API ARandomCooldownDialogTrigger final : public ACooldownDialo
 	GENERATED_BODY()
 
 public:
-	virtual FDataTableRowHandle PickDialog() override;
+	// virtual FDataTableRowHandle PickDialog() override;
 
 protected:
 

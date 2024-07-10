@@ -16,8 +16,8 @@ class CRYPTRAIDER_API ASingleShotDialogTrigger final : public ADialogTrigger
 	GENERATED_BODY()
 
 protected:
-	virtual void SwitchTriggerState() override;
-	virtual FDataTableRowHandle PickDialog() override;
+	// virtual void SwitchTriggerState() override;
+	// virtual FDataTableRowHandle PickDialog() override;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
 	FDataTableRowHandle DialogRow;

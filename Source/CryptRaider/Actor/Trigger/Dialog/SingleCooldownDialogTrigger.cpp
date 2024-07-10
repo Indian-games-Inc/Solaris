@@ -2,7 +2,7 @@
 
 #include "SingleCooldownDialogTrigger.h"
 
-FDataTableRowHandle ASingleCooldownDialogTrigger::PickDialog()
-{
-	return DialogRow;
-}
+// FDataTableRowHandle ASingleCooldownDialogTrigger::PickDialog()
+// {
+// 	return DialogRow;
+// }

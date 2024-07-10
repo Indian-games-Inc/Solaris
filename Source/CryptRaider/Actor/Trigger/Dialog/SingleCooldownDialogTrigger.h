@@ -13,7 +13,7 @@ class CRYPTRAIDER_API ASingleCooldownDialogTrigger final : public ACooldownDialo
 	GENERATED_BODY()
 
 protected:
-	virtual FDataTableRowHandle PickDialog() override;
+	// virtual FDataTableRowHandle PickDialog() override;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog Trigger")
 	FDataTableRowHandle DialogRow;
