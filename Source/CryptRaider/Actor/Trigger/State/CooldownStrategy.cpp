@@ -10,12 +10,15 @@ bool UCooldownStrategy::IsActive()
 
 void UCooldownStrategy::OnTrigger()
 {
-	Active = false;
-	GetOwner()->GetWorldTimerManager().SetTimer(
-		DelayTimerHandle,
-		[this]()
-		{
-			Active = true;
-		},
-		PlayBackCooldown, false);
+	if (auto& TimerManager = GetOwner()->GetWorldTimerManager(); !TimerManager.IsTimerActive(DelayTimerHandle))
+	{
+		Active = false;
+		TimerManager.SetTimer(
+			DelayTimerHandle,
+			[this]()
+			{
+				Active = true;
+			},
+			PlayBackCooldown, false);
+	}
 }
