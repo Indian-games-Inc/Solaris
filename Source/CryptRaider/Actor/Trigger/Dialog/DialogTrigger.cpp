@@ -2,27 +2,36 @@
 
 #include "DialogTrigger.h"
 
-#include "CryptRaider/Actor/Trigger/State/BaseTriggerStateStrategy.h"
 #include "CryptRaider/Player/BasePlayerController.h"
 
 ADialogTrigger::ADialogTrigger()
 {
-	DialogStrategy = CreateDefaultSubobject<UBaseTriggerDialogStrategy>(TEXT("Dialog Strategy"));
-
-	StateStrategy = CreateDefaultSubobject<UBaseTriggerStateStrategy>(TEXT("State Strategy"));
 }
 
 void ADialogTrigger::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
+
 	if (DialogStrategyClass)
 	{
-		DialogStrategy = NewObject<UBaseTriggerDialogStrategy>(this, DialogStrategyClass);
+		if (!DialogStrategy || DialogStrategy->GetClass() != DialogStrategyClass)
+		{
+			DialogStrategy = NewObject<UBaseTriggerDialogStrategy>(this, DialogStrategyClass);
+		}
 	}
+
 	if (StateStrategyClass)
 	{
-		StateStrategy = NewObject<UBaseTriggerStateStrategy>(this, StateStrategyClass);
+		if (!StateStrategy || StateStrategy->GetClass() != StateStrategyClass)
+		{
+			StateStrategy = NewObject<UBaseTriggerStateStrategy>(this, StateStrategyClass);
+		}
 	}
+}
+
+void ADialogTrigger::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

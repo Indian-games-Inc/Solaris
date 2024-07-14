@@ -21,6 +21,8 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
+	virtual void BeginPlay() override;
+
 	/** Pure Blueprint Event **/
 	UFUNCTION(BlueprintImplementableEvent)
 	void SendDialogToHUD(AHUD* HUD, FDataTableRowHandle DialogRowHandle);
@@ -31,7 +33,7 @@ protected:
 	 */
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	                            const FHitResult& SweepResult);
+	                            const FHitResult& SweepResult) override;
 
 	void SendDialog(ABasePlayerController* Controller);
 
@@ -39,12 +41,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Dialog", meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<UBaseTriggerDialogStrategy> DialogStrategyClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Dialog", meta=(AllowPrivateAccess = "true"))
-	UBaseTriggerDialogStrategy* DialogStrategy;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UBaseTriggerDialogStrategy> DialogStrategy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State", meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<UBaseTriggerStateStrategy> StateStrategyClass;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State", meta=(AllowPrivateAccess = "true"))
-	UBaseTriggerStateStrategy* StateStrategy;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="State", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UBaseTriggerStateStrategy> StateStrategy;
 };
