@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "BaseTriggerStateStrategy.h"
 #include "Components/ActorComponent.h"
-#include "CryptRaider/Interface/TriggerStateStrategy.h"
+#include "CryptRaider/Interface/DialogStateStrategy.h"
 #include "SingleShotStrategy.generated.h"
 
 

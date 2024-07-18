@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "CryptRaider/Interface/TriggerStateStrategy.h"
+#include "CryptRaider/Interface/DialogStateStrategy.h"
 #include "BaseTriggerStateStrategy.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class CRYPTRAIDER_API UBaseTriggerStateStrategy : public UActorComponent, public ITriggerStateStrategy
+class CRYPTRAIDER_API UBaseTriggerStateStrategy : public UActorComponent, public IDialogStateStrategy
 {
 	GENERATED_BODY()
 

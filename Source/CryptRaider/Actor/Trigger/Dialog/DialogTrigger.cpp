@@ -16,7 +16,7 @@ void ADialogTrigger::OnConstruction(const FTransform& Transform)
 	{
 		if (!DialogStrategy || DialogStrategy->GetClass() != DialogStrategyClass)
 		{
-			DialogStrategy = NewObject<UBaseTriggerDialogStrategy>(this, DialogStrategyClass);
+			DialogStrategy = NewObject<UBaseDialogPickStrategy>(this, DialogStrategyClass);
 		}
 	}
 
@@ -38,17 +38,16 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                     const FHitResult& SweepResult)
 {
-	const auto Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
-
 	if (StateStrategy->IsActive())
 	{
-		SendDialog(Controller);
+		SendDialog();
 	}
 
 	StateStrategy->OnTrigger();
 }
 
-void ADialogTrigger::SendDialog(ABasePlayerController* Controller)
+void ADialogTrigger::SendDialog()
 {
+	const auto Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
 	SendDialogToHUD(Controller->GetHUD(), DialogStrategy->GetDialog());
 }

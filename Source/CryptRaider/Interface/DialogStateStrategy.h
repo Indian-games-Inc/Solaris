@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "TriggerStateStrategy.generated.h"
+#include "DialogStateStrategy.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE()
-class UTriggerStateStrategy : public UInterface
+class UDialogStateStrategy : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,7 +16,7 @@ class UTriggerStateStrategy : public UInterface
 /**
  * 
  */
-class CRYPTRAIDER_API ITriggerStateStrategy
+class CRYPTRAIDER_API IDialogStateStrategy
 {
 	GENERATED_BODY()
 

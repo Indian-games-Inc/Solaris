@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseTriggerDialogStrategy.h"
-#include "SingleDialogStrategy.generated.h"
+#include "BaseDialogPickStrategy.h"
+#include "SingleDialogPickStrategy.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class CRYPTRAIDER_API USingleDialogStrategy : public UBaseTriggerDialogStrategy
+class CRYPTRAIDER_API USingleDialogPickStrategy : public UBaseDialogPickStrategy
 {
 	GENERATED_BODY()
 
@@ -16,6 +16,6 @@ public:
 	virtual FDataTableRowHandle GetDialog() override;
 
 private:
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	FDataTableRowHandle	Dialog;
 };

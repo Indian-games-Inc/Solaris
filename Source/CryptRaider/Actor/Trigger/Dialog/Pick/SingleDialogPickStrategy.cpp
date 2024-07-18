@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SingleDialogStrategy.h"
+#include "SingleDialogPickStrategy.h"
 
 
-FDataTableRowHandle USingleDialogStrategy::GetDialog()
+FDataTableRowHandle USingleDialogPickStrategy::GetDialog()
 {
 	return Dialog;
 }
