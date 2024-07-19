@@ -10,12 +10,20 @@ FDataTableRowHandle UItemAwareDialogPickStrategy::GetDialog()
 {
 	const FRandomStream RandomStream(FDateTime::Now().GetTicks());
 	const auto Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
+	FDataTableRowHandle Dialog = {};
 	if (Controller->GetInventory()->HasItem(ItemId))
 	{
-		const auto Index = RandomStream.RandRange(0, PostDialogList.Num() - 1);
-		return PostDialogList[Index];
+		if ((PostDialogList.Num() > 0))
+		{
+			Dialog = PostDialogList[RandomStream.RandRange(0, PostDialogList.Num() - 1)];
+		}
 	}
-
-	const auto Index = RandomStream.RandRange(0, PreDialogList.Num() - 1);
-	return PreDialogList[Index];
+	else
+	{
+		if (PreDialogList.Num() > 0)
+		{
+			Dialog = PreDialogList[RandomStream.RandRange(0, PreDialogList.Num() - 1)];
+		}
+	}
+	return Dialog;
 }

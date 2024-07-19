@@ -17,12 +17,12 @@ public:
 	virtual void OnTrigger() override;
 
 private:
-	UPROPERTY(EditInstanceOnly, Category="Dialog Trigger", meta=(AllowPrivateAccess="true"))
-	float PlayBackCooldown;
+	UPROPERTY(EditInstanceOnly, meta=(AllowPrivateAccess="true"))
+	float PlayBackCooldown = 5.0f;
 
 	UPROPERTY()
 	bool Active = true;
-	
+
 	UPROPERTY()
 	FTimerHandle DelayTimerHandle;
 };

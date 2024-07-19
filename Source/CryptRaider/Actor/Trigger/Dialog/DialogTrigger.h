@@ -6,7 +6,6 @@
 #include "Pick/BaseDialogPickStrategy.h"
 #include "State/BaseTriggerStateStrategy.h"
 #include "CryptRaider/Actor/Trigger/BaseTrigger.h"
-#include "CryptRaider/Player/BasePlayerController.h"
 #include "GameFramework/Actor.h"
 #include "DialogTrigger.generated.h"
 
@@ -16,13 +15,9 @@ class CRYPTRAIDER_API ADialogTrigger : public ABaseTrigger
 	GENERATED_BODY()
 
 public:
-	ADialogTrigger();
-	void HandleStartegy(const TSubclassOf<UActorComponent> ActorClass, TObjectPtr<UActorComponent> Component);
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
-	virtual void BeginPlay() override;
-
 	/** Pure Blueprint Event **/
 	UFUNCTION(BlueprintImplementableEvent)
 	void SendDialogToHUD(AHUD* HUD, FDataTableRowHandle DialogRowHandle);
@@ -47,6 +42,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Dialog|State Strategy", meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<UBaseTriggerStateStrategy> StateStrategyClass;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog|State Strategy", meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog|State Strategy",
+		meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UBaseTriggerStateStrategy> StateStrategy;
 };

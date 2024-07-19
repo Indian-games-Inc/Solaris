@@ -4,10 +4,6 @@
 
 #include "CryptRaider/Player/BasePlayerController.h"
 
-ADialogTrigger::ADialogTrigger()
-{
-}
-
 void ADialogTrigger::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
@@ -16,7 +12,12 @@ void ADialogTrigger::OnConstruction(const FTransform& Transform)
 	{
 		if (!DialogStrategy || DialogStrategy->GetClass() != DialogStrategyClass)
 		{
-			DialogStrategy = NewObject<UBaseDialogPickStrategy>(this, DialogStrategyClass);
+			if (DialogStrategy)
+			{
+				DialogStrategy->ConditionalBeginDestroy();
+				DialogStrategy->DestroyComponent();
+			}
+			DialogStrategy = NewObject<UBaseDialogPickStrategy>(this, DialogStrategyClass, "Dialog Strategy");
 		}
 	}
 
@@ -24,20 +25,25 @@ void ADialogTrigger::OnConstruction(const FTransform& Transform)
 	{
 		if (!StateStrategy || StateStrategy->GetClass() != StateStrategyClass)
 		{
-			StateStrategy = NewObject<UBaseTriggerStateStrategy>(this, StateStrategyClass);
+			if (StateStrategy)
+			{
+				StateStrategy->ConditionalBeginDestroy();
+				StateStrategy->DestroyComponent();
+			}
+			StateStrategy = NewObject<UBaseTriggerStateStrategy>(this, StateStrategyClass, "State Strategy");
 		}
 	}
-}
-
-void ADialogTrigger::BeginPlay()
-{
-	Super::BeginPlay();
 }
 
 void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                     const FHitResult& SweepResult)
 {
+	if (!StateStrategy)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DialogTrigger::OnBeginOverlap called, but StateStrategy is empty"));
+	}
+
 	if (StateStrategy->IsActive())
 	{
 		SendDialog();
