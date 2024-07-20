@@ -42,6 +42,7 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	if (!StateStrategy)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("DialogTrigger::OnBeginOverlap called, but StateStrategy is empty"));
+		return;
 	}
 
 	if (StateStrategy->IsActive())
@@ -54,6 +55,12 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
 void ADialogTrigger::SendDialog()
 {
+	if (!DialogStrategy)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DialogTrigger::SendDialog called, but DialogStrategy is empty"));
+		return;
+	}
+
 	const auto Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
 	SendDialogToHUD(Controller->GetHUD(), DialogStrategy->GetDialog());
 }

@@ -38,6 +38,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsGrabbing() const;
 
+	FString GetGrabbedItemId() const;
+
 private:
 	UPrimitiveComponent* GetGrabbedItem() const;
 	UPhysicsHandleComponent* GetPhysicsHandle() const;

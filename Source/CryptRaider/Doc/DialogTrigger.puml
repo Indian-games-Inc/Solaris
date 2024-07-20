@@ -3,64 +3,83 @@
 title Dialog Triggers Class Diagram
 
 class ADialogTrigger {
-    + void SendDialogToHUD(AHUD* HUD, FDataTableRowHandle DialogRowHandle)
-    + void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                          const FHitResult& SweepResult)
-    + FDataTableRowHandle PickDialog()
-    + void SwitchTriggerState()
-    + void SendDialog(ABasePlayerController* Controller)
-    
-    # bool InventoryAware
-    # bool HasItem
-    # FString ItemId
+  +void OnConstruction(FTransform Transform)
+  +void SendDialogToHUD(AHUD* HUD, FDataTableRowHandle DialogRowHandle)
+  +void OnBeginOverlap(args...)
+  +void SendDialog()
+  +TSubclassOf<UBaseDialogPickStrategy> DialogStrategyClass
+  +TObjectPtr<UBaseDialogPickStrategy> DialogStrategy
+  +TSubclassOf<UBaseTriggerStateStrategy> StateStrategyClass
+  +TObjectPtr<UBaseTriggerStateStrategy> StateStrategy
 }
 
-class ACooldownDialogTrigger {
-    +void SwitchTriggerState()
-    -float PlayBackCooldown
-    -FTimerHandle DelayTimerHandle
+class UBaseTriggerStateStrategy {
+  +bool IsActive()
+  +void OnTrigger()
 }
 
-class ARandomCooldownDialogTrigger {
-    +FDataTableRowHandle PickDialog()
-    -TArray<FDataTableRowHandle> DialogRowList
+class UBaseDialogPickStrategy {
+  +FDataTableRowHandle GetDialog()
 }
 
-class ASingleCooldownDialogTrigger {
-    +FDataTableRowHandle PickDialog()
-    -FDataTableRowHandle DialogRow
+class UItemAwareDialogPickStrategy {
+  +FDataTableRowHandle GetDialog()
+  +TArray<FDataTableRowHandle> NegativeDialogList
+  +TArray<FDataTableRowHandle> PositiveDialogList
+  +FString ItemId
 }
 
-class ASingleShotDialogTrigger {
-    +void SwitchTriggerState()
-    +FDataTableRowHandle PickDialog()
-    -FDataTableRowHandle DialogRow
+class UGrabberAwareDialogPickStrategy {
+  +FDataTableRowHandle GetDialog()
 }
+
+class URandomListDialogPickStrategy {
+  +FDataTableRowHandle GetDialog()
+  +TArray<FDataTableRowHandle> DialogList
+}
+
+class USingleDialogPickStrategy {
+  +FDataTableRowHandle GetDialog()
+  +FDataTableRowHandle Dialog
+}
+
+class UCooldownStrategy {
+  +bool IsActive()
+  +void OnTrigger()
+  +float PlayBackCooldown = 5.0f
+  +bool Active = true
+  +FTimerHandle DelayTimerHandle
+}
+
+class USingleShotStrategy {
+  +bool IsActive()
+  +void OnTrigger()
+  +bool Active = true
+}
+
+ADialogTrigger --|> UBaseTriggerStateStrategy
+ADialogTrigger --|> UBaseDialogPickStrategy
+
+UBaseTriggerStateStrategy --|> UCooldownStrategy
+UBaseTriggerStateStrategy --|> USingleShotStrategy
+
+UBaseDialogPickStrategy --|> USingleDialogPickStrategy
+UBaseDialogPickStrategy --|> URandomListDialogPickStrategy
+UBaseDialogPickStrategy --|> UItemAwareDialogPickStrategy
+UItemAwareDialogPickStrategy --|> UGrabberAwareDialogPickStrategy
+
 
 note left of ADialogTrigger
-Basic Dialog trigger, holds main function, 
-fields to be Inventory aware
+Basic Dialog trigger, holds two strategies that defines its behaviour
 end note
 
-note bottom of ARandomCooldownDialogTrigger
-Used to execute random Dialog chain from List infinite times,
-the delay is set with PlaybackCooldown value.
+note left of UBaseTriggerStateStrategy
+Controls how often trigger will be executed 
+(once, with the cooldown, depending of item inventory, or grabber inventory)
 end note
 
-note bottom of ASingleCooldownDialogTrigger
-Used to execute one Dialog chain infinite times,
-the delay is set with PlaybackCooldown value.
+note left of UBaseDialogPickStrategy
+Controls which dialog is sent to HUD (only one, one from list)
 end note
-
-note bottom of ASingleShotDialogTrigger
-Used to trigger Single Dialog chain only once.
-After that trigger will be disabled.
-end note
-
-ADialogTrigger <|-- ACooldownDialogTrigger
-ACooldownDialogTrigger <|-- ARandomCooldownDialogTrigger
-ACooldownDialogTrigger <|-- ASingleCooldownDialogTrigger
-ADialogTrigger <|-- ASingleShotDialogTrigger
 
 @enduml

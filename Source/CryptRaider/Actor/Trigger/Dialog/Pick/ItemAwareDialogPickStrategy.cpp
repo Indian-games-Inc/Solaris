@@ -13,16 +13,16 @@ FDataTableRowHandle UItemAwareDialogPickStrategy::GetDialog()
 	FDataTableRowHandle Dialog = {};
 	if (Controller->GetInventory()->HasItem(ItemId))
 	{
-		if ((PostDialogList.Num() > 0))
+		if (!PositiveDialogList.IsEmpty())
 		{
-			Dialog = PostDialogList[RandomStream.RandRange(0, PostDialogList.Num() - 1)];
+			Dialog = PositiveDialogList[RandomStream.RandRange(0, PositiveDialogList.Num() - 1)];
 		}
 	}
 	else
 	{
-		if (PreDialogList.Num() > 0)
+		if (!NegativeDialogList.IsEmpty())
 		{
-			Dialog = PreDialogList[RandomStream.RandRange(0, PreDialogList.Num() - 1)];
+			Dialog = NegativeDialogList[RandomStream.RandRange(0, NegativeDialogList.Num() - 1)];
 		}
 	}
 	return Dialog;

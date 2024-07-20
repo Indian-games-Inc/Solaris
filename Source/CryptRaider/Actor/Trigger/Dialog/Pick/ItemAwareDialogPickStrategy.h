@@ -15,11 +15,11 @@ class CRYPTRAIDER_API UItemAwareDialogPickStrategy : public UBaseDialogPickStrat
 public:
 	virtual FDataTableRowHandle GetDialog() override;
 
-private:
+protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-	TArray<FDataTableRowHandle> PreDialogList;
+	TArray<FDataTableRowHandle> NegativeDialogList;
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-	TArray<FDataTableRowHandle> PostDialogList;
+	TArray<FDataTableRowHandle> PositiveDialogList;
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	FString ItemId;
 };
