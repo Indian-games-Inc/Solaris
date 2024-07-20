@@ -22,17 +22,6 @@ class UBaseDialogPickStrategy {
   +FDataTableRowHandle GetDialog()
 }
 
-class UItemAwareDialogPickStrategy {
-  +FDataTableRowHandle GetDialog()
-  +TArray<FDataTableRowHandle> NegativeDialogList
-  +TArray<FDataTableRowHandle> PositiveDialogList
-  +FString ItemId
-}
-
-class UGrabberAwareDialogPickStrategy {
-  +FDataTableRowHandle GetDialog()
-}
-
 class URandomListDialogPickStrategy {
   +FDataTableRowHandle GetDialog()
   +TArray<FDataTableRowHandle> DialogList
@@ -65,8 +54,6 @@ UBaseTriggerStateStrategy --|> USingleShotStrategy
 
 UBaseDialogPickStrategy --|> USingleDialogPickStrategy
 UBaseDialogPickStrategy --|> URandomListDialogPickStrategy
-UBaseDialogPickStrategy --|> UItemAwareDialogPickStrategy
-UItemAwareDialogPickStrategy --|> UGrabberAwareDialogPickStrategy
 
 
 note left of ADialogTrigger
