@@ -47,8 +47,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsFull();
 
-	bool HasItem(FString& ItemId);
-
 private:
 	UPROPERTY(EditAnywhere)
 	int Rows = 5;

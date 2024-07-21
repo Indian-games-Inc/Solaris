@@ -74,16 +74,3 @@ bool UInventory::IsFull()
 {
 	return ItemsCount == Items.Num();
 }
-
-bool UInventory::HasItem(FString& ItemId)
-{
-	for (auto Item : Items)
-	{
-		if (Item.Data.ID == ItemId)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}

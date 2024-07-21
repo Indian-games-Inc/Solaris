@@ -117,8 +117,3 @@ bool UGrabber::IsGrabbing() const
 {
 	return GetGrabbedItem() != nullptr;
 }
-
-FString UGrabber::GetGrabbedItemId() const
-{
-	return GetGrabbedItem()->GetOwner()->GetActorLabel();
-}
