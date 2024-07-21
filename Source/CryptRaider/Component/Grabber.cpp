@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "CryptRaider/Actor/Destructible/Projectile.h"
+#include "CryptRaider/Actor/Item/Item.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -52,15 +53,16 @@ UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 
 void UGrabber::Grab(const FHitResult& HitResult)
 {
-	if (const auto* Projectile = Cast<AProjectile>(HitResult.GetActor()); !Projectile) {
+	if (const auto* Projectile = Cast<AProjectile>(HitResult.GetActor()); !Projectile)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to Grab actor, it's not a Projectile"));
 		return;
 	}
-	
+
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
 	if (!PhysicsHandle)
 		return;
-	
+
 	UPrimitiveComponent* HitComponent = HitResult.GetComponent();
 	HitComponent->WakeAllRigidBodies();
 	HitComponent->SetSimulatePhysics(true);
@@ -89,8 +91,8 @@ void UGrabber::Release()
 		Actor->Tags.Remove(GrabbedTag);
 
 		// Enable collision with Pawns back
-		Grabbed->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block); \
-		
+		Grabbed->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+
 
 		// Remove inertia from object
 		Grabbed->SetPhysicsLinearVelocity(FVector::Zero());

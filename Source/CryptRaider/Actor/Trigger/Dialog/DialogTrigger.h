@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Pick/BaseDialogPickStrategy.h"
+#include "State/BaseTriggerStateStrategy.h"
 #include "CryptRaider/Actor/Trigger/BaseTrigger.h"
 #include "GameFramework/Actor.h"
 #include "DialogTrigger.generated.h"
@@ -11,6 +13,9 @@ UCLASS()
 class CRYPTRAIDER_API ADialogTrigger : public ABaseTrigger
 {
 	GENERATED_BODY()
+
+public:
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
 	/** Pure Blueprint Event **/
@@ -23,9 +28,21 @@ protected:
 	 */
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	                            const FHitResult& SweepResult);
+	                            const FHitResult& SweepResult) override;
 
-	/** Functions used in OnBeginOverlap **/
-	virtual FDataTableRowHandle PickDialog();
-	virtual void SwitchTriggerState();
+	void SendDialog();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Dialog|Pick Strategy", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<UBaseDialogPickStrategy> DialogStrategyClass;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog|Pick Strategy", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UBaseDialogPickStrategy> DialogStrategy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Dialog|State Strategy", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<UBaseTriggerStateStrategy> StateStrategyClass;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Dialog|State Strategy",
+		meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UBaseTriggerStateStrategy> StateStrategy;
 };
