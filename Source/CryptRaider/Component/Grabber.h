@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "CryptRaider/Actor/Trigger/Dialog/Pick/GrabberAwareDialogPickStrategy.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
@@ -37,6 +38,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsGrabbing() const;
+	FString GetGrabbedItemName() const;
 
 private:
 	UPrimitiveComponent* GetGrabbedItem() const;

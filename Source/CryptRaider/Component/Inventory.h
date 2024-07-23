@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CryptRaider/Actor/Trigger/Dialog/Pick/ItemAwareDialogPickStrategy.h"
 #include "Inventory.generated.h"
 
 struct FInventoryItemWrapper;
@@ -46,6 +47,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsFull();
+	bool HasItem(const FString& ItemId);
 
 private:
 	UPROPERTY(EditAnywhere)

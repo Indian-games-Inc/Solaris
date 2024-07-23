@@ -8,7 +8,7 @@
 #include "BaseDialogPickStrategy.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(HideDropdown, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UBaseDialogPickStrategy : public UActorComponent, public IDialogPickStrategy
 {
 	GENERATED_BODY()
