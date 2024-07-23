@@ -8,7 +8,7 @@
 #include "BaseTriggerStateStrategy.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(HideDropdown, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UBaseTriggerStateStrategy : public UActorComponent, public IDialogStateStrategy
 {
 	GENERATED_BODY()
