@@ -9,7 +9,7 @@
 
 UBTTask_FindAndChasePlayerLocation::UBTTask_FindAndChasePlayerLocation()
 {
-	NodeName = TEXT("Find PLayer Location");
+	NodeName = TEXT("Find And Chase Player Location");
 
 	BlackboardKey.AddVectorFilter(this,
 		GET_MEMBER_NAME_CHECKED(UBTTask_FindAndChasePlayerLocation, BlackboardKey)

@@ -5,13 +5,18 @@
 
 #include "AIController.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+UBTTask_SetMaxWalkSpeed::UBTTask_SetMaxWalkSpeed()
+{
+	NodeName = "Set Max Walk Speed";
+}
 
 EBTNodeResult::Type UBTTask_SetMaxWalkSpeed::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController { OwnerComp.GetAIOwner() };
 	
-	// AIController->GetCharacter()->GetMovementComponent()->MaxWalkSpeed = MaxWalkSpeed;
+	AIController->GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	return EBTNodeResult::Succeeded;
