@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "ClassicBTTask_FindRandomRoom.generated.h"
+#include "BTTask_FindRandomRoom.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRYPTRAIDER_API UClassicBTTask_FindRandomRoom : public UBTTask_BlackboardBase
+class CRYPTRAIDER_API UBTTask_FindRandomRoom : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
-	UClassicBTTask_FindRandomRoom();
+	UBTTask_FindRandomRoom();
 
 public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

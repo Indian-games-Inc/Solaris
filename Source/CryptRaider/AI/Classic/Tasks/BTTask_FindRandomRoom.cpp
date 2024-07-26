@@ -1,25 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CryptRaider/AI/Classic/Tasks/ClassicBTTask_FindRandomRoom.h"
+#include "CryptRaider/AI/Classic/Tasks/BTTask_FindRandomRoom.h"
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-UClassicBTTask_FindRandomRoom::UClassicBTTask_FindRandomRoom()
+UBTTask_FindRandomRoom::UBTTask_FindRandomRoom()
 {
-	bCreateNodeInstance = true;
-	bNotifyTaskFinished = true;
-
 	NodeName = TEXT("Find Random Room");
 
 	BlackboardKey.AddVectorFilter(this,
-		GET_MEMBER_NAME_CHECKED(UClassicBTTask_FindRandomRoom, BlackboardKey)
+		GET_MEMBER_NAME_CHECKED(UBTTask_FindRandomRoom, BlackboardKey)
 	);
 }
 
-EBTNodeResult::Type UClassicBTTask_FindRandomRoom::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_FindRandomRoom::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController { OwnerComp.GetAIOwner() }; 
 	
@@ -45,7 +42,7 @@ EBTNodeResult::Type UClassicBTTask_FindRandomRoom::ExecuteTask(UBehaviorTreeComp
 	return EBTNodeResult::Succeeded;
 }
 
-FString UClassicBTTask_FindRandomRoom::GetStaticDescription() const
+FString UBTTask_FindRandomRoom::GetStaticDescription() const
 {
 	FString TargetActorClassName = "None";
 
