@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "BTTask_FindAndChasePlayerLocation.generated.h"
+#include "BTTask_LastPlayerLocation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRYPTRAIDER_API UBTTask_FindAndChasePlayerLocation : public UBTTask_BlackboardBase
+class CRYPTRAIDER_API UBTTask_LastPlayerLocation : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_FindAndChasePlayerLocation();
+	UBTTask_LastPlayerLocation();
 
 public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

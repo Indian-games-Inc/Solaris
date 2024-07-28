@@ -17,6 +17,7 @@ class CRYPTRAIDER_API UBTTask_SetMaxWalkSpeed : public UBTTask_BlackboardBase
 public:
 	UBTTask_SetMaxWalkSpeed();
 
+public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual FString GetStaticDescription() const override;
 

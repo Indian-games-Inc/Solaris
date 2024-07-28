@@ -13,6 +13,8 @@ UCLASS()
 class CRYPTRAIDER_API UBTTask_FindRandomRoom : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
+
+public:
 	UBTTask_FindRandomRoom();
 
 public:
