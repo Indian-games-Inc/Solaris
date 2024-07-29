@@ -4,24 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "BTTask_SearchForPlayer.generated.h"
+#include "BTTask_SearchInRadius.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRYPTRAIDER_API UBTTask_SearchForPlayer : public UBTTask_BlackboardBase
+class CRYPTRAIDER_API UBTTask_SearchInRadius : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
-
 public:
-	UBTTask_SearchForPlayer();
+	UBTTask_SearchInRadius();
 
 public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual FString GetStaticDescription() const override;
 
 private:
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category=Search, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
 	float SearchRadius = 0;
 };

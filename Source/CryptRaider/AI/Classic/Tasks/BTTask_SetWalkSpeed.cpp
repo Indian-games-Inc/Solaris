@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTask_SetMaxWalkSpeed.h"
+#include "BTTask_SetWalkSpeed.h"
 
 #include "AIController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UBTTask_SetMaxWalkSpeed::UBTTask_SetMaxWalkSpeed()
+UBTTask_SetWalkSpeed::UBTTask_SetWalkSpeed()
 {
-	NodeName = "Set Max Walk Speed";
+	NodeName = "Set Walk Speed";
 }
 
-EBTNodeResult::Type UBTTask_SetMaxWalkSpeed::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_SetWalkSpeed::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController { OwnerComp.GetAIOwner() };
 	
@@ -22,7 +22,7 @@ EBTNodeResult::Type UBTTask_SetMaxWalkSpeed::ExecuteTask(UBehaviorTreeComponent&
 	return EBTNodeResult::Succeeded;
 }
 
-FString UBTTask_SetMaxWalkSpeed::GetStaticDescription() const
+FString UBTTask_SetWalkSpeed::GetStaticDescription() const
 {
 	return FString::Printf(TEXT("Speed: %f"), MaxWalkSpeed);
 }

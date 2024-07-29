@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "BTTask_SetMaxWalkSpeed.generated.h"
+#include "BTTask_SetWalkSpeed.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRYPTRAIDER_API UBTTask_SetMaxWalkSpeed : public UBTTask_BlackboardBase
+class CRYPTRAIDER_API UBTTask_SetWalkSpeed : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_SetMaxWalkSpeed();
+	UBTTask_SetWalkSpeed();
 
 public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
