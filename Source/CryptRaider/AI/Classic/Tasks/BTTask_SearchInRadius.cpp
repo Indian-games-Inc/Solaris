@@ -11,14 +11,15 @@ UBTTask_SearchInRadius::UBTTask_SearchInRadius()
 {
 	NodeName = "Search In Radius";
 
-	BlackboardKey.AddVectorFilter(this,
-	                              GET_MEMBER_NAME_CHECKED(UBTTask_SearchInRadius, BlackboardKey)
+	BlackboardKey.AddVectorFilter(
+		this,
+		GET_MEMBER_NAME_CHECKED(UBTTask_SearchInRadius, BlackboardKey)
 	);
 }
 
 FString UBTTask_SearchInRadius::GetStaticDescription() const
 {
-	return FString::Printf(TEXT("TargetLocation: %s, Radius: %f"), *BlackboardKey.SelectedKeyName.ToString(), SearchRadius);
+	return FString::Printf(TEXT("TargetLocation: %s, Radius: %f"), *GetSelectedBlackboardKey().ToString(), SearchRadius);
 }
 
 EBTNodeResult::Type UBTTask_SearchInRadius::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -27,13 +28,13 @@ EBTNodeResult::Type UBTTask_SearchInRadius::ExecuteTask(UBehaviorTreeComponent& 
 
 	if (IsValid(BlackboardComponent))
 	{
-		const FVector Origin = BlackboardComponent->GetValueAsVector(BlackboardKey.SelectedKeyName);
+		const FVector Origin = BlackboardComponent->GetValueAsVector(GetSelectedBlackboardKey());
 		const UNavigationSystemV1* NavigationSystem{ UNavigationSystemV1::GetCurrent(GetWorld()) };
 
 		if (FNavLocation Location {};
 			IsValid(NavigationSystem) && NavigationSystem->GetRandomPointInNavigableRadius(Origin, SearchRadius, Location))
 		{
-			BlackboardComponent->SetValueAsVector(BlackboardKey.SelectedKeyName, Location.Location);
+			BlackboardComponent->SetValueAsVector(GetSelectedBlackboardKey(), Location.Location);
 		}
 
 		return FinishTask(OwnerComp, EBTNodeResult::Succeeded);

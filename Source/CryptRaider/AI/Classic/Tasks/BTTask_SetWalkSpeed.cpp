@@ -12,6 +12,11 @@ UBTTask_SetWalkSpeed::UBTTask_SetWalkSpeed()
 	NodeName = "Set Walk Speed";
 }
 
+FString UBTTask_SetWalkSpeed::GetStaticDescription() const
+{
+	return FString::Printf(TEXT("Speed: %f"), MaxWalkSpeed);
+}
+
 EBTNodeResult::Type UBTTask_SetWalkSpeed::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	if (const AAIController* AIController { OwnerComp.GetAIOwner() }; IsValid(AIController))
@@ -22,9 +27,4 @@ EBTNodeResult::Type UBTTask_SetWalkSpeed::ExecuteTask(UBehaviorTreeComponent& Ow
 	}
 	
 	return FinishTask(OwnerComp, EBTNodeResult::Failed);
-}
-
-FString UBTTask_SetWalkSpeed::GetStaticDescription() const
-{
-	return FString::Printf(TEXT("Speed: %f"), MaxWalkSpeed);
 }

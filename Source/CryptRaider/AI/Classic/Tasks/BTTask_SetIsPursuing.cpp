@@ -10,20 +10,22 @@ UBTTask_SetIsPursuing::UBTTask_SetIsPursuing()
 {
 	NodeName = "Set Is Pursuing";
 
-	BlackboardKey.AddBoolFilter(this,
-							  GET_MEMBER_NAME_CHECKED(UBTTask_SetIsPursuing, BlackboardKey));
+	BlackboardKey.AddBoolFilter(
+		this,
+		GET_MEMBER_NAME_CHECKED(UBTTask_SetIsPursuing, BlackboardKey)
+	);
+}
+
+FString UBTTask_SetIsPursuing::GetStaticDescription() const
+{
+	return FString::Printf(TEXT("IsPursuing: %s"), *GetSelectedBlackboardKey().ToString());
 }
 
 EBTNodeResult::Type UBTTask_SetIsPursuing::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	UBlackboardComponent* BlackboardComponent { OwnerComp.GetBlackboardComponent() };
 
-	BlackboardComponent->SetValueAsBool(BlackboardKey.SelectedKeyName, Value);
+	BlackboardComponent->SetValueAsBool(GetSelectedBlackboardKey(), Value);
 
 return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
-}
-
-FString UBTTask_SetIsPursuing::GetStaticDescription() const
-{
-	return FString::Printf(TEXT("IsPursuing: %s"), *BlackboardKey.SelectedKeyName.ToString());
 }

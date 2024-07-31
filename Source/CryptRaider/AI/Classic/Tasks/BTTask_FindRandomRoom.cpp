@@ -3,7 +3,6 @@
 
 #include "CryptRaider/AI/Classic/Tasks/BTTask_FindRandomRoom.h"
 
-#include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -11,9 +10,22 @@ UBTTask_FindRandomRoom::UBTTask_FindRandomRoom()
 {
 	NodeName = TEXT("Find Random Room");
 
-	BlackboardKey.AddVectorFilter(this,
+	BlackboardKey.AddVectorFilter(
+		this,
 		GET_MEMBER_NAME_CHECKED(UBTTask_FindRandomRoom, BlackboardKey)
 	);
+}
+
+FString UBTTask_FindRandomRoom::GetStaticDescription() const
+{
+	FString TargetActorClassName = "None";
+
+	if (IsValid(TargetActorClass))
+	{
+		TargetActorClassName = TargetActorClass->GetName();
+	}
+
+	return FString::Printf(TEXT("Vector: %s, TargetActorClass: %s"), *GetSelectedBlackboardKey().ToString(), *TargetActorClassName);
 }
 
 EBTNodeResult::Type UBTTask_FindRandomRoom::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -34,22 +46,10 @@ EBTNodeResult::Type UBTTask_FindRandomRoom::ExecuteTask(UBehaviorTreeComponent& 
 
 		const AActor* TargetActor = OutActors[RandomStream.RandRange(0,OutActors.Num() - 1)];
 
-		BlackboardComponent->SetValueAsVector(BlackboardKey.SelectedKeyName, TargetActor->GetActorLocation());
+		BlackboardComponent->SetValueAsVector(GetSelectedBlackboardKey(), TargetActor->GetActorLocation());
 
 		return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
 	return FinishTask(OwnerComp, EBTNodeResult::Failed);
-}
-
-FString UBTTask_FindRandomRoom::GetStaticDescription() const
-{
-	FString TargetActorClassName = "None";
-
-	if (IsValid(TargetActorClass))
-	{
-		TargetActorClassName = TargetActorClass->GetName();
-	}
-
-	return FString::Printf(TEXT("Vector: %s, TargetActorClass: %s"), *BlackboardKey.SelectedKeyName.ToString(), *TargetActorClassName);
 }

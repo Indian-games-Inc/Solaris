@@ -18,8 +18,8 @@ public:
 	UBTTask_FindRandomRoom();
 
 public:
-	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual FString GetStaticDescription() const override;
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Target", meta=(AllowPrivateAccess = "true"))

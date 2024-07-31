@@ -19,18 +19,6 @@ AClassicAICharacter::AClassicAICharacter()
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AClassicAICharacter::OnTargetPerceptionUpdated);
 }
 
-// Called when the game starts or when spawned
-void AClassicAICharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called every frame
-void AClassicAICharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void AClassicAICharacter::TriggerAttack()
 {
 	if (!GetWorldTimerManager().IsTimerActive(AttackAnimationTimerHandle))

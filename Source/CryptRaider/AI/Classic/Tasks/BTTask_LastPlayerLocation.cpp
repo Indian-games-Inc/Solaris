@@ -11,9 +11,15 @@ UBTTask_LastPlayerLocation::UBTTask_LastPlayerLocation()
 {
 	NodeName = "Last Player Location";
 
-	BlackboardKey.AddVectorFilter(this,
-							  GET_MEMBER_NAME_CHECKED(UBTTask_LastPlayerLocation, BlackboardKey)
-);
+	BlackboardKey.AddVectorFilter(
+		this,
+		GET_MEMBER_NAME_CHECKED(UBTTask_LastPlayerLocation, BlackboardKey)
+	);
+}
+
+FString UBTTask_LastPlayerLocation::GetStaticDescription() const
+{
+	return FString::Printf(TEXT("TargetLocation: %s"), *GetSelectedBlackboardKey().ToString());
 }
 
 EBTNodeResult::Type UBTTask_LastPlayerLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -23,15 +29,10 @@ EBTNodeResult::Type UBTTask_LastPlayerLocation::ExecuteTask(UBehaviorTreeCompone
 
 	if (IsValid(BlackboardComponent) && IsValid(PlayerCharacter))
 	{
-		BlackboardComponent->SetValueAsVector(BlackboardKey.SelectedKeyName, PlayerCharacter->GetActorLocation());
+		BlackboardComponent->SetValueAsVector(GetSelectedBlackboardKey(), PlayerCharacter->GetActorLocation());
 
 		return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
 	return FinishTask(OwnerComp, EBTNodeResult::Failed);
-}
-
-FString UBTTask_LastPlayerLocation::GetStaticDescription() const
-{
-	return FString::Printf(TEXT("TargetLocation: %s"), *BlackboardKey.SelectedKeyName.ToString());
 }
