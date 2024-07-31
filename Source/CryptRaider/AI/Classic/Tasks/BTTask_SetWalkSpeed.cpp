@@ -14,12 +14,14 @@ UBTTask_SetWalkSpeed::UBTTask_SetWalkSpeed()
 
 EBTNodeResult::Type UBTTask_SetWalkSpeed::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController { OwnerComp.GetAIOwner() };
+	if (const AAIController* AIController { OwnerComp.GetAIOwner() }; IsValid(AIController))
+	{
+		AIController->GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 	
-	AIController->GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
+		return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
 	
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	return EBTNodeResult::Succeeded;
+	return FinishTask(OwnerComp, EBTNodeResult::Failed);
 }
 
 FString UBTTask_SetWalkSpeed::GetStaticDescription() const

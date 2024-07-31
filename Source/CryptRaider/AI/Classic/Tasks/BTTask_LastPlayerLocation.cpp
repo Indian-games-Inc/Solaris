@@ -18,18 +18,17 @@ UBTTask_LastPlayerLocation::UBTTask_LastPlayerLocation()
 
 EBTNodeResult::Type UBTTask_LastPlayerLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController { OwnerComp.GetAIOwner() };
+	UBlackboardComponent* BlackboardComponent = OwnerComp.GetBlackboardComponent();
+	const auto PlayerCharacter = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 
-	if (const auto PlayerCharacter = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
+	if (IsValid(BlackboardComponent) && IsValid(PlayerCharacter))
 	{
-		AIController->GetBlackboardComponent()->SetValueAsVector(BlackboardKey.SelectedKeyName, PlayerCharacter->GetActorLocation());
+		BlackboardComponent->SetValueAsVector(BlackboardKey.SelectedKeyName, PlayerCharacter->GetActorLocation());
 
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		return EBTNodeResult::Succeeded;
+		return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
-	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	return EBTNodeResult::Failed;
+	return FinishTask(OwnerComp, EBTNodeResult::Failed);
 }
 
 FString UBTTask_LastPlayerLocation::GetStaticDescription() const

@@ -16,12 +16,11 @@ UBTTask_SetIsPursuing::UBTTask_SetIsPursuing()
 
 EBTNodeResult::Type UBTTask_SetIsPursuing::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController { OwnerComp.GetAIOwner() };
+	UBlackboardComponent* BlackboardComponent { OwnerComp.GetBlackboardComponent() };
 
-	AIController->GetBlackboardComponent()->SetValueAsBool(BlackboardKey.SelectedKeyName, Value);
+	BlackboardComponent->SetValueAsBool(BlackboardKey.SelectedKeyName, Value);
 
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	return EBTNodeResult::Succeeded;
+return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
 }
 
 FString UBTTask_SetIsPursuing::GetStaticDescription() const

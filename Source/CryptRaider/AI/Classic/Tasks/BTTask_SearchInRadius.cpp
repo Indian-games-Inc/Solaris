@@ -23,22 +23,23 @@ FString UBTTask_SearchInRadius::GetStaticDescription() const
 
 EBTNodeResult::Type UBTTask_SearchInRadius::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController { OwnerComp.GetAIOwner() };
-	UBlackboardComponent* BlackboardComponent = AIController->GetBlackboardComponent();
+	UBlackboardComponent* BlackboardComponent { OwnerComp.GetBlackboardComponent() };
 
-	const FVector Origin = BlackboardComponent->GetValueAsVector(BlackboardKey.SelectedKeyName);
-	const UNavigationSystemV1* NavigationSystem{ UNavigationSystemV1::GetCurrent(GetWorld()) };
-
-	if (FNavLocation Location {};
-		IsValid(NavigationSystem) && NavigationSystem->GetRandomPointInNavigableRadius(Origin, SearchRadius, Location))
+	if (IsValid(BlackboardComponent))
 	{
-		BlackboardComponent->SetValueAsVector(BlackboardKey.SelectedKeyName, Location.Location);
+		const FVector Origin = BlackboardComponent->GetValueAsVector(BlackboardKey.SelectedKeyName);
+		const UNavigationSystemV1* NavigationSystem{ UNavigationSystemV1::GetCurrent(GetWorld()) };
+
+		if (FNavLocation Location {};
+			IsValid(NavigationSystem) && NavigationSystem->GetRandomPointInNavigableRadius(Origin, SearchRadius, Location))
+		{
+			BlackboardComponent->SetValueAsVector(BlackboardKey.SelectedKeyName, Location.Location);
+		}
+
+		return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	return EBTNodeResult::Succeeded;
-	
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
+	return FinishTask(OwnerComp, EBTNodeResult::Failed);
 }
 
 

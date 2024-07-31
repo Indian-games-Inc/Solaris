@@ -18,28 +18,28 @@ UBTTask_FindRandomRoom::UBTTask_FindRandomRoom()
 
 EBTNodeResult::Type UBTTask_FindRandomRoom::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController { OwnerComp.GetAIOwner() }; 
+	UBlackboardComponent* BlackboardComponent = OwnerComp.GetBlackboardComponent();
 	
-	if (IsValid(TargetActorClass))
+	if (IsValid(BlackboardComponent) && IsValid(TargetActorClass))
 	{
 		TArray<AActor*> OutActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetActorClass,OutActors);
 
 		if (OutActors.IsEmpty())
 		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-			return EBTNodeResult::Failed;
+			return FinishTask(OwnerComp, EBTNodeResult::Failed);
 		}
 
 		const FRandomStream RandomStream(FDateTime::Now().GetTicks());
 
 		const AActor* TargetActor = OutActors[RandomStream.RandRange(0,OutActors.Num() - 1)];
 
-		AIController->GetBlackboardComponent()->SetValueAsVector(BlackboardKey.SelectedKeyName, TargetActor->GetActorLocation());
+		BlackboardComponent->SetValueAsVector(BlackboardKey.SelectedKeyName, TargetActor->GetActorLocation());
+
+		return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	return EBTNodeResult::Succeeded;
+	return FinishTask(OwnerComp, EBTNodeResult::Failed);
 }
 
 FString UBTTask_FindRandomRoom::GetStaticDescription() const
