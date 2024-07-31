@@ -96,6 +96,7 @@ void ABasePlayerController::Jump()
 	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
 	{
 		PlayerCharacter->Jump();
+		MakeNoise(1, GetCharacter(), GetCharacter()->GetActorLocation());
 	}
 }
 

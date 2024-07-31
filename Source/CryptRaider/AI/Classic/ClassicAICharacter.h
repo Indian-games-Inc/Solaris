@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "ClassicAICharacter.generated.h"
 
+struct FAIStimulus;
+
 UCLASS()
 class CRYPTRAIDER_API AClassicAICharacter : public ACharacter
 {

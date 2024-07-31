@@ -9,6 +9,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
+class UAISense_Hearing;
 // Sets default values
 AClassicAICharacter::AClassicAICharacter()
 {
@@ -38,15 +39,24 @@ void AClassicAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 		UE_LOG(LogTemp, Warning, TEXT("Detected non-player Actor"));
 		return;
 	}
-	
+
 	if (auto* AIController = Cast<AAIController>(GetController()); IsValid(AIController))
 	{
 		if (auto* BlackboardComponent = AIController->GetBlackboardComponent(); IsValid(BlackboardComponent))
 		{
 			if (Stimulus.WasSuccessfullySensed())
 			{
-				BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, true);
-				BlackboardComponent->SetValueAsBool(IsPursuingPlayerName, true);
+				if (Stimulus.Type.Index == 1)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Heard"));
+				}
+
+				if (Stimulus.Type.Index == 0)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("On sight"));
+					BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, true);
+					BlackboardComponent->SetValueAsBool(IsPursuingPlayerName, true);
+				}
 			}
 			else
 			{
