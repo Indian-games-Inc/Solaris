@@ -19,9 +19,22 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Called when the game ends
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+	void TriggerAttack();
+
+private:
+	void PlayAttackAnimation();
+	void AttackLineTrace();
+
+	void StopAttack();
+	void StopAttackTrace();
 
 private:
 	UFUNCTION()
@@ -32,7 +45,50 @@ private:
 	TObjectPtr<class UAIPerceptionComponent> AIPerceptionComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName IsPlayerOnSightName; // Name of Blackboard Key
+	FName IsPlayerOnSightName;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName IsPursuingPlayerName; // Name of Blackboard Key
+	FName IsPursuingPlayerName;
+
+	UPROPERTY(
+		EditDefaultsOnly, BlueprintReadWrite,
+		Category = "AI|Attack", DisplayName="Damage",
+		meta = (AllowPrivateAccess = "true")
+	)
+	float AttackDamage = 0.f;
+
+	UPROPERTY(
+		EditDefaultsOnly, BlueprintReadWrite,
+		Category = "AI|Attack", DisplayName="Start Hit Socket",
+		meta = (AllowPrivateAccess = "true")
+	)
+	FName AttackStartSocketName;
+
+	UPROPERTY(
+		EditDefaultsOnly, BlueprintReadWrite,
+		Category = "AI|Attack", DisplayName="End Hit Socket",
+		meta = (AllowPrivateAccess = "true")
+	)
+	FName AttackEndSocketName;
+
+	// Rate of attack line trace, in seconds
+	UPROPERTY(
+		EditDefaultsOnly, BlueprintReadWrite,
+		Category = "AI|Attack", DisplayName= "Trace Rate",
+		meta = (AllowPrivateAccess = "true")
+	)
+	float AttackTraceRate = 0.01f;
+
+	UPROPERTY(
+		EditDefaultsOnly, BlueprintReadWrite,
+		Category = "AI|Attack", DisplayName= "Animation montage",
+		meta = (AllowPrivateAccess = "true")
+	)
+	TObjectPtr<UAnimMontage> AttackAnimation;
+
+	UPROPERTY()
+	FTimerHandle AttackTraceTimerHandle;
+
+	UPROPERTY()
+	FTimerHandle AttackAnimationTimerHandle;
 };

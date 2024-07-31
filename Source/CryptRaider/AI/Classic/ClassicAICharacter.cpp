@@ -7,7 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "CryptRaider/Player/BaseCharacter.h"
 #include "Perception/AIPerceptionComponent.h"
-#include "Perception/AISenseConfig_Sight.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AClassicAICharacter::AClassicAICharacter()
@@ -29,6 +29,59 @@ void AClassicAICharacter::BeginPlay()
 void AClassicAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AClassicAICharacter::TriggerAttack()
+{
+	if (!GetWorldTimerManager().IsTimerActive(AttackAnimationTimerHandle))
+	{
+		PlayAttackAnimation();
+		GetWorld()->GetTimerManager().SetTimer(AttackTraceTimerHandle,
+											   this, &AClassicAICharacter::AttackLineTrace,
+											   AttackTraceRate,
+											   true);
+	}
+}
+
+void AClassicAICharacter::PlayAttackAnimation()
+{
+	if (!GetWorldTimerManager().IsTimerActive(AttackAnimationTimerHandle))
+	{
+		const float Duration = PlayAnimMontage(AttackAnimation);
+		GetWorld()->GetTimerManager().SetTimer(AttackAnimationTimerHandle,
+											   this, &AClassicAICharacter::StopAttack,
+											   Duration);	
+	}
+}
+
+void AClassicAICharacter::AttackLineTrace()
+{
+	const FVector Start = GetMesh()->GetSocketLocation(AttackStartSocketName);
+	const FVector End = GetMesh()->GetSocketLocation(AttackEndSocketName);
+	
+	FHitResult HitResult;
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Camera))
+	{
+		if (auto* PlayerCharacter = Cast<ABaseCharacter>(HitResult.GetActor()); IsValid(PlayerCharacter))
+		{
+			UGameplayStatics::ApplyDamage(PlayerCharacter,
+			                              AttackDamage,
+			                              GetController(), this,
+			                              UDamageType::StaticClass());
+			StopAttackTrace();
+		}
+	}
+}
+
+void AClassicAICharacter::StopAttack()
+{
+	StopAttackTrace();
+	GetWorld()->GetTimerManager().ClearTimer(AttackAnimationTimerHandle);
+}
+
+void AClassicAICharacter::StopAttackTrace()
+{
+	GetWorld()->GetTimerManager().ClearTimer(AttackTraceTimerHandle);
 }
 
 void AClassicAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -54,4 +107,11 @@ void AClassicAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 			}
 		}
 	}
+}
+
+void AClassicAICharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
