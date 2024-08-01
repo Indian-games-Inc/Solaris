@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "CryptRaider/Player/BaseCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -23,6 +24,8 @@ void AClassicAICharacter::TriggerAttack()
 {
 	if (!GetWorldTimerManager().IsTimerActive(AttackAnimationTimerHandle))
 	{
+		GetCharacterMovement()->DisableMovement();
+
 		PlayAttackAnimation();
 		GetWorld()->GetTimerManager().SetTimer(AttackTraceTimerHandle,
 											   this, &AClassicAICharacter::AttackLineTrace,
@@ -65,6 +68,8 @@ void AClassicAICharacter::StopAttack()
 {
 	StopAttackTrace();
 	GetWorld()->GetTimerManager().ClearTimer(AttackAnimationTimerHandle);
+
+	GetCharacterMovement()->SetDefaultMovementMode();
 }
 
 void AClassicAICharacter::StopAttackTrace()
