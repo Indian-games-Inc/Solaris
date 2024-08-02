@@ -11,7 +11,7 @@ public class CryptRaider : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "UMG", "Paper2D",
-			"FieldSystemEngine", "Slate", "SlateCore"
+			"FieldSystemEngine", "Slate", "SlateCore", "AIModule", "NavigationSystem"
 		});
 	}
 }
