@@ -16,6 +16,8 @@ public:
 	AClassicAICharacter();
 
 protected:
+	virtual void BeginPlay() override;
+
 	// Called when the game ends
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -24,12 +26,25 @@ public:
 	void TriggerAttack();
 
 private:
+	class UBlackboardComponent* GetBlackboardComponent() const;
+	
 	void PlayAttackAnimation();
 	void AttackTrace();
 
 	void StopAttack();
 	void StopAttackTrace();
 
+	void HandleStun();
+
+	void StartStun();
+	void FinishStun();
+
+	void SetSensesEnabled(const bool IsEnabled);
+	
+public:
+	UFUNCTION()
+	void OnHitEvent(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	
 private:
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
@@ -43,6 +58,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	FName IsPursuingPlayerName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	FName HitLocationKeyName;
 
 	UPROPERTY(
 		EditDefaultsOnly, BlueprintReadWrite,
@@ -85,4 +103,28 @@ private:
 
 	UPROPERTY()
 	FTimerHandle AttackAnimationTimerHandle;
+
+	UPROPERTY(
+		EditDefaultsOnly, BlueprintReadWrite,
+		Category = "AI|Stun",
+		meta = (AllowPrivateAccess = "true")
+	)
+	float StunDuration;
+
+	UPROPERTY(
+		VisibleAnywhere, BlueprintReadOnly,
+		Category = "AI|Stun",
+		meta = (AllowPrivateAccess = "true")
+	)
+	bool IsStunned;
+
+	UPROPERTY(
+		EditDefaultsOnly, BlueprintReadWrite,
+		Category = "AI|Stun", DisplayName= "Animation montage",
+		meta = (AllowPrivateAccess = "true")
+	)
+	TObjectPtr<UAnimMontage> StunAnimation;
+	
+	UPROPERTY()
+	FTimerHandle StunTimerHandle;
 };
