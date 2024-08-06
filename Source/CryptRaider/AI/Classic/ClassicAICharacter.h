@@ -25,7 +25,7 @@ public:
 
 private:
 	void PlayAttackAnimation();
-	void AttackLineTrace();
+	void AttackTrace();
 
 	void StopAttack();
 	void StopAttackTrace();

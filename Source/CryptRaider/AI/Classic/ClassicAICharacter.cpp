@@ -28,7 +28,7 @@ void AClassicAICharacter::TriggerAttack()
 
 		PlayAttackAnimation();
 		GetWorld()->GetTimerManager().SetTimer(AttackTraceTimerHandle,
-											   this, &AClassicAICharacter::AttackLineTrace,
+											   this, &AClassicAICharacter::AttackTrace,
 											   AttackTraceRate,
 											   true);
 	}
@@ -45,13 +45,19 @@ void AClassicAICharacter::PlayAttackAnimation()
 	}
 }
 
-void AClassicAICharacter::AttackLineTrace()
+void AClassicAICharacter::AttackTrace()
 {
 	const FVector Start = GetMesh()->GetSocketLocation(AttackStartSocketName);
 	const FVector End = GetMesh()->GetSocketLocation(AttackEndSocketName);
 	
+	float Radius = 10.f;
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(Radius);
+
+	// For debug purpose
+	// DrawDebugCylinder(GetWorld(), Start, End, Radius, 10, FColor::Cyan, false, 0.1);
+
 	FHitResult HitResult;
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Camera))
+	if (GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_Camera, Sphere))
 	{
 		if (auto* PlayerCharacter = Cast<ABaseCharacter>(HitResult.GetActor()); IsValid(PlayerCharacter))
 		{
