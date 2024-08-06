@@ -25,7 +25,7 @@ FString UBTTask_FindRandomRoom::GetStaticDescription() const
 		TargetActorClassName = TargetActorClass->GetName();
 	}
 
-	return FString::Printf(TEXT("Vector: %s, TargetActorClass: %s"), *GetSelectedBlackboardKey().ToString(), *TargetActorClassName);
+	return FString::Printf(TEXT("Vector: %s\nTargetActorClass: %s"), *GetSelectedBlackboardKey().ToString(), *TargetActorClassName);
 }
 
 EBTNodeResult::Type UBTTask_FindRandomRoom::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
