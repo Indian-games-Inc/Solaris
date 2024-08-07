@@ -21,12 +21,15 @@ AClassicAICharacter::AClassicAICharacter()
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AI Perception");
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AClassicAICharacter::OnTargetPerceptionUpdated);
+
+	// GetCharacterMovement()->RotationRate = FRotator{ 0.f, 100.f, 0.f };
+
+	UE_LOG(LogTemp, Warning, TEXT("Rotation Rate: %s"), *GetCharacterMovement()->RotationRate.ToString());
 }
 
 void AClassicAICharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AClassicAICharacter::OnHitEvent);
 }
 
@@ -35,6 +38,16 @@ void AClassicAICharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+}
+
+UBlackboardComponent* AClassicAICharacter::GetBlackboardComponent() const
+{
+	if (auto* AIController = Cast<AAIController>(GetController()); IsValid(AIController))
+	{
+		return AIController->GetBlackboardComponent();
+	}
+
+	return nullptr;
 }
 
 void AClassicAICharacter::TriggerAttack()
@@ -49,16 +62,6 @@ void AClassicAICharacter::TriggerAttack()
 		                                       AttackTraceRate,
 		                                       true);
 	}
-}
-
-UBlackboardComponent* AClassicAICharacter::GetBlackboardComponent() const
-{
-	if (auto* AIController = Cast<AAIController>(GetController()); IsValid(AIController))
-	{
-		return AIController->GetBlackboardComponent();
-	}
-
-	return nullptr;
 }
 
 void AClassicAICharacter::PlayAttackAnimation()
@@ -150,6 +153,8 @@ void AClassicAICharacter::SetSensesEnabled(const bool IsEnabled)
 		const UAISenseConfig* SenseConfig = *Iter;
 		AIPerceptionComponent->SetSenseEnabled(SenseConfig->GetSenseImplementation(), IsEnabled);
 	}
+
+	AIPerceptionComponent->ForgetAll();
 }
 
 void AClassicAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -170,6 +175,7 @@ void AClassicAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 		else
 		{
 			BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, false);
+			BlackboardComponent->SetValueAsVector(LastPlayerLocationKeyName, Stimulus.StimulusLocation);
 		}
 	}
 }
@@ -178,7 +184,8 @@ void AClassicAICharacter::OnHitEvent(UPrimitiveComponent* HitComp,
                                      AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                      FVector NormalImpulse, const FHitResult& Hit)
 {
-	DrawDebugSphere(GetWorld(), Hit.Location, 10, 10, FColor::Cyan, false, 3);
+	// Debug purpose only
+	// DrawDebugSphere(GetWorld(), Hit.Location, 10, 10, FColor::Cyan, false, 3);
 	if (const auto* Projectile = Cast<AProjectile>(OtherActor); IsValid(Projectile))
 	{
 		HandleStun();

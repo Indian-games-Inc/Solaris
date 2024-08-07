@@ -62,6 +62,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	FName HitLocationKeyName;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	FName LastPlayerLocationKeyName;
+
 	UPROPERTY(
 		EditDefaultsOnly, BlueprintReadWrite,
 		Category = "AI|Attack", DisplayName="Damage",
@@ -104,6 +107,10 @@ private:
 	UPROPERTY()
 	FTimerHandle AttackAnimationTimerHandle;
 
+	/*
+	 * Duration of stun
+	 * If less than animation duration, animation duration time will be used instead
+	 */
 	UPROPERTY(
 		EditDefaultsOnly, BlueprintReadWrite,
 		Category = "AI|Stun",
