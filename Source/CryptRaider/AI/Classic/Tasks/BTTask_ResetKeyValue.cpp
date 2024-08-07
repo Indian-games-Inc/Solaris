@@ -17,7 +17,6 @@ FString UBTTask_ResetKeyValue::GetStaticDescription() const
 
 EBTNodeResult::Type UBTTask_ResetKeyValue::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-
 	if (UBlackboardComponent* BlackboardComponent { OwnerComp.GetBlackboardComponent() }; IsValid(BlackboardComponent))
 	{
 		BlackboardComponent->ClearValue(GetSelectedBlackboardKey());

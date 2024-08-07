@@ -7,7 +7,7 @@
 #include "Field/FieldSystemActor.h"
 
 void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
-								 UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+                                 UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (auto* OtherDestructibleActor = Cast<ADestructible>(OtherActor); OtherDestructibleActor)
 	{
