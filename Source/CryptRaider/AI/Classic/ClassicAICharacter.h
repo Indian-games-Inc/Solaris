@@ -62,9 +62,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	FName HitLocationKeyName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName LastPlayerLocationKeyName;
-
 	UPROPERTY(
 		EditDefaultsOnly, BlueprintReadWrite,
 		Category = "AI|Attack", DisplayName="Damage",

@@ -175,7 +175,6 @@ void AClassicAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 		else
 		{
 			BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, false);
-			BlackboardComponent->SetValueAsVector(LastPlayerLocationKeyName, Stimulus.StimulusLocation);
 		}
 	}
 }
