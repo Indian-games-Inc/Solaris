@@ -22,8 +22,6 @@ AClassicAICharacter::AClassicAICharacter()
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AI Perception");
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AClassicAICharacter::OnTargetPerceptionUpdated);
 
-	// GetCharacterMovement()->RotationRate = FRotator{ 0.f, 100.f, 0.f };
-
 	UE_LOG(LogTemp, Warning, TEXT("Rotation Rate: %s"), *GetCharacterMovement()->RotationRate.ToString());
 }
 
