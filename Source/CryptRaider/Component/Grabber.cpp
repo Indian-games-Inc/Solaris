@@ -106,10 +106,15 @@ void UGrabber::Throw()
 {
 	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
 	{
-		Release();
+		if (auto* Projectile = Cast<AProjectile>(GetGrabbedItem()->GetOwner()); IsValid(Projectile))
+		{
+			Projectile->Charge();
 
-		const FVector ImpulseVector = GetForwardVector() * ThrowImpulseStrength;
-		Grabbed->SetPhysicsLinearVelocity(ImpulseVector);
+			Release();
+			
+			const FVector ImpulseVector = GetForwardVector() * ThrowImpulseStrength;
+			Grabbed->SetPhysicsLinearVelocity(ImpulseVector);
+		}
 	}
 }
 

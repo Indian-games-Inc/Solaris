@@ -24,6 +24,9 @@ public:
 	virtual void Interact() override;
 	virtual FString HintMessage() const override;
 
+	virtual bool IsCharged() const;
+	virtual void Charge();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -39,4 +42,7 @@ private:
 	float MasterFieldDestructionDelay = 5.0f;
 
 	FName GrabbedTag = "Grabbed";
+
+	UPROPERTY()
+	bool bIsCharged = false;
 };

@@ -186,7 +186,7 @@ void AClassicAICharacter::OnHitEvent(UPrimitiveComponent* HitComp,
 {
 	// Debug purpose only
 	// DrawDebugSphere(GetWorld(), Hit.Location, 10, 10, FColor::Cyan, false, 3);
-	if (const auto* Projectile = Cast<AProjectile>(OtherActor); IsValid(Projectile))
+	if (const auto* Projectile = Cast<AProjectile>(OtherActor); IsValid(Projectile) && Projectile->IsCharged())
 	{
 		HandleStun();
 

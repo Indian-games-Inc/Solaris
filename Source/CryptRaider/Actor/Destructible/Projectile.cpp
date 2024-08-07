@@ -7,12 +7,14 @@
 #include "Field/FieldSystemActor.h"
 
 void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
-                                     UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+								 UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (auto* OtherDestructibleActor = Cast<ADestructible>(OtherActor); OtherDestructibleActor)
 	{
 		AddForce(Hit.Location);
 	}
+
+	bIsCharged = false;
 }
 
 void AProjectile::Interact()
@@ -23,6 +25,16 @@ void AProjectile::Interact()
 FString AProjectile::HintMessage() const
 {
 	return Tags.Contains(GrabbedTag) ? "Release" : "Grab";
+}
+
+bool AProjectile::IsCharged() const
+{
+	return bIsCharged;
+}
+
+void AProjectile::Charge()
+{
+	bIsCharged = true;
 }
 
 void AProjectile::BeginPlay()
