@@ -18,6 +18,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "CryptRaider/Component/Flashlight.h"
+#include "Components/Movement.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -53,6 +54,8 @@ ABaseCharacter::ABaseCharacter()
 
 	Interactor = CreateDefaultSubobject<UInteractor>(TEXT("Interactor"));
 	Interactor->SetupAttachment(Hand);
+
+	Movement = CreateDefaultSubobject<UMovement>(TEXT("Movement"));
 }
 
 // Called when the game starts or when spawned
@@ -320,6 +323,11 @@ void ABaseCharacter::SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLockRef)
 bool ABaseCharacter::IsInPinLock() const
 {
 	return PinLock ? true : false;
+}
+
+UMovement* ABaseCharacter::GetMovement() const
+{
+	return Movement;
 }
 
 void ABaseCharacter::MouseClick()

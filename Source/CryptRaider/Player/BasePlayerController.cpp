@@ -8,7 +8,6 @@
 #include "InputMappingContext.h"
 #include "BaseCharacter.h"
 #include "CryptRaider/Component/Inventory.h"
-#include "CryptRaider/Data/InventoryItemWrapper.h"
 
 ABasePlayerController::ABasePlayerController()
 {
@@ -72,6 +71,12 @@ void ABasePlayerController::SetupInputComponent()
 		// Toggle Flashlight
 		EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, this,
 		                                   &ABasePlayerController::ToggleFlashlight);
+
+		// Sprinting
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this,
+										   &ABasePlayerController::StartSprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this,
+										   &ABasePlayerController::StopSprint);
 	}
 }
 
@@ -157,6 +162,22 @@ void ABasePlayerController::ToggleFlashlight()
 	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
 	{
 		PlayerCharacter->ToggleFlashlight();
+	}
+}
+
+void ABasePlayerController::StartSprint()
+{
+	if (const auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
+	{
+		PlayerCharacter->GetMovement()->StartSprint();
+	}
+}
+
+void ABasePlayerController::StopSprint()
+{
+	if (const auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
+	{
+		PlayerCharacter->GetMovement()->StopSprint();
 	}
 }
 

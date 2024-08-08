@@ -59,6 +59,9 @@ private:
 
 	void ToggleFlashlight();
 
+	void StartSprint();
+	void StopSprint();
+
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
