@@ -10,6 +10,7 @@
 class ADoorPinLock;
 class IInteractable;
 class UInputAction;
+class UMovement;
 
 UCLASS()
 class CRYPTRAIDER_API ABaseCharacter : public ACharacter
