@@ -5,10 +5,13 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "CryptRaider/Actor/Destructible/Projectile.h"
 #include "CryptRaider/Player/BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/AISenseConfig.h"
 
 // Sets default values
 AClassicAICharacter::AClassicAICharacter()
@@ -18,6 +21,30 @@ AClassicAICharacter::AClassicAICharacter()
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AI Perception");
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AClassicAICharacter::OnTargetPerceptionUpdated);
+
+}
+
+void AClassicAICharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AClassicAICharacter::OnHitEvent);
+}
+
+void AClassicAICharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+}
+
+UBlackboardComponent* AClassicAICharacter::GetBlackboardComponent() const
+{
+	if (auto* AIController = Cast<AAIController>(GetController()); IsValid(AIController))
+	{
+		return AIController->GetBlackboardComponent();
+	}
+
+	return nullptr;
 }
 
 void AClassicAICharacter::TriggerAttack()
@@ -28,9 +55,9 @@ void AClassicAICharacter::TriggerAttack()
 
 		PlayAttackAnimation();
 		GetWorld()->GetTimerManager().SetTimer(AttackTraceTimerHandle,
-											   this, &AClassicAICharacter::AttackTrace,
-											   AttackTraceRate,
-											   true);
+		                                       this, &AClassicAICharacter::AttackTrace,
+		                                       AttackTraceRate,
+		                                       true);
 	}
 }
 
@@ -40,8 +67,8 @@ void AClassicAICharacter::PlayAttackAnimation()
 	{
 		const float Duration = PlayAnimMontage(AttackAnimation);
 		GetWorld()->GetTimerManager().SetTimer(AttackAnimationTimerHandle,
-											   this, &AClassicAICharacter::StopAttack,
-											   Duration);	
+		                                       this, &AClassicAICharacter::StopAttack,
+		                                       Duration);
 	}
 }
 
@@ -49,7 +76,7 @@ void AClassicAICharacter::AttackTrace()
 {
 	const FVector Start = GetMesh()->GetSocketLocation(AttackStartSocketName);
 	const FVector End = GetMesh()->GetSocketLocation(AttackEndSocketName);
-	
+
 	float Radius = 10.f;
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(Radius);
 
@@ -83,6 +110,50 @@ void AClassicAICharacter::StopAttackTrace()
 	GetWorld()->GetTimerManager().ClearTimer(AttackTraceTimerHandle);
 }
 
+void AClassicAICharacter::HandleStun()
+{
+	if (!GetWorld()->GetTimerManager().IsTimerActive(StunTimerHandle))
+	{
+		StartStun();
+		const float AnimDuration = PlayAnimMontage(StunAnimation);
+		const float TimerDuration = std::max(AnimDuration, StunDuration);
+
+		GetWorld()->GetTimerManager().SetTimer(StunTimerHandle, this, &AClassicAICharacter::FinishStun, TimerDuration);
+	}
+}
+
+void AClassicAICharacter::StartStun()
+{
+	GetCharacterMovement()->DisableMovement();
+	SetSensesEnabled(false);
+	IsStunned = true;
+
+	if (auto* BlackboardComponent = GetBlackboardComponent(); IsValid(BlackboardComponent))
+	{
+		BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, false);
+	}
+}
+
+void AClassicAICharacter::FinishStun()
+{
+	GetCharacterMovement()->SetDefaultMovementMode();
+	SetSensesEnabled(true);
+	IsStunned = false;
+
+	GetWorld()->GetTimerManager().ClearTimer(StunTimerHandle);
+}
+
+void AClassicAICharacter::SetSensesEnabled(const bool IsEnabled)
+{
+	for (auto Iter = AIPerceptionComponent->GetSensesConfigIterator(); Iter; ++Iter)
+	{
+		const UAISenseConfig* SenseConfig = *Iter;
+		AIPerceptionComponent->SetSenseEnabled(SenseConfig->GetSenseImplementation(), IsEnabled);
+	}
+
+	AIPerceptionComponent->ForgetAll();
+}
+
 void AClassicAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (const auto* Player = Cast<ABaseCharacter>(Actor); !IsValid(Player))
@@ -91,26 +162,33 @@ void AClassicAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 		return;
 	}
 	
-	if (auto* AIController = Cast<AAIController>(GetController()); IsValid(AIController))
+	if (auto* BlackboardComponent = GetBlackboardComponent(); IsValid(BlackboardComponent))
 	{
-		if (auto* BlackboardComponent = AIController->GetBlackboardComponent(); IsValid(BlackboardComponent))
+		if (Stimulus.WasSuccessfullySensed())
 		{
-			if (Stimulus.WasSuccessfullySensed())
-			{
-				BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, true);
-				BlackboardComponent->SetValueAsBool(IsPursuingPlayerName, true);
-			}
-			else
-			{
-				BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, false);
-			}
+			BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, true);
+			BlackboardComponent->SetValueAsBool(IsPursuingPlayerName, true);
+		}
+		else
+		{
+			BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, false);
 		}
 	}
 }
 
-void AClassicAICharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AClassicAICharacter::OnHitEvent(UPrimitiveComponent* HitComp,
+                                     AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                     FVector NormalImpulse, const FHitResult& Hit)
 {
-	Super::EndPlay(EndPlayReason);
+	// Debug purpose only
+	// DrawDebugSphere(GetWorld(), Hit.Location, 10, 10, FColor::Cyan, false, 3);
+	if (const auto* Projectile = Cast<AProjectile>(OtherActor); IsValid(Projectile) && Projectile->IsCharged())
+	{
+		HandleStun();
 
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+		if (auto* BlackboardComponent = GetBlackboardComponent(); IsValid(BlackboardComponent))
+		{
+			BlackboardComponent->SetValueAsVector(HitLocationKeyName, Hit.Location);
+		}
+	}
 }

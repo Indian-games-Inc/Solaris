@@ -19,7 +19,7 @@ UBTTask_SearchInRadius::UBTTask_SearchInRadius()
 
 FString UBTTask_SearchInRadius::GetStaticDescription() const
 {
-	return FString::Printf(TEXT("TargetLocation: %s, Radius: %f"), *GetSelectedBlackboardKey().ToString(), SearchRadius);
+	return FString::Printf(TEXT("TargetLocation: %s\nRadius: %f"), *GetSelectedBlackboardKey().ToString(), SearchRadius);
 }
 
 EBTNodeResult::Type UBTTask_SearchInRadius::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
