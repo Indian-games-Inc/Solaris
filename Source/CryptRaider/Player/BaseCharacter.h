@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/Movement.h"
 #include "BaseCharacter.generated.h"
 
 class ADoorPinLock;
 class IInteractable;
 class UInputAction;
-class UMovement;
 
 UCLASS()
 class CRYPTRAIDER_API ABaseCharacter : public ACharacter
