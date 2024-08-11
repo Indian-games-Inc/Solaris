@@ -10,10 +10,6 @@
 // Sets default values for this component's properties
 UMovement::UMovement()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
 	CharacterRef = nullptr;
 	
 	MaxStamina = 100.f;
@@ -36,12 +32,6 @@ void UMovement::BeginPlay()
 	CharacterRef = Cast<ACharacter>(GetOwner());
 
 	SetMaxWalkSpeed(WalkSpeed);
-}
-
-// Called every frame
-void UMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 float UMovement::GetStaminaPercent() const
