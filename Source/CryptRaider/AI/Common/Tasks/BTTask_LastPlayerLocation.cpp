@@ -3,7 +3,6 @@
 
 #include "BTTask_LastPlayerLocation.h"
 
-#include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "CryptRaider/Player/BaseCharacter.h"
 

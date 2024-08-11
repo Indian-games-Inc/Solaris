@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "ClassicAIController.generated.h"
+#include "BaseAIController.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API AClassicAIController : public AAIController
+class CRYPTRAIDER_API ABaseAIController : public AAIController
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AClassicAIController();
+	ABaseAIController();
 
 protected:
 	// Called when the game starts or when spawned

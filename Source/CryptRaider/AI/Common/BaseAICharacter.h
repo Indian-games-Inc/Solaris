@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "ClassicAICharacter.generated.h"
+#include "BaseAICharacter.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API AClassicAICharacter : public ACharacter
+class CRYPTRAIDER_API ABaseAICharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AClassicAICharacter();
+	ABaseAICharacter();
 
 protected:
 	virtual void BeginPlay() override;
@@ -22,12 +22,19 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
+	UFUNCTION()
+	virtual void OnHitEvent(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 	UFUNCTION(BlueprintCallable)
 	void TriggerAttack();
 
-private:
+protected:
 	class UBlackboardComponent* GetBlackboardComponent() const;
-	
+
+	UFUNCTION()
+	virtual void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
+private:
 	void PlayAttackAnimation();
 	void AttackTrace();
 
@@ -40,14 +47,6 @@ private:
 	void FinishStun();
 
 	void SetSensesEnabled(const bool IsEnabled);
-	
-public:
-	UFUNCTION()
-	void OnHitEvent(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	
-private:
-	UFUNCTION()
-	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))

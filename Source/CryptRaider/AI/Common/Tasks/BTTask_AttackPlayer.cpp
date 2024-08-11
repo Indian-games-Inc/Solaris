@@ -4,7 +4,7 @@
 #include "BTTask_AttackPlayer.h"
 
 #include "AIController.h"
-#include "CryptRaider/AI/Classic/ClassicAICharacter.h"
+#include "CryptRaider/AI/Common/BaseAICharacter.h"
 
 UBTTask_AttackPlayer::UBTTask_AttackPlayer()
 {
@@ -20,7 +20,7 @@ EBTNodeResult::Type UBTTask_AttackPlayer::ExecuteTask(UBehaviorTreeComponent& Ow
 {
 	AAIController* AIController { OwnerComp.GetAIOwner() };
 
-	if (AClassicAICharacter* AICharacter = Cast<AClassicAICharacter>(AIController->GetCharacter());
+	if (ABaseAICharacter* AICharacter = Cast<ABaseAICharacter>(AIController->GetCharacter());
 		IsValid(AICharacter))
 	{
 		if (const ACharacter* PlayerCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter())
