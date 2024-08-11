@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "CryptRaider/Actor/Trigger/Dialog/Pick/ItemAwareDialogPickStrategy.h"
+#include "CryptRaider/Data/InventoryItemWrapper.h"
 #include "Inventory.generated.h"
 
 struct FInventoryItemWrapper;
