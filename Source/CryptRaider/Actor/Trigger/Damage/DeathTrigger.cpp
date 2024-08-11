@@ -19,7 +19,7 @@ void ADeathTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	if (const auto* Character = Cast<ABaseCharacter>(OtherActor))
 	{
-		UGameplayStatics::ApplyDamage(OtherActor, Character->GetMaxHealth(), nullptr, this, UDamageType::StaticClass());	
+		UGameplayStatics::ApplyDamage(OtherActor, Character->GetHealth()->GetMaxHealth(), nullptr, this, UDamageType::StaticClass());	
 	}
 }
 

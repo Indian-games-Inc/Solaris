@@ -18,7 +18,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "CryptRaider/Component/Flashlight.h"
-#include "Components/Movement.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -56,13 +55,7 @@ ABaseCharacter::ABaseCharacter()
 	Interactor->SetupAttachment(Hand);
 
 	Movement = CreateDefaultSubobject<UMovement>(TEXT("Movement"));
-}
-
-// Called when the game starts or when spawned
-void ABaseCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	Health = MaxHealth;
+	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
 }
 
 // Called every frame
@@ -198,12 +191,9 @@ float ABaseCharacter::TakeDamage(float Damage,
 {
 	float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	DamageToApply = FMath::Min(Health, DamageToApply);
-	Health -= DamageToApply;
+	Health->TakeDamage(DamageToApply);
 
-	UE_LOG(LogTemp, Warning, TEXT("Damage applied, Health: %f"), Health);
-
-	if (IsDead())
+	if (Health->IsDead())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Oops you are dead"));
 		if (ADefaultGameMode* GameMode = GetWorld()->GetAuthGameMode<ADefaultGameMode>(); GameMode)
@@ -215,26 +205,6 @@ float ABaseCharacter::TakeDamage(float Damage,
 	}
 
 	return DamageToApply;
-}
-
-bool ABaseCharacter::IsDead() const
-{
-	return Health <= 0;
-}
-
-float ABaseCharacter::GetHealthPercent() const
-{
-	return Health / MaxHealth;
-}
-
-float ABaseCharacter::GetMaxHealth() const
-{
-	return MaxHealth;
-}
-
-float ABaseCharacter::GetHealth() const
-{
-	return Health;
 }
 
 FText ABaseCharacter::ConstructHintFor(const IInteractable* Interactable) const
@@ -328,6 +298,11 @@ bool ABaseCharacter::IsInPinLock() const
 UMovement* ABaseCharacter::GetMovement() const
 {
 	return Movement;
+}
+
+UHealth* ABaseCharacter::GetHealth() const
+{
+	return Health;
 }
 
 void ABaseCharacter::MouseClick()
