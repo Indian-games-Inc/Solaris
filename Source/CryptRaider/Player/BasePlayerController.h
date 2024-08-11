@@ -59,6 +59,9 @@ private:
 
 	void ToggleFlashlight();
 
+	void StartSprint();
+	void StopSprint();
+
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
@@ -105,6 +108,10 @@ private:
 	/** Toggle Flashlight Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* ToggleFlashlightAction;
+
+	/** Interact Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* SprintAction;
 
 	FTimerHandle RestartTimer;
 

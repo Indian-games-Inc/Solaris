@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/Movement.h"
 #include "BaseCharacter.generated.h"
 
 class ADoorPinLock;
@@ -51,6 +52,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsInPinLock() const;
 
+	UFUNCTION(BlueprintCallable)
+	UMovement* GetMovement() const;
+	
 public:
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
@@ -75,6 +79,9 @@ public:
 	void SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLock);
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Components, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UMovement> Movement;
+	
 	/** Should really be changed to some general entity is in GUI or sorta **/
 	TSoftObjectPtr<ADoorPinLock> PinLock = nullptr;
 
