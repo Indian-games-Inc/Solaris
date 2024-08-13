@@ -6,6 +6,10 @@
 #include "GameFramework/Character.h"
 #include "BaseAICharacter.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPlayerOnSightDelegate, const bool, IsPlayerOnSight, const FVector&, PlayerLocation);
+
+
 UCLASS()
 class CRYPTRAIDER_API ABaseAICharacter : public ACharacter
 {
@@ -16,21 +20,17 @@ public:
 	ABaseAICharacter();
 
 protected:
-	virtual void BeginPlay() override;
-
 	// Called when the game ends
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
-	UFUNCTION()
-	virtual void OnHitEvent(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
 	UFUNCTION(BlueprintCallable)
 	void TriggerAttack();
 
-protected:
-	class UBlackboardComponent* GetBlackboardComponent() const;
+	UFUNCTION(BlueprintCallable)
+	void GetStunned();
 
+protected:
 	UFUNCTION()
 	virtual void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 
@@ -41,25 +41,18 @@ private:
 	void StopAttack();
 	void StopAttackTrace();
 
-	void HandleStun();
-
 	void StartStun();
 	void FinishStun();
 
 	void SetSensesEnabled(const bool IsEnabled);
 
+public:
+	UPROPERTY(BlueprintAssignable)
+	FPlayerOnSightDelegate OnPlayerOnSightUpdate;
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAIPerceptionComponent> AIPerceptionComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName IsPlayerOnSightName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName IsPursuingPlayerName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName HitLocationKeyName;
 
 	UPROPERTY(
 		EditDefaultsOnly, BlueprintReadWrite,

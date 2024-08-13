@@ -17,7 +17,7 @@ UBTTask_SetTargetLocation::UBTTask_SetTargetLocation()
 
 FString UBTTask_SetTargetLocation::GetStaticDescription() const
 {
-	return FString::Printf(TEXT("Target: %s\nLocation: %s"),
+	return FString::Printf(TEXT("Target: %s\nSource: %s"),
 	                       *GetSelectedBlackboardKey().ToString(),
 	                       *Location.SelectedKeyName.ToString());
 }

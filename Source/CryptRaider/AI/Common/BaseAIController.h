@@ -25,6 +25,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UFUNCTION()
+	void OnPLayerOnSight(const bool IsPlayerOnSight, const FVector& PlayerLocation);
+
+	UFUNCTION()
+	void OnActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
+private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
@@ -33,5 +40,18 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBlackboardComponent> BlackboardComponent;
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI|Blackboard", meta = (AllowPrivateAccess = "true"))
+	FName IsPlayerOnSightKeyName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI|Blackboard", meta = (AllowPrivateAccess = "true"))
+	FName IsPursuingPlayerKeyName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI|Blackboard", meta = (AllowPrivateAccess = "true"))
+	FName PlayerLocationKeyName;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI|Blackboard", meta = (AllowPrivateAccess = "true"))
+	FName HitLocationKeyName;
 };
 

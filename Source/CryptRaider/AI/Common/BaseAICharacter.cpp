@@ -3,10 +3,6 @@
 
 #include "BaseAICharacter.h"
 
-#include "AIController.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "CryptRaider/Actor/Destructible/Projectile.h"
 #include "CryptRaider/Player/BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -21,13 +17,6 @@ ABaseAICharacter::ABaseAICharacter()
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AI Perception");
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAICharacter::OnTargetPerceptionUpdated);
-
-}
-
-void ABaseAICharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABaseAICharacter::OnHitEvent);
 }
 
 void ABaseAICharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -35,16 +24,6 @@ void ABaseAICharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-}
-
-UBlackboardComponent* ABaseAICharacter::GetBlackboardComponent() const
-{
-	if (auto* AIController = Cast<AAIController>(GetController()); IsValid(AIController))
-	{
-		return AIController->GetBlackboardComponent();
-	}
-
-	return nullptr;
 }
 
 void ABaseAICharacter::TriggerAttack()
@@ -110,7 +89,7 @@ void ABaseAICharacter::StopAttackTrace()
 	GetWorld()->GetTimerManager().ClearTimer(AttackTraceTimerHandle);
 }
 
-void ABaseAICharacter::HandleStun()
+void ABaseAICharacter::GetStunned()
 {
 	if (!GetWorld()->GetTimerManager().IsTimerActive(StunTimerHandle))
 	{
@@ -128,10 +107,9 @@ void ABaseAICharacter::StartStun()
 	SetSensesEnabled(false);
 	IsStunned = true;
 
-	if (auto* BlackboardComponent = GetBlackboardComponent(); IsValid(BlackboardComponent))
-	{
-		BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, false);
-	}
+	const FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetCharacter()->GetActorLocation();
+
+	OnPlayerOnSightUpdate.Broadcast(false, PlayerLocation);
 }
 
 void ABaseAICharacter::FinishStun()
@@ -161,34 +139,6 @@ void ABaseAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stim
 		UE_LOG(LogTemp, Warning, TEXT("Detected non-player Actor"));
 		return;
 	}
-	
-	if (auto* BlackboardComponent = GetBlackboardComponent(); IsValid(BlackboardComponent))
-	{
-		if (Stimulus.WasSuccessfullySensed())
-		{
-			BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, true);
-			BlackboardComponent->SetValueAsBool(IsPursuingPlayerName, true);
-		}
-		else
-		{
-			BlackboardComponent->SetValueAsBool(IsPlayerOnSightName, false);
-		}
-	}
-}
 
-void ABaseAICharacter::OnHitEvent(UPrimitiveComponent* HitComp,
-                                     AActor* OtherActor, UPrimitiveComponent* OtherComp,
-                                     FVector NormalImpulse, const FHitResult& Hit)
-{
-	// Debug purpose only
-	// DrawDebugSphere(GetWorld(), Hit.Location, 10, 10, FColor::Cyan, false, 3);
-	if (const auto* Projectile = Cast<AProjectile>(OtherActor); IsValid(Projectile) && Projectile->IsCharged())
-	{
-		HandleStun();
-
-		if (auto* BlackboardComponent = GetBlackboardComponent(); IsValid(BlackboardComponent))
-		{
-			BlackboardComponent->SetValueAsVector(HitLocationKeyName, Hit.Location);
-		}
-	}
+	OnPlayerOnSightUpdate.Broadcast(Stimulus.WasSuccessfullySensed(), Stimulus.StimulusLocation);
 }
