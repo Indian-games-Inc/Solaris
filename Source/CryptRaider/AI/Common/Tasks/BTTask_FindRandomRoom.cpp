@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CryptRaider/AI/Classic/Tasks/BTTask_FindRandomRoom.h"
+#include "CryptRaider/AI/Common/Tasks/BTTask_FindRandomRoom.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"

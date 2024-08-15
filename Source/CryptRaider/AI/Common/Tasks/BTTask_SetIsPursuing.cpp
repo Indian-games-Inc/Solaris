@@ -3,7 +3,6 @@
 
 #include "BTTask_SetIsPursuing.h"
 
-#include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_SetIsPursuing::UBTTask_SetIsPursuing()

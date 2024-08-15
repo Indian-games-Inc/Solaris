@@ -4,20 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "ClassicAICharacter.generated.h"
+#include "BaseAICharacter.generated.h"
+
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPlayerOnSightDelegate, const bool, IsPlayerOnSight, const FVector&, PlayerLocation);
+
 
 UCLASS()
-class CRYPTRAIDER_API AClassicAICharacter : public ACharacter
+class CRYPTRAIDER_API ABaseAICharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AClassicAICharacter();
+	ABaseAICharacter();
 
 protected:
-	virtual void BeginPlay() override;
-
 	// Called when the game ends
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -25,42 +27,32 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TriggerAttack();
 
+	UFUNCTION(BlueprintCallable)
+	void GetStunned();
+
+protected:
+	UFUNCTION()
+	virtual void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
 private:
-	class UBlackboardComponent* GetBlackboardComponent() const;
-	
 	void PlayAttackAnimation();
 	void AttackTrace();
 
 	void StopAttack();
 	void StopAttackTrace();
 
-	void HandleStun();
-
 	void StartStun();
 	void FinishStun();
 
 	void SetSensesEnabled(const bool IsEnabled);
-	
+
 public:
-	UFUNCTION()
-	void OnHitEvent(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	
-private:
-	UFUNCTION()
-	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	UPROPERTY(BlueprintAssignable)
+	FPlayerOnSightDelegate OnPlayerOnSightUpdate;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAIPerceptionComponent> AIPerceptionComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName IsPlayerOnSightName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName IsPursuingPlayerName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	FName HitLocationKeyName;
 
 	UPROPERTY(
 		EditDefaultsOnly, BlueprintReadWrite,

@@ -3,7 +3,6 @@
 
 #include "BTTask_SearchInRadius.h"
 
-#include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
