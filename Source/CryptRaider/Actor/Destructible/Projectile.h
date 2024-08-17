@@ -26,6 +26,7 @@ public:
 
 	virtual bool IsCharged() const;
 	virtual void Charge();
+	// virtual void Tick(float DeltaTime) override;
 
 protected:
 	virtual void BeginPlay() override;

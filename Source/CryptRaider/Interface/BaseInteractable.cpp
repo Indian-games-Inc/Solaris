@@ -3,6 +3,8 @@
 
 #include "BaseInteractable.h"
 
+#include "GameFramework/Character.h"
+
 
 // Sets default values
 ABaseInteractable::ABaseInteractable()
@@ -21,10 +23,20 @@ void ABaseInteractable::BeginPlay()
 	OnTakeAnyDamage.AddUniqueDynamic(this, &ABaseInteractable::OnDamage);
 }
 
+void ABaseInteractable::PlayNoise()
+{
+	MakeNoise(0.5F, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(), GetActorLocation());
+}
+
 // Called every frame
 void ABaseInteractable::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (GetVelocity().Length() > 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable, %s"), *this->GetName());
+		PlayNoise();
+	}
 }
 
 bool ABaseInteractable::IsActive() const
