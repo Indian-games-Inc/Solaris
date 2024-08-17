@@ -23,20 +23,14 @@ void ABaseInteractable::BeginPlay()
 	OnTakeAnyDamage.AddUniqueDynamic(this, &ABaseInteractable::OnDamage);
 }
 
-void ABaseInteractable::PlayNoise()
-{
-	MakeNoise(0.5F, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(), GetActorLocation());
-}
-
 // Called every frame
 void ABaseInteractable::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (GetVelocity().Length() > 0)
+	if (GetVelocity().Length() > 100)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable, %s, %f"), *this->GetName(), GetVelocity().Length());
-		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable, %s"), *this->GetName());
-		PlayNoise();
+		MakeNoise(0.5F, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(), GetActorLocation());
 	}
 }
 
