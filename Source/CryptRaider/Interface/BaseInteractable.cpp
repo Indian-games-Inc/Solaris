@@ -34,6 +34,7 @@ void ABaseInteractable::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (GetVelocity().Length() > 0)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable, %s, %f"), *this->GetName(), GetVelocity().Length());
 		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable, %s"), *this->GetName());
 		PlayNoise();
 	}
