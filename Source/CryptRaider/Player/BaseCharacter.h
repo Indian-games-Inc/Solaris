@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/Movement.h"
+#include "Components/Health.h"
 #include "BaseCharacter.generated.h"
 
 class ADoorPinLock;
@@ -19,10 +20,6 @@ class CRYPTRAIDER_API ABaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 public:
 	// Called every frame
@@ -41,20 +38,14 @@ public:
 	FText HintMessage() const;
 
 	UFUNCTION(BlueprintPure)
-	bool IsDead() const;
-
-	UFUNCTION(BlueprintPure)
-	float GetHealthPercent() const;
-
-	float GetMaxHealth() const;
-	float GetHealth() const;
-
-	UFUNCTION(BlueprintPure)
 	bool IsInPinLock() const;
 
 	UFUNCTION(BlueprintCallable)
 	UMovement* GetMovement() const;
-	
+
+	UFUNCTION(BlueprintCallable)
+	UHealth* GetHealth() const;
+
 public:
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
@@ -81,7 +72,10 @@ public:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Components, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UMovement> Movement;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Components, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UHealth> Health;
+
 	/** Should really be changed to some general entity is in GUI or sorta **/
 	TSoftObjectPtr<ADoorPinLock> PinLock = nullptr;
 
@@ -96,10 +90,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category=Flashlight)
 	TSubclassOf<class AFlashlight> FlashlightClass;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Flashlight, meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* Flashlight;
-	
+
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* SkeletalMeshComponent;
 
@@ -114,10 +108,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UInteractor* Interactor;
-
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	float MaxHealth = 100;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float Health;
 };
