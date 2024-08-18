@@ -8,6 +8,7 @@
 
 #include "BasePlayerController.generated.h"
 
+struct FInputActionValue;
 class ADoorPinLock;
 class UInventory;
 class UInputAction;
@@ -39,17 +40,8 @@ public:
 	FVector GetWorldLocationFromCursor(FVector& WorldDirection) const;
 
 private:
-	/** Called for movement input */
-	void Move(const struct FInputActionValue& Value);
-
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-
-	void Jump();
-	void StopJumping();
-
-	/** Called for crouch */
-	void OnCrouch();
 
 	/** Called for interaction with world objects */
 	void Grab();
@@ -58,9 +50,6 @@ private:
 	void MouseClick();
 
 	void ToggleFlashlight();
-
-	void StartSprint();
-	void StopSprint();
 
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
@@ -75,7 +64,7 @@ private:
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* LookAction;
+	UInputAction* LookAction;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))

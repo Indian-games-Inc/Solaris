@@ -17,6 +17,7 @@ ABasePlayerController::ABasePlayerController()
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	SetupInputComponent();
 }
 
 void ABasePlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
@@ -39,100 +40,42 @@ void ABasePlayerController::SetupInputComponent()
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this,
-		                                   &ABasePlayerController::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this,
-		                                   &ABasePlayerController::StopJumping);
-
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
-		                                   &ABasePlayerController::Move);
-
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
-		                                   &ABasePlayerController::Look);
-
-		// Crouching
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this,
-		                                   &ABasePlayerController::OnCrouch);
-
-		// Interaction with world
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this,
-		                                   &ABasePlayerController::Grab);
-		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this,
-		                                   &ABasePlayerController::Throw);
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this,
-		                                   &ABasePlayerController::Interact);
-		// Interaction with PinLock
-		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, this,
-		                                   &ABasePlayerController::MouseClick);
-
-		// Toggle Flashlight
-		EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, this,
-		                                   &ABasePlayerController::ToggleFlashlight);
-
-		// Sprinting
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this,
-										   &ABasePlayerController::StartSprint);
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this,
-										   &ABasePlayerController::StopSprint);
-	}
-}
-
-void ABasePlayerController::Move(const FInputActionValue& Value)
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->Move(Value);
-	}
-}
-
-void ABasePlayerController::Look(const FInputActionValue& Value)
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->Look(Value);
-	}
-}
-
-void ABasePlayerController::Jump()
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->Jump();
-	}
-}
-
-void ABasePlayerController::StopJumping()
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->StopJumping();
-	}
-}
-
-void ABasePlayerController::OnCrouch()
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->OnCrouch();
-	}
-}
-
-void ABasePlayerController::Grab()
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->Grab();
-	}
-}
-
-void ABasePlayerController::Throw()
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->Throw();
+		if (auto* BaseCharacter = Cast<ABaseCharacter>(GetCharacter()); IsValid(BaseCharacter))
+		{
+			if (auto* Movement = BaseCharacter->GetMovement(); IsValid(Movement))
+			{
+				//Movement
+				EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, Movement,
+				                                   &UMovement::Jump);
+				//Moving
+				EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, Movement,
+				                                   &UMovement::Move);
+				// Crouching
+				EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, Movement,
+				                                   &UMovement::Crouch);
+				// Sprinting
+				EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, Movement,
+				                                   &UMovement::StartSprint);
+				EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, Movement,
+				                                   &UMovement::StopSprint);
+			}
+			//Looking
+			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, BaseCharacter,
+			                                   &ABaseCharacter::Look);
+			// Interaction with world
+			EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, BaseCharacter,
+			                                   &ABaseCharacter::Grab);
+			EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, BaseCharacter,
+			                                   &ABaseCharacter::Throw);
+			EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this,
+			                                   &ABasePlayerController::Interact);
+			// Interaction with PinLock
+			EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, BaseCharacter,
+			                                   &ABaseCharacter::MouseClick);
+			// Toggle Flashlight
+			EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, BaseCharacter,
+			                                   &ABaseCharacter::ToggleFlashlight);
+		}
 	}
 }
 
@@ -146,38 +89,6 @@ void ABasePlayerController::Interact()
 		{
 			Inventory->AddItem(Item.GetValue());
 		}
-	}
-}
-
-void ABasePlayerController::MouseClick()
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->MouseClick();
-	}
-}
-
-void ABasePlayerController::ToggleFlashlight()
-{
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->ToggleFlashlight();
-	}
-}
-
-void ABasePlayerController::StartSprint()
-{
-	if (const auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->GetMovement()->StartSprint();
-	}
-}
-
-void ABasePlayerController::StopSprint()
-{
-	if (const auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->GetMovement()->StopSprint();
 	}
 }
 

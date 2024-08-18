@@ -15,7 +15,6 @@
 #include "CryptRaider/Component/Interactor.h"
 #include "CryptRaider/Data/InventoryItemWrapper.h"
 #include "CryptRaider/GameMode/DefaultGameMode.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "CryptRaider/Component/Flashlight.h"
 
@@ -58,36 +57,6 @@ ABaseCharacter::ABaseCharacter()
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
 }
 
-// Called every frame
-void ABaseCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-void ABaseCharacter::Move(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (!Controller)
-	{
-		return;
-	}
-
-	if (!IsOnLadder)
-	{
-		// add movement 
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		AddMovementInput(GetActorRightVector(), MovementVector.X);
-	}
-	else
-	{
-		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
-		AddMovementInput(GetActorUpVector(), MovementVector.Y);
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-	}
-}
-
 void ABaseCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
@@ -112,24 +81,6 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
-	}
-}
-
-void ABaseCharacter::Jump()
-{
-	UnCrouch();
-	Super::Jump();
-}
-
-void ABaseCharacter::OnCrouch()
-{
-	if (bIsCrouched)
-	{
-		UnCrouch();
-	}
-	else
-	{
-		Crouch();
 	}
 }
 
@@ -265,11 +216,6 @@ void ABaseCharacter::InteractWithPinLock(FVector& Start, FVector& End)
 		UE_LOG(LogTemp, Warning, TEXT("B: %s"), *Hit.BoneName.ToString());
 		PinLock->PressButton(Hit.BoneName.ToString());
 	}
-}
-
-void ABaseCharacter::SetOnLadder(bool Value)
-{
-	IsOnLadder = Value;
 }
 
 /** Pin code part **/
