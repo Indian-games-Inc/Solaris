@@ -17,7 +17,7 @@ ABasePlayerController::ABasePlayerController()
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	SetupInputComponent();
+	SetupInput();
 }
 
 void ABasePlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
@@ -27,10 +27,8 @@ void ABasePlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
 	GetWorldTimerManager().SetTimer(RestartTimer, this, &APlayerController::RestartLevel, RestartDelay);
 }
 
-void ABasePlayerController::SetupInputComponent()
+void ABasePlayerController::SetupInput()
 {
-	Super::SetupInputComponent();
-
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
