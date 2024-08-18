@@ -37,14 +37,6 @@ void AProjectile::Charge()
 	bIsCharged = true;
 }
 
-void AProjectile::Tick(float DeltaTime)
-{
-	if (!Tags.Contains(GrabbedTag))
-	{
-		Super::Tick(DeltaTime);
-	}
-}
-
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
