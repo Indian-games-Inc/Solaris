@@ -106,4 +106,14 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float RestartDelay = 5.f;
+
+	/** Loudness of the events **/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
+	float MoveLoudness = 0.1F;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
+	float JumpLoudness = 1.0F;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
+	float FlashlightLoudness = 0.1F;
+	
+	
 };

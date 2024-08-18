@@ -35,10 +35,10 @@ void ABaseInteractable::Tick(float DeltaTime)
 void ABaseInteractable::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (GetVelocity().Length() > 100)
+	if (GetVelocity().Length() > VelocityLimit)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable, %s, %f"), *this->GetName(), GetVelocity().Length());
-		MakeNoise(0.5F, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(), GetActorLocation());
+		MakeNoise(LoudnessOfOnHit, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(), GetActorLocation());
 	}
 }
 
