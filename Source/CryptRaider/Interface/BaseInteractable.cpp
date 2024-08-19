@@ -37,7 +37,7 @@ void ABaseInteractable::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 {
 	if (GetVelocity().Length() > VelocityLimit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable, %s, %f"), *this->GetName(), GetVelocity().Length());
+		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable::OnHit fired on the: %s, with velocity %f"), *this->GetName(), GetVelocity().Length());
 		MakeNoise(LoudnessOfOnHit, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(), GetActorLocation());
 	}
 }
