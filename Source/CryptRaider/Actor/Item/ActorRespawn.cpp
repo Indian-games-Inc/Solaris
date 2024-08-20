@@ -24,27 +24,24 @@ void AActorRespawn::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AActorRespawn::OnItemDestroyed(AActor* DestroyedActor)
+void AActorRespawn::OnActorDestroyed(AActor* DestroyedActor)
 {
+	const float RespawnDelayRate = RespawnDelay > 0 ? RespawnDelay : 0.1f;
 	GetWorld()->GetTimerManager().SetTimer(RespawnTimerHandle,
 	                                       this, &AActorRespawn::RespawnActor,
-	                                       RespawnDelay > 0 ? RespawnDelay : 0.1f);
+	                                       RespawnDelayRate);
 }
 
 void AActorRespawn::RespawnActor()
 {
 	if (IsValid(ChildActorComponent))
 	{
-		if (IsValid(ChildActorComponent->GetChildActor()))
-		{
-			ChildActorComponent->GetChildActor()->OnDestroyed.RemoveAll(this);
-			ChildActorComponent->DestroyChildActor();
-		}
-	
+		ChildActorComponent->DestroyChildActor();
 		ChildActorComponent->CreateChildActor();
-		if (IsValid(ChildActorComponent->GetChildActor()))
+
+		if (auto* Actor = ChildActorComponent->GetChildActor(); IsValid(Actor))
 		{
-			ChildActorComponent->GetChildActor()->OnDestroyed.AddDynamic(this, &AActorRespawn::OnItemDestroyed);	
+			Actor->OnDestroyed.AddDynamic(this, &AActorRespawn::OnActorDestroyed);	
 		}
 	}
 }

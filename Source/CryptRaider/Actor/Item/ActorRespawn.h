@@ -28,7 +28,7 @@ protected:
 
 private:
 	UFUNCTION()
-	void OnItemDestroyed(AActor* DestroyedActor);
+	void OnActorDestroyed(AActor* DestroyedActor);
 
 	void RespawnActor();
 	
