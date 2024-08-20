@@ -50,15 +50,7 @@ void ALadderTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	
 	if (auto* Character = Cast<ABaseCharacter>(OtherActor))
 	{
-		if (IsGlued)
-		{
-			Character->SetOnLadder(true);
-		}
-		else
-		{
-			Character->SetOnLadder(false);
-			Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-		}
+		Character->GetMovement()->SetOnLadder(IsGlued);
 	}
 }
 
@@ -68,8 +60,7 @@ void ALadderTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	Super::OnEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 	if (auto* Character = Cast<ABaseCharacter>(OtherActor))
 	{
-		Character->SetOnLadder(false);
-		Character->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+		Character->GetMovement()->SetOnLadder(false);
 	}
 }
 

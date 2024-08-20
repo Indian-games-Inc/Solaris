@@ -8,6 +8,8 @@
 #include "Movement.generated.h"
 
 
+struct FInputActionValue;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UMovement : public UActorComponent
 {
@@ -22,27 +24,38 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+public:
 	UFUNCTION(BlueprintCallable)
 	float GetStaminaPercent() const;
-	
-	UFUNCTION(BlueprintCallable)
-	void StartSprint();
 
-	UFUNCTION(BlueprintCallable)
+	void Move(const FInputActionValue& Value);
+	void Jump();
+	void Crouch();
+
+	void StartSprint();
 	void StopSprint();
-	
-public:
+
+	void SetOnLadder(const bool IsOnLadder);
+
+private:
 	UFUNCTION()
 	void SprintTick();
 
 	UFUNCTION()
 	void StaminaRestorationTick();
 
+	void StartStaminaRestoration();
 	void StopStaminaRestoration();
 
 private:
 	FTimerManager& GetTimerManager() const;
 	void SetMaxWalkSpeed(const float Speed) const;
+	bool IsConsumingStamina() const;
+	void ConsumeStamina(const float Amount);
+	void RestoreStamina(const float Amount);
 
 private:
 	UPROPERTY(BlueprintReadOnly, Category=Character, meta = (AllowPrivateAccess = "true"))
@@ -61,7 +74,7 @@ private:
 	float StaminaRestoreThreshold;
 
 	UPROPERTY()
-	bool bUseThreshold = false;
+	bool bIsStaminaBlocked = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Parameters, meta = (AllowPrivateAccess = "true"))
 	float SprintSpeed;
@@ -70,7 +83,10 @@ private:
 	float WalkSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Parameters, meta = (AllowPrivateAccess = "true"))
-	float StaminaConsumption;
+	float SprintStaminaConsumption;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Parameters, meta = (AllowPrivateAccess = "true"))
+	float JumpStaminaConsumption;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Parameters, meta = (AllowPrivateAccess = "true"))
 	float StaminaConsumptionRate;
@@ -81,9 +97,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Parameters, meta = (AllowPrivateAccess = "true"))
 	float StaminaRestorationRate;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Parameters, meta = (AllowPrivateAccess = "true"))
+	float StaminaRestorationDelay;
+	
 	UPROPERTY()
 	FTimerHandle SprintUpdateTimerHandle;
 	
 	UPROPERTY()
 	FTimerHandle StaminaRestorationTimerHandle;
+
+	UPROPERTY()
+	bool bIsOnLadder;
 };
