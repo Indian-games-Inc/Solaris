@@ -31,6 +31,11 @@ public:
 	void DisablePhysics() const;
 	void EnablePhysics() const;
 
+	UFUNCTION()
+	virtual void OnDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	                      AController* InstigatedBy,
+	                      AActor* DamageCauser);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Body;
