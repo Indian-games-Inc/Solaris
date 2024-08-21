@@ -76,6 +76,8 @@ void UMovement::Move(const FInputActionValue& Value)
 		CharacterRef->AddMovementInput(Up, MovementVector.Y);
 		CharacterRef->AddMovementInput(Forward, MovementVector.Y);
 	}
+
+	GetOwner()->MakeNoise(MoveLoudness, GetOwner()->GetInstigator(), GetOwner()->GetActorLocation());
 }
 
 void UMovement::Jump()
@@ -86,6 +88,7 @@ void UMovement::Jump()
 
 		CharacterRef->UnCrouch();
 		CharacterRef->Jump();
+		GetOwner()->MakeNoise(JumpLoudness, GetOwner()->GetInstigator(), GetOwner()->GetActorLocation());
 	}
 }
 
@@ -139,6 +142,7 @@ void UMovement::SprintTick()
 	if (IsConsumingStamina())
 	{
 		ConsumeStamina(SprintStaminaConsumption);
+		GetOwner()->MakeNoise(SprintLoudness, GetOwner()->GetInstigator(), GetOwner()->GetActorLocation());
 	}
 	if (CurrentStamina <= MinStamina)
 	{
