@@ -108,4 +108,13 @@ private:
 
 	UPROPERTY()
 	bool bIsOnLadder;
+
+	/** Loudness of the events **/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
+	float MoveLoudness = 0.1F;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
+	float JumpLoudness = 1.0F;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
+	float SprintLoudness = 1.0F;
+
 };
