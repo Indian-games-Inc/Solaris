@@ -18,6 +18,7 @@ ABaseInteractable::ABaseInteractable()
 void ABaseInteractable::BeginPlay()
 {
 	Super::BeginPlay();
+	OnTakeAnyDamage.AddUniqueDynamic(this, &ABaseInteractable::OnDamage);
 }
 
 // Called every frame
@@ -52,4 +53,10 @@ void ABaseInteractable::EnablePhysics() const
 {
 	Body->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Body->OnActorEnableCollisionChanged();
+}
+
+void ABaseInteractable::OnDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+                                 AController* InstigatedBy, AActor* DamageCauser)
+{
+	Destroy();
 }
