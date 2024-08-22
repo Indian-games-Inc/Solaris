@@ -14,7 +14,7 @@ UBTTask_SwitchStage::UBTTask_SwitchStage()
 FString UBTTask_SwitchStage::GetStaticDescription() const
 {
 	const UEnum* EnumPtr = StaticEnum<EMonsterStage>();
-	const FString StageString = EnumPtr->GetDisplayNameTextByValue(static_cast<int64>(NewStage)).ToString();
+	const FString StageString = EnumPtr->GetDisplayNameTextByValue(StaticCast<int64>(NewStage)).ToString();
 
 	return FString::Printf(TEXT("Key: %s, New Stage: %s"),
 	                       *GetSelectedBlackboardKey().ToString(),
@@ -25,7 +25,7 @@ EBTNodeResult::Type UBTTask_SwitchStage::ExecuteTask(UBehaviorTreeComponent& Own
 {
 	UBlackboardComponent* BlackboardComponent { OwnerComp.GetBlackboardComponent() };
 
-	BlackboardComponent->SetValueAsEnum(GetSelectedBlackboardKey(), static_cast<uint8>(NewStage));
+	BlackboardComponent->SetValueAsEnum(GetSelectedBlackboardKey(), StaticCast<uint8>(NewStage));
 	
 	return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
 }

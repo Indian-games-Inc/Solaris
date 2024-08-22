@@ -14,7 +14,7 @@ UBTDecorator_StageCheck::UBTDecorator_StageCheck()
 FString UBTDecorator_StageCheck::GetStaticDescription() const
 {
 	const UEnum* EnumPtr = StaticEnum<EMonsterStage>();
-	const FString StageString = EnumPtr->GetDisplayNameTextByValue(static_cast<int64>(Stage)).ToString();
+	const FString StageString = EnumPtr->GetDisplayNameTextByValue(StaticCast<int64>(Stage)).ToString();
 
 	return FString::Printf(TEXT("Key: %s, Stage: %s"),
 						   *GetSelectedBlackboardKey().ToString(),
@@ -24,7 +24,7 @@ FString UBTDecorator_StageCheck::GetStaticDescription() const
 bool UBTDecorator_StageCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	const UBlackboardComponent* BlackboardComponent { OwnerComp.GetBlackboardComponent() };
-	const EMonsterStage CurrentStage = static_cast<EMonsterStage>(BlackboardComponent->GetValueAsEnum(GetSelectedBlackboardKey()));
+	const EMonsterStage CurrentStage = StaticCast<EMonsterStage>(BlackboardComponent->GetValueAsEnum(GetSelectedBlackboardKey()));
 
 	return CurrentStage == Stage;
 }

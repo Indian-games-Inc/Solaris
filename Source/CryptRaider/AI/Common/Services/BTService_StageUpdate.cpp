@@ -64,7 +64,7 @@ void UBTService_StageUpdate::UpdateStage(UBehaviorTreeComponent* OwnerComp)
 	if (UBlackboardComponent* BlackboardComponent = OwnerComp->GetBlackboardComponent(); BlackboardComponent)
 	{
 		SavedStage = NextStage;
-		BlackboardComponent->SetValueAsEnum(StageKey.SelectedKeyName, static_cast<uint8>(NextStage));	
+		BlackboardComponent->SetValueAsEnum(StageKey.SelectedKeyName, StaticCast<uint8>(NextStage));	
 	}
 }
 
