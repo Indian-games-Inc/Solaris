@@ -3,6 +3,8 @@
 
 #include "BaseInteractable.h"
 
+#include "GameFramework/Character.h"
+
 
 // Sets default values
 ABaseInteractable::ABaseInteractable()
@@ -12,6 +14,9 @@ ABaseInteractable::ABaseInteractable()
 
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
 	Body->SetupAttachment(RootComponent);
+
+	// Bind the OnHit function
+	Body->OnComponentHit.AddDynamic(this, &ABaseInteractable::OnHit);
 }
 
 // Called when the game starts or when spawned
@@ -25,6 +30,16 @@ void ABaseInteractable::BeginPlay()
 void ABaseInteractable::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABaseInteractable::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (GetVelocity().Length() > VelocityLimit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable::OnHit fired on the: %s, with velocity %f"), *this->GetName(), GetVelocity().Length());
+		MakeNoise(LoudnessOfOnHit, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(), GetActorLocation());
+	}
 }
 
 bool ABaseInteractable::IsActive() const
