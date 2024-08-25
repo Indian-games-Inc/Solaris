@@ -9,8 +9,8 @@
 #include "BaseCharacter.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Interactor.h"
-#include "CryptRaider/Component/Picker.h"
 #include "CryptRaider/Component/Inventory.h"
+#include "CryptRaider/Component/Picker.h"
 
 
 ABasePlayerController::ABasePlayerController()
@@ -21,22 +21,12 @@ ABasePlayerController::ABasePlayerController()
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
 	SetupInput();
 
-	if (auto* Grabber = GetCharacter()->FindComponentByClass<UGrabber>(); IsValid(Grabber))
-	{
-		Grabber->OnHintUpdated.AddUniqueDynamic(this, &ABasePlayerController::OnHintMessageReceived);
-	}
-
-	if (auto* Interactor = GetCharacter()->FindComponentByClass<UInteractor>(); IsValid(Interactor))
-	{
-		Interactor->OnHintUpdated.AddUniqueDynamic(this, &ABasePlayerController::OnHintMessageReceived);
-	}
-
-	// TODO Fix overwriting
 	if (auto* Picker = GetCharacter()->FindComponentByClass<UPicker>(); IsValid(Picker))
 	{
-		Picker->OnHintUpdated.AddUniqueDynamic(this, &ABasePlayerController::OnHintMessageReceived);
+		Picker->OnItemPicked.AddUniqueDynamic(this, &ABasePlayerController::OnItemPicked);
 	}
 }
 
@@ -60,9 +50,10 @@ void ABasePlayerController::SetupInput()
 	{
 		if (auto* BaseCharacter = Cast<ABaseCharacter>(GetCharacter()); IsValid(BaseCharacter))
 		{
-			if (auto* Movement = BaseCharacter->GetMovement(); IsValid(Movement))
+			//Movement
+			if (auto* Movement = BaseCharacter->FindComponentByClass<UMovement>(); IsValid(Movement))
 			{
-				//Movement
+				// Jump
 				EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, Movement,
 				                                   &UMovement::Jump);
 				//Moving
@@ -77,16 +68,32 @@ void ABasePlayerController::SetupInput()
 				EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, Movement,
 				                                   &UMovement::StopSprint);
 			}
+
 			//Looking
 			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, BaseCharacter,
 			                                   &ABaseCharacter::Look);
-			// Interaction with world
-			EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, BaseCharacter,
-			                                   &ABaseCharacter::Grab);
-			EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, BaseCharacter,
-			                                   &ABaseCharacter::Throw);
-			EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this,
-			                                   &ABasePlayerController::Interact);
+			// Grabber
+			if (auto* Grabber = BaseCharacter->FindComponentByClass<UGrabber>(); IsValid(Grabber))
+			{
+				EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, Grabber,
+				                                   &UGrabber::Interact);
+				EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, Grabber,
+				                                   &UGrabber::Throw);
+			}
+
+			// Interaction
+			if (auto* Interactor = BaseCharacter->FindComponentByClass<UInteractor>(); IsValid(Interactor))
+			{
+				EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, Interactor,
+				                                   &UInteractor::Interact);
+			}
+
+			if (auto* Picker = BaseCharacter->FindComponentByClass<UPicker>(); IsValid(Picker))
+			{
+				EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, Picker,
+												   &UPicker::Interact);
+			}
+
 			// Interaction with PinLock
 			EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, BaseCharacter,
 			                                   &ABaseCharacter::MouseClick);
@@ -97,27 +104,10 @@ void ABasePlayerController::SetupInput()
 	}
 }
 
-void ABasePlayerController::Interact()
+void ABasePlayerController::OnItemPicked(const FInventoryItemWrapper& Item)
 {
-	if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->Interact();
-
-		if (const auto& Item = PlayerCharacter->PickUp(); Item.IsSet() && !Inventory->IsFull())
-		{
-			Inventory->AddItem(Item.GetValue());
-		}
-	}
+	Inventory->AddItem(Item);
 }
-
-// FText ABasePlayerController::HintMessage() const // TODO: Add Action mapping based Hint construction
-// {
-// 	// if (auto* PlayerCharacter = Cast<ABaseCharacter>(GetCharacter()))
-// 	// {
-// 	// 	return PlayerCharacter->HintMessage();
-// 	// }
-// 	return FText::GetEmpty();
-// }
 
 TOptional<FKey> ABasePlayerController::GetKeyByAction(const UInputAction* Action) const
 {
@@ -130,19 +120,6 @@ TOptional<FKey> ABasePlayerController::GetKeyByAction(const UInputAction* Action
 		}
 	}
 	return NullOpt;
-}
-
-void ABasePlayerController::OnHintMessageReceived(const FText& HintMessage)
-{
-	if (!HintMessage.IsEmpty())
-	{
-		OnHintUpdated.Broadcast(HintMessage);
-	}
-	else
-	{
-		// TODO Clears other Hints 
-		OnHintUpdated.Broadcast(FText::GetEmpty());
-	}
 }
 
 TOptional<FKey> ABasePlayerController::GrabKey() const

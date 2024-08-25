@@ -37,20 +37,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UHealth* GetHealth() const;
 
-	class UGrabber* GetGrabber() const;
-
 public:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
 	/** Called for interaction with world objects */
-	void Grab();
-	void Throw();
-	void Interact();
 	void MouseClick();
 	void ToggleFlashlight();
-
-	TOptional<struct FInventoryItemWrapper> PickUp();
 
 	void SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLock);
 
@@ -92,6 +85,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UInteractor* Interactor;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UHintProducer* HintProducer;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
 	float FlashlightLoudness = 0.1F;
 };

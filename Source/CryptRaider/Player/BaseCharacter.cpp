@@ -7,16 +7,15 @@
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "CryptRaider/Actor/Destructible/Projectile.h"
 #include "CryptRaider/Actor/Door/DoorPinLock.h"
 #include "CryptRaider/Component/Hand.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Picker.h"
 #include "CryptRaider/Component/Interactor.h"
-#include "CryptRaider/Data/InventoryItemWrapper.h"
 #include "CryptRaider/GameMode/DefaultGameMode.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "CryptRaider/Component/Flashlight.h"
+#include "CryptRaider/Component/HintProducer.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -45,11 +44,12 @@ ABaseCharacter::ABaseCharacter()
 	Hand->SetupAttachment(FirstPersonCameraComponent);
 
 	Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
-	Grabber->SetupAttachment(Hand);
 
 	Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
 
 	Interactor = CreateDefaultSubobject<UInteractor>(TEXT("Interactor"));
+
+	HintProducer = CreateDefaultSubobject<UHintProducer>(TEXT("Hint Producer"));
 
 	Movement = CreateDefaultSubobject<UMovement>(TEXT("Movement"));
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
@@ -80,57 +80,6 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
-}
-
-void ABaseCharacter::Grab()
-{
-	if (!Grabber) { return; }
-
-	if (!Grabber->IsGrabbing())
-	{
-		if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
-		{
-			Grabber->Grab(HitResult.GetValue());
-		}
-	}
-	else
-	{
-		Grabber->Release();
-	}
-}
-
-void ABaseCharacter::Throw()
-{
-	if (Grabber)
-		Grabber->Throw();
-}
-
-void ABaseCharacter::Interact()
-{
-	if (const auto& HitResult = Hand->GetInteractableInReach())
-	{
-		if (Interactor)
-		{
-			Interactor->Interact(HitResult.GetValue());
-		}
-	}
-}
-
-TOptional<FInventoryItemWrapper> ABaseCharacter::PickUp()
-{
-	if (const auto& HitResult = Hand->GetInteractableInReach())
-	{
-		if (Picker)
-		{
-			return Picker->PickItem(HitResult.GetValue());
-		}
-	}
-	return {};
-}
-
-UGrabber* ABaseCharacter::GetGrabber() const
-{
-	return Grabber;
 }
 
 float ABaseCharacter::TakeDamage(float Damage,

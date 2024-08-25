@@ -19,20 +19,28 @@ UPicker::UPicker()
 void UPicker::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
-	if (const auto& HintMessage = ConstructHintMessage(); !HintMessage.IsEmpty())
+void UPicker::Interact()
+{
+	if (const auto& Item = PickItem(); Item.IsSet())
 	{
-		OnHintUpdated.Broadcast(ConstructHintMessage());	
+		OnItemPicked.Broadcast(Item.GetValue());
 	}
 }
 
-TOptional<FInventoryItemWrapper> UPicker::PickItem(const FHitResult& HitResult) // TODO Refactor regarding GetHand
+TOptional<FInventoryItemWrapper> UPicker::PickItem()
 {
-	if (AItem* Item = Cast<AItem>(HitResult.GetActor()))
+	if (const auto* Hand = GetHand(); IsValid(Hand))
 	{
-		return FInventoryItemWrapper {Item->Pick(), Item->GetClass()}; // TODO Send pickup event to controller?
+		if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
+		{
+			if (AItem* Item = Cast<AItem>(HitResult->GetActor()))
+			{
+				return FInventoryItemWrapper {Item->Pick(), Item->GetClass()};
+			}
+		}
 	}
-
 	return {};
 }
 

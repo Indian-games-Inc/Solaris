@@ -9,7 +9,8 @@
 
 class UInventory;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPickerHintUpdate, const FText&, Hints);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemPicked, const struct FInventoryItemWrapper&, Item);
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UPicker : public UActorComponent
@@ -22,15 +23,19 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	TOptional<struct FInventoryItemWrapper> PickItem(const FHitResult& HitResult);
+public:
+	UFUNCTION(BlueprintCallable)
+	void Interact();
 
+	UFUNCTION(BlueprintCallable)
+	FText ConstructHintMessage() const;
+	
 private:
+	TOptional<FInventoryItemWrapper> PickItem();
+
 	class UHand* GetHand() const;
 	class ABasePlayerController* GetController() const;
 
-	FText ConstructHintMessage() const;
-
 public:
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FPickerHintUpdate OnHintUpdated;
+	FItemPicked OnItemPicked;
 };

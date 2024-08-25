@@ -7,10 +7,8 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGrabberHintUpdate, const FText&, Hints);
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class CRYPTRAIDER_API UGrabber : public USceneComponent
+class CRYPTRAIDER_API UGrabber : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -24,7 +22,10 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	void Grab(const FHitResult& HitResult);
+	void Interact();
+	
+	UFUNCTION(BlueprintCallable)
+	void Grab();
 
 	UFUNCTION(BlueprintCallable)
 	void Release();
@@ -33,29 +34,23 @@ public:
 	void Throw();
 
 	UFUNCTION(BlueprintCallable)
-	bool IsGrabbing() const;
-	FString GetGrabbedItemName() const;
+	bool IsGrabbing() const;  // TODO Remove this shit
+	FString GetGrabbedItemName() const;  // TODO Remove this shit too
+
+	UFUNCTION(BlueprintCallable)
+	FText ConstructHintMessage() const;
 
 private:
-	FText ConstructHintMessage() const;
-	
-	UPrimitiveComponent* GetGrabbed() const;
-	UPhysicsHandleComponent* GetPhysicsHandle() const;
 
+	
+	class AProjectile* GetProjectileInReach() const;
+	AProjectile* GetGrabbed() const;
+
+	UPhysicsHandleComponent* GetPhysicsHandle() const;
 	class UHand* GetHand() const;
 	class ABasePlayerController* GetController() const;
-	
-public:
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FGrabberHintUpdate OnHintUpdated;
-	
+
 private:
-	UPROPERTY(EditAnywhere)
-	float MaxGrabDistance = 200;
-
-	UPROPERTY(EditAnywhere)
-	float GrabRadius = 20;
-
 	UPROPERTY(EditAnywhere)
 	float HoldDistance = 200;
 

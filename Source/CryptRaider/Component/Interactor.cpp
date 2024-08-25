@@ -18,18 +18,16 @@ UInteractor::UInteractor()
 void UInteractor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (const auto& HintMessage = ConstructHintMessage(); !HintMessage.IsEmpty())
-	{
-		OnHintUpdated.Broadcast(ConstructHintMessage());	
-	}
 }
 
-void UInteractor::Interact(const FHitResult& HitResult) // TODO Refactor regarding GetHand
+void UInteractor::Interact()
 {
-	if (IInteractable* Actor = Cast<IInteractable>(HitResult.GetActor()))
+	if (const auto& HitResult = GetHand()->GetInteractableInReach(); HitResult.IsSet())
 	{
-		Actor->Interact();
+		if (IInteractable* Actor = Cast<IInteractable>(HitResult->GetActor()))
+		{
+			Actor->Interact();
+		}	
 	}
 }
 

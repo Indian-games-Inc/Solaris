@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "Interactor.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractorHintUpdate, const FText&, Hints);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CRYPTRAIDER_API UInteractor : public UActorComponent
@@ -20,15 +19,12 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	void Interact(const FHitResult& HitResult);
+	void Interact();
 
+	UFUNCTION(BlueprintCallable)
+	FText ConstructHintMessage() const;
+	
 private:
 	class UHand* GetHand() const;
 	class ABasePlayerController* GetController() const;
-
-	FText ConstructHintMessage() const;
-	
-public:
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FInteractorHintUpdate OnHintUpdated;
 };

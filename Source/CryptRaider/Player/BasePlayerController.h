@@ -13,8 +13,6 @@ class ADoorPinLock;
 class UInventory;
 class UInputAction;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHintUpdated, FText, HintMessage);
-
 UCLASS()
 class CRYPTRAIDER_API ABasePlayerController : public APlayerController
 {
@@ -31,9 +29,6 @@ public:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
 public:
-	// UFUNCTION(BlueprintCallable)
-	// FText HintMessage() const;
-
 	TOptional<FKey> GrabKey() const;
 	TOptional<FKey> ThrowKey() const;
 	TOptional<FKey> InteractKey() const;
@@ -42,20 +37,11 @@ public:
 	FVector GetWorldLocationFromCursor(FVector& WorldDirection) const;
 
 private:
-	/** Called for interaction with world objects */
-	void Interact();
-
-private:
-	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
-
-private:
 	UFUNCTION()
-	void OnHintMessageReceived(const FText& HintMessage);
+	void OnItemPicked(const struct FInventoryItemWrapper& Item);
 	
-public:
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FHintUpdated OnHintUpdated;
-
+	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
+	
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UInventory* Inventory;
