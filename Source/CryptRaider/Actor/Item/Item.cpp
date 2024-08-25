@@ -30,5 +30,5 @@ void AItem::Interact()
 
 FString AItem::HintMessage() const
 {
-	return "Pick up";
+	return ItemData.Name;
 }

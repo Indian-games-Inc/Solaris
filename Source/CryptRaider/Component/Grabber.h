@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
-#include "CryptRaider/Actor/Trigger/Dialog/Pick/GrabberAwareDialogPickStrategy.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGrabberHintUpdate, const FText&, Hints);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UGrabber : public USceneComponent
@@ -17,10 +17,6 @@ class CRYPTRAIDER_API UGrabber : public USceneComponent
 public:
 	// Sets default values for this component's properties
 	UGrabber();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
 public:
 	// Called every frame
@@ -41,9 +37,18 @@ public:
 	FString GetGrabbedItemName() const;
 
 private:
-	UPrimitiveComponent* GetGrabbedItem() const;
+	FText ConstructHintMessage() const;
+	
+	UPrimitiveComponent* GetGrabbed() const;
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
 
+	class UHand* GetHand() const;
+	class ABasePlayerController* GetController() const;
+	
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FGrabberHintUpdate OnHintUpdated;
+	
 private:
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance = 200;

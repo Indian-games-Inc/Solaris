@@ -48,10 +48,8 @@ ABaseCharacter::ABaseCharacter()
 	Grabber->SetupAttachment(Hand);
 
 	Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
-	Picker->SetupAttachment(Hand);
 
 	Interactor = CreateDefaultSubobject<UInteractor>(TEXT("Interactor"));
-	Interactor->SetupAttachment(Hand);
 
 	Movement = CreateDefaultSubobject<UMovement>(TEXT("Movement"));
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
@@ -158,55 +156,6 @@ float ABaseCharacter::TakeDamage(float Damage,
 	return DamageToApply;
 }
 
-FText ABaseCharacter::ConstructHintFor(const IInteractable* Interactable) const
-{
-	if (!Interactable->IsActive())
-		return FText::GetEmpty();
-
-	const auto* BaseController = Cast<ABasePlayerController>(GetController());
-	if (!BaseController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to contruct Hint message, failed to cast Player Controller"));
-		return FText::GetEmpty();
-	}
-
-	TOptional<FKey> Key;
-	if (Cast<AProjectile>(Interactable))
-	{
-		Key = BaseController->GrabKey();
-	}
-	else
-	{
-		Key = BaseController->InteractKey();
-	}
-
-	if (!Key.IsSet())
-		return FText::GetEmpty();
-
-	const FString Result = FString::Printf(
-		TEXT("[%s] %s"),
-		*Key->ToString(),
-		*Interactable->HintMessage()
-	);
-	return FText::FromString(Result);
-}
-
-FText ABaseCharacter::HintMessage() const
-{
-	if (!Hand)
-	{
-		return FText::GetEmpty();
-	}
-
-	if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
-	{
-		if (const auto* Interactable = Cast<IInteractable>(HitResult->GetActor()); Interactable)
-		{
-			return ConstructHintFor(Interactable);
-		}
-	}
-	return FText::GetEmpty();
-}
 
 void ABaseCharacter::InteractWithPinLock(FVector& Start, FVector& End)
 {

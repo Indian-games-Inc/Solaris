@@ -4,8 +4,10 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Hand.h"
 #include "CryptRaider/Actor/Destructible/Projectile.h"
-#include "CryptRaider/Actor/Item/Item.h"
+#include "CryptRaider/Player/BasePlayerController.h"
+#include "GameFramework/Character.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -15,34 +17,60 @@ UGrabber::UGrabber()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
-// Called when the game starts
-void UGrabber::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (PhysicsHandle && PhysicsHandle->GetGrabbedComponent())
+	if (IsValid(PhysicsHandle) && IsValid(PhysicsHandle->GetGrabbedComponent()))
 	{
-		FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
+		const FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
 		PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
+	}
+
+	// TODO Add Hint clearing
+	if (const auto& HintMessage = ConstructHintMessage(); !HintMessage.IsEmpty())
+	{
+		OnHintUpdated.Broadcast(ConstructHintMessage());	
 	}
 }
 
-UPrimitiveComponent* UGrabber::GetGrabbedItem() const
+FText UGrabber::ConstructHintMessage() const
 {
-	if (const auto* PhysicsHandle = GetPhysicsHandle(); PhysicsHandle)
+	const auto* Controller = GetController();
+	if (!IsValid(Controller))
+		return {};
+
+	if (IsValid(GetGrabbed()))
+	{
+		return FText::FromString(
+			FString::Printf(
+				TEXT("[%s] Release, [%s] Throw"),
+				*Controller->GrabKey()->ToString(),
+				*Controller->ThrowKey()->ToString()
+			));
+	}
+	if (const UHand* Hand = GetHand(); IsValid(Hand))
+	{
+		if (const auto& HitResult = Hand->GetInteractableInReach();
+			HitResult.IsSet() && Cast<AProjectile>(HitResult->GetActor()))
+		{
+			return FText::FromString(FString::Printf(
+				TEXT("[%s] Grab"),
+				*Controller->GrabKey()->ToString()
+			));
+		}
+	}
+	return {};
+}
+
+UPrimitiveComponent* UGrabber::GetGrabbed() const
+{
+	if (const auto* PhysicsHandle = GetPhysicsHandle(); IsValid(PhysicsHandle))
 	{
 		return PhysicsHandle->GetGrabbedComponent();
 	}
-
 	return nullptr;
 }
 
@@ -51,7 +79,22 @@ UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 }
 
-void UGrabber::Grab(const FHitResult& HitResult)
+UHand* UGrabber::GetHand() const
+{
+	return GetOwner()->FindComponentByClass<UHand>();
+}
+
+ABasePlayerController* UGrabber::GetController() const
+{
+	if (const auto* Character = Cast<ACharacter>(GetOwner()); IsValid(Character))
+	{
+		return Cast<ABasePlayerController>(Character->GetController());
+	}
+
+	return nullptr;
+}
+
+void UGrabber::Grab(const FHitResult& HitResult) // TODO Refactor regarding GetHand()
 {
 	if (const auto* Projectile = Cast<AProjectile>(HitResult.GetActor()); !Projectile)
 	{
@@ -85,7 +128,7 @@ void UGrabber::Release()
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
 	if (!PhysicsHandle) { return; }
 
-	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
+	if (auto* Grabbed = GetGrabbed(); Grabbed)
 	{
 		AActor* Actor = Grabbed->GetOwner();
 		Actor->Tags.Remove(GrabbedTag);
@@ -104,9 +147,9 @@ void UGrabber::Release()
 
 void UGrabber::Throw()
 {
-	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
+	if (auto* Grabbed = GetGrabbed(); Grabbed)
 	{
-		if (auto* Projectile = Cast<AProjectile>(GetGrabbedItem()->GetOwner()); IsValid(Projectile))
+		if (auto* Projectile = Cast<AProjectile>(GetGrabbed()->GetOwner()); IsValid(Projectile))
 		{
 			Projectile->Charge();
 
@@ -118,12 +161,12 @@ void UGrabber::Throw()
 	}
 }
 
-bool UGrabber::IsGrabbing() const
+bool UGrabber::IsGrabbing() const // TODO Remove this shit too
 {
-	return GetGrabbedItem() != nullptr;
+	return GetGrabbed() != nullptr;
 }
 
-FString UGrabber::GetGrabbedItemName() const
+FString UGrabber::GetGrabbedItemName() const // TODO Remove this shit too
 {
-	return GetGrabbedItem()->GetOwner()->GetActorLabel();
+	return GetGrabbed()->GetOwner()->GetActorNameOrLabel();
 }

@@ -11,23 +11,6 @@ UHand::UHand()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-// Called when the game starts
-void UHand::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called every frame
-void UHand::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}
-
-bool UHand::HasInteractableOnSight() const
-{
-	return GetInteractableInReach().IsSet();
-}
-
 TOptional<FHitResult> UHand::LineTrace(FVector Start, FVector End, int Radius) const
 {
 	FHitResult HitResult;
@@ -43,7 +26,7 @@ TOptional<FHitResult> UHand::LineTrace(FVector Start, FVector End, int Radius) c
 	if (HasHit)
 	{
 		// for debug purposes
-		// DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 0.1f);
+		// DrawDebugCylinder(GetWorld(), Start, End, Radius, 10, FColor::Cyan, false, 1.f);
 		return HitResult;
 	}
 

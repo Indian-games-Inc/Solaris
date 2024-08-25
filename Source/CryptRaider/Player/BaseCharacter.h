@@ -22,16 +22,11 @@ public:
 	ABaseCharacter();
 
 public:
-	class UGrabber* GetGrabber() const;
-
 	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
 
 public:
 	void InteractWithPinLock(FVector& Start, FVector& End);
-
-	UFUNCTION(BlueprintPure)
-	FText HintMessage() const;
 
 	UFUNCTION(BlueprintPure)
 	bool IsInPinLock() const;
@@ -41,6 +36,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UHealth* GetHealth() const;
+
+	class UGrabber* GetGrabber() const;
 
 public:
 	/** Called for looking input */
@@ -54,7 +51,7 @@ public:
 	void ToggleFlashlight();
 
 	TOptional<struct FInventoryItemWrapper> PickUp();
-	FText ConstructHintFor(const IInteractable* Interactable) const;
+
 	void SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLock);
 
 private:
