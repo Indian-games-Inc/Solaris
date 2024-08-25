@@ -73,6 +73,8 @@ void UGrabber::Grab()
 				Projectile->GetActorLocation(),
 				GetHand()->GetComponentRotation()
 			);
+			
+			OnGrabbedUpdated.Broadcast(Projectile);
 		}
 	}
 }
@@ -97,6 +99,8 @@ void UGrabber::Release()
 		}
 
 		PhysicsHandle->ReleaseComponent();
+
+		OnGrabbedUpdated.Broadcast(nullptr);
 	}
 }
 
@@ -185,14 +189,4 @@ ABasePlayerController* UGrabber::GetController() const
 	}
 
 	return nullptr;
-}
-
-bool UGrabber::IsGrabbing() const
-{
-	return GetGrabbed() != nullptr;
-}
-
-FString UGrabber::GetGrabbedItemName() const
-{
-	return GetGrabbed()->GetOwner()->GetActorNameOrLabel();
 }

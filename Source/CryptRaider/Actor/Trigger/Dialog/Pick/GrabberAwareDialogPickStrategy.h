@@ -11,10 +11,20 @@ class CRYPTRAIDER_API UGrabberAwareDialogPickStrategy : public UConditionalDialo
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+	
+public:
 	virtual bool Check() override;
 
 private:
+	UFUNCTION()
+	void OnGrabbedUpdated(const class AProjectile* Projectile);
+	
+private:
 	UPROPERTY(Category="ConditionalDialogPickStrategy", EditInstanceOnly, BlueprintReadWrite,
 		meta=(AllowPrivateAccess="true"))
-	FString ItemName;
+	FName ExpectedItemName;
+
+	UPROPERTY(VisibleInstanceOnly)
+	bool CheckStatus = false;
 };

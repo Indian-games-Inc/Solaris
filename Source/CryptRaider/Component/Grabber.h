@@ -7,6 +7,9 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGrabbedUpdate, const class AProjectile*, Projectile);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UGrabber : public UActorComponent
 {
@@ -34,22 +37,19 @@ public:
 	void Throw();
 
 	UFUNCTION(BlueprintCallable)
-	bool IsGrabbing() const;  // TODO Remove this shit
-	FString GetGrabbedItemName() const;  // TODO Remove this shit too
-
-	UFUNCTION(BlueprintCallable)
 	FText ConstructHintMessage() const;
 
 private:
-
-	
-	class AProjectile* GetProjectileInReach() const;
+	AProjectile* GetProjectileInReach() const;
 	AProjectile* GetGrabbed() const;
 
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
 	class UHand* GetHand() const;
 	class ABasePlayerController* GetController() const;
 
+public:
+	FGrabbedUpdate OnGrabbedUpdated;
+	
 private:
 	UPROPERTY(EditAnywhere)
 	float HoldDistance = 200;
