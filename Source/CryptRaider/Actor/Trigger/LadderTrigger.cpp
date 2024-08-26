@@ -47,10 +47,10 @@ void ALadderTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
                                     const FHitResult& SweepResult)
 {
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	
-	if (auto* Character = Cast<ABaseCharacter>(OtherActor))
+
+	if (auto* Movement = OtherActor->FindComponentByClass<UMovement>())
 	{
-		Character->GetMovement()->SetOnLadder(IsGlued);
+		Movement->SetOnLadder(IsGlued);
 	}
 }
 
@@ -58,9 +58,10 @@ void ALadderTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AAct
                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	Super::OnEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
-	if (auto* Character = Cast<ABaseCharacter>(OtherActor))
+
+	if (auto* Movement = OtherActor->FindComponentByClass<UMovement>())
 	{
-		Character->GetMovement()->SetOnLadder(false);
+		Movement->SetOnLadder(false);
 	}
 }
 

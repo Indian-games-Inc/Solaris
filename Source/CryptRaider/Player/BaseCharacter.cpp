@@ -139,16 +139,6 @@ bool ABaseCharacter::IsInPinLock() const
 	return PinLock ? true : false;
 }
 
-UMovement* ABaseCharacter::GetMovement() const
-{
-	return Movement;
-}
-
-UHealth* ABaseCharacter::GetHealth() const
-{
-	return Health;
-}
-
 void ABaseCharacter::MouseClick()
 {
 	if (PinLock)
