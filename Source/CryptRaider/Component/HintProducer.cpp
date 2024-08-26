@@ -29,26 +29,24 @@ void UHintProducer::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 FText UHintProducer::ConstructHint() const
 {
-	if (const auto* Grabber = GetGrabber(); IsValid(Grabber))
+	TArray<IHandInteractor*> Interactors { GetGrabber(), GetPicker(), GetInteractor() };
+
+	for (const auto* Interactor : Interactors)
 	{
-		if (const auto& HintMessage = Grabber->ConstructHintMessage(); !HintMessage.IsEmpty())
+		if (const auto& HintMessage = ConstructHintFor(Interactor); !HintMessage.IsEmpty())
 		{
-			return HintMessage;	
+			return HintMessage;
 		}
 	}
-	if (const auto* Picker = GetPicker(); IsValid(Picker))
+
+	return {};
+}
+
+FText UHintProducer::ConstructHintFor(const IHandInteractor* Interactor) const
+{
+	if (Interactor)
 	{
-		if (const auto& HintMessage = Picker->ConstructHintMessage(); !HintMessage.IsEmpty())
-		{
-			return HintMessage;	
-		}
-	}
-	if (const auto* Interactor = GetInteractor(); IsValid(Interactor))
-	{
-		if (const auto& HintMessage = Interactor->ConstructHintMessage(); !HintMessage.IsEmpty())
-		{
-			return HintMessage;	
-		}
+		return Interactor->ConstructHint();
 	}
 	return {};
 }

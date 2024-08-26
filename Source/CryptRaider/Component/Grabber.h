@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "BaseHandInteractor.h"
+
 #include "Grabber.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGrabbedUpdate, const class AProjectile*, Projectile);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class CRYPTRAIDER_API UGrabber : public UActorComponent
+class CRYPTRAIDER_API UGrabber : public UBaseHandInteractor
 {
 	GENERATED_BODY()
 
@@ -24,8 +25,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION(BlueprintCallable)
-	void Interact();
+	virtual void Interact() override;
 	
 	UFUNCTION(BlueprintCallable)
 	void Grab();
@@ -37,15 +37,13 @@ public:
 	void Throw();
 
 	UFUNCTION(BlueprintCallable)
-	FText ConstructHintMessage() const;
+	virtual FText ConstructHint() const override;
 
 private:
 	AProjectile* GetProjectileInReach() const;
 	AProjectile* GetGrabbed() const;
 
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
-	class UHand* GetHand() const;
-	class ABasePlayerController* GetController() const;
 
 public:
 	FGrabbedUpdate OnGrabbedUpdated;

@@ -6,19 +6,6 @@
 #include "Hand.h"
 #include "CryptRaider/Interface/Interactable.h"
 #include "CryptRaider/Player/BasePlayerController.h"
-#include "GameFramework/Character.h"
-
-UInteractor::UInteractor()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-}
-
-void UInteractor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}
 
 void UInteractor::Interact()
 {
@@ -31,22 +18,7 @@ void UInteractor::Interact()
 	}
 }
 
-UHand* UInteractor::GetHand() const
-{
-	return GetOwner()->FindComponentByClass<UHand>();
-}
-
-ABasePlayerController* UInteractor::GetController() const
-{
-	if (const auto* Character = Cast<ACharacter>(GetOwner()); IsValid(Character))
-	{
-		return Cast<ABasePlayerController>(Character->GetController());
-	}
-
-	return nullptr;
-}
-
-FText UInteractor::ConstructHintMessage() const
+FText UInteractor::ConstructHint() const
 {
 	const auto* Controller = GetController();
 	if (!IsValid(Controller))

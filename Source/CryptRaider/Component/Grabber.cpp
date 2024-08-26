@@ -121,7 +121,7 @@ void UGrabber::Throw()
 	}
 }
 
-FText UGrabber::ConstructHintMessage() const
+FText UGrabber::ConstructHint() const
 {
 	const auto* Controller = GetController();
 	if (!IsValid(Controller))
@@ -174,19 +174,4 @@ AProjectile* UGrabber::GetGrabbed() const
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 {
 	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-}
-
-UHand* UGrabber::GetHand() const
-{
-	return GetOwner()->FindComponentByClass<UHand>();
-}
-
-ABasePlayerController* UGrabber::GetController() const
-{
-	if (const auto* Character = Cast<ACharacter>(GetOwner()); IsValid(Character))
-	{
-		return Cast<ABasePlayerController>(Character->GetController());
-	}
-
-	return nullptr;
 }

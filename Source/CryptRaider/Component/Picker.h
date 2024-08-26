@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "BaseHandInteractor.h"
 #include "Misc/Optional.h"
+
 #include "Picker.generated.h"
 
 class UInventory;
@@ -13,28 +14,16 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemPicked, const struct FInventory
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class CRYPTRAIDER_API UPicker : public UActorComponent
+class CRYPTRAIDER_API UPicker : public UBaseHandInteractor
 {
 	GENERATED_BODY()
 
 public:
-	UPicker();
-
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
-
-public:
-	UFUNCTION(BlueprintCallable)
-	void Interact();
-
-	UFUNCTION(BlueprintCallable)
-	FText ConstructHintMessage() const;
+	virtual void Interact() override;
+	virtual FText ConstructHint() const override;
 	
 private:
 	TOptional<FInventoryItemWrapper> PickItem();
-
-	class UHand* GetHand() const;
-	class ABasePlayerController* GetController() const;
 
 public:
 	FItemPicked OnItemPicked;

@@ -3,28 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "BaseHandInteractor.h"
+
 #include "Interactor.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class CRYPTRAIDER_API UInteractor : public UActorComponent
+class CRYPTRAIDER_API UInteractor : public UBaseHandInteractor
 {
 	GENERATED_BODY()
 
 public:
-	UInteractor();
-
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
-
-	UFUNCTION(BlueprintCallable)
-	void Interact();
-
-	UFUNCTION(BlueprintCallable)
-	FText ConstructHintMessage() const;
-	
-private:
-	class UHand* GetHand() const;
-	class ABasePlayerController* GetController() const;
+	virtual void Interact() override;
+	virtual FText ConstructHint() const override;
 };

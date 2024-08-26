@@ -25,6 +25,7 @@ public:
 
 private:
 	FText ConstructHint() const;
+	FText ConstructHintFor(const class IHandInteractor* Interactor) const;
 
 	class UGrabber* GetGrabber() const;
 	class UInteractor* GetInteractor() const;
