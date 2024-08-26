@@ -21,10 +21,8 @@ void UInteractor::Interact()
 FText UInteractor::ConstructHint() const
 {
 	const auto* Controller = GetController();
-	if (!IsValid(Controller))
-	{
-		return {};
-	}
+
+	if (!IsValid(Controller)) { return {}; }
 
 	if (const UHand* Hand = GetHand(); IsValid(Hand))
 	{

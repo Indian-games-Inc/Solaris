@@ -51,10 +51,7 @@ void UGrabber::Grab()
 {
 	auto* PhysicsHandle = GetPhysicsHandle();
 
-	if (!PhysicsHandle)
-	{
-		return;
-	}
+	if (!IsValid(PhysicsHandle)) { return; }
 	
 	if (auto* Projectile = GetProjectileInReach(); IsValid(Projectile))
 	{
@@ -82,7 +79,7 @@ void UGrabber::Grab()
 void UGrabber::Release()
 {
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (!PhysicsHandle) { return; }
+	if (!IsValid(PhysicsHandle)) { return; }
 
 	if (auto* Projectile = GetGrabbed(); Projectile)
 	{
@@ -124,8 +121,8 @@ void UGrabber::Throw()
 FText UGrabber::ConstructHint() const
 {
 	const auto* Controller = GetController();
-	if (!IsValid(Controller))
-		return {};
+
+	if (!IsValid(Controller)) { return {}; }
 
 	if (IsValid(GetGrabbed()))
 	{
