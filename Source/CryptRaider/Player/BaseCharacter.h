@@ -22,16 +22,11 @@ public:
 	ABaseCharacter();
 
 public:
-	class UGrabber* GetGrabber() const;
-
 	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
 
 public:
 	void InteractWithPinLock(FVector& Start, FVector& End);
-
-	UFUNCTION(BlueprintPure)
-	FText HintMessage() const;
 
 	UFUNCTION(BlueprintPure)
 	bool IsInPinLock() const;
@@ -47,14 +42,9 @@ public:
 	void Look(const FInputActionValue& Value);
 
 	/** Called for interaction with world objects */
-	void Grab();
-	void Throw();
-	void Interact();
 	void MouseClick();
 	void ToggleFlashlight();
 
-	TOptional<struct FInventoryItemWrapper> PickUp();
-	FText ConstructHintFor(const IInteractable* Interactable) const;
 	void SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLock);
 
 private:
@@ -95,6 +85,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UInteractor* Interactor;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UHintProducer* HintProducer;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
 	float FlashlightLoudness = 0.1F;
 };

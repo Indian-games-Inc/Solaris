@@ -29,9 +29,6 @@ public:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	FText HintMessage() const;
-
 	TOptional<FKey> GrabKey() const;
 	TOptional<FKey> ThrowKey() const;
 	TOptional<FKey> InteractKey() const;
@@ -40,20 +37,11 @@ public:
 	FVector GetWorldLocationFromCursor(FVector& WorldDirection) const;
 
 private:
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
-
-	/** Called for interaction with world objects */
-	void Grab();
-	void Throw();
-	void Interact();
-	void MouseClick();
-
-	void ToggleFlashlight();
-
-private:
+	UFUNCTION()
+	void OnItemPicked(const struct FInventoryItemWrapper& Item);
+	
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
-
+	
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UInventory* Inventory;

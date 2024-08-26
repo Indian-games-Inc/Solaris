@@ -7,16 +7,15 @@
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "CryptRaider/Actor/Destructible/Projectile.h"
 #include "CryptRaider/Actor/Door/DoorPinLock.h"
 #include "CryptRaider/Component/Hand.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Picker.h"
 #include "CryptRaider/Component/Interactor.h"
-#include "CryptRaider/Data/InventoryItemWrapper.h"
 #include "CryptRaider/GameMode/DefaultGameMode.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "CryptRaider/Component/Flashlight.h"
+#include "CryptRaider/Component/HintProducer.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -45,13 +44,12 @@ ABaseCharacter::ABaseCharacter()
 	Hand->SetupAttachment(FirstPersonCameraComponent);
 
 	Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
-	Grabber->SetupAttachment(Hand);
 
 	Picker = CreateDefaultSubobject<UPicker>(TEXT("Picker"));
-	Picker->SetupAttachment(Hand);
 
 	Interactor = CreateDefaultSubobject<UInteractor>(TEXT("Interactor"));
-	Interactor->SetupAttachment(Hand);
+
+	HintProducer = CreateDefaultSubobject<UHintProducer>(TEXT("Hint Producer"));
 
 	Movement = CreateDefaultSubobject<UMovement>(TEXT("Movement"));
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
@@ -84,57 +82,6 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void ABaseCharacter::Grab()
-{
-	if (!Grabber) { return; }
-
-	if (!Grabber->IsGrabbing())
-	{
-		if (const auto& HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
-		{
-			Grabber->Grab(HitResult.GetValue());
-		}
-	}
-	else
-	{
-		Grabber->Release();
-	}
-}
-
-void ABaseCharacter::Throw()
-{
-	if (Grabber)
-		Grabber->Throw();
-}
-
-void ABaseCharacter::Interact()
-{
-	if (const auto& HitResult = Hand->GetInteractableInReach())
-	{
-		if (Interactor)
-		{
-			Interactor->Interact(HitResult.GetValue());
-		}
-	}
-}
-
-TOptional<FInventoryItemWrapper> ABaseCharacter::PickUp()
-{
-	if (const auto& HitResult = Hand->GetInteractableInReach())
-	{
-		if (Picker)
-		{
-			return Picker->PickItem(HitResult.GetValue());
-		}
-	}
-	return {};
-}
-
-UGrabber* ABaseCharacter::GetGrabber() const
-{
-	return Grabber;
-}
-
 float ABaseCharacter::TakeDamage(float Damage,
                                  const FDamageEvent& DamageEvent,
                                  AController* EventInstigator,
@@ -158,55 +105,6 @@ float ABaseCharacter::TakeDamage(float Damage,
 	return DamageToApply;
 }
 
-FText ABaseCharacter::ConstructHintFor(const IInteractable* Interactable) const
-{
-	if (!Interactable->IsActive())
-		return FText::GetEmpty();
-
-	const auto* BaseController = Cast<ABasePlayerController>(GetController());
-	if (!BaseController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to contruct Hint message, failed to cast Player Controller"));
-		return FText::GetEmpty();
-	}
-
-	TOptional<FKey> Key;
-	if (Cast<AProjectile>(Interactable))
-	{
-		Key = BaseController->GrabKey();
-	}
-	else
-	{
-		Key = BaseController->InteractKey();
-	}
-
-	if (!Key.IsSet())
-		return FText::GetEmpty();
-
-	const FString Result = FString::Printf(
-		TEXT("[%s] %s"),
-		*Key->ToString(),
-		*Interactable->HintMessage()
-	);
-	return FText::FromString(Result);
-}
-
-FText ABaseCharacter::HintMessage() const
-{
-	if (!Hand)
-	{
-		return FText::GetEmpty();
-	}
-
-	if (TOptional<FHitResult> HitResult = Hand->GetInteractableInReach(); HitResult.IsSet())
-	{
-		if (const auto* Interactable = Cast<IInteractable>(HitResult->GetActor()); Interactable)
-		{
-			return ConstructHintFor(Interactable);
-		}
-	}
-	return FText::GetEmpty();
-}
 
 void ABaseCharacter::InteractWithPinLock(FVector& Start, FVector& End)
 {

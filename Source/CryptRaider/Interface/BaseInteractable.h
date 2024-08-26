@@ -40,6 +40,9 @@ public:
 	                      AController* InstigatedBy,
 	                      AActor* DamageCauser);
 
+public:
+	UStaticMeshComponent* GetBody() const { return Body; };
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Body;

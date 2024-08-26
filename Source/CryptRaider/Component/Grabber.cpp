@@ -4,8 +4,10 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Hand.h"
 #include "CryptRaider/Actor/Destructible/Projectile.h"
-#include "CryptRaider/Actor/Item/Item.h"
+#include "CryptRaider/Player/BasePlayerController.h"
+#include "GameFramework/Character.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -15,115 +17,158 @@ UGrabber::UGrabber()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
-// Called when the game starts
-void UGrabber::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (PhysicsHandle && PhysicsHandle->GetGrabbedComponent())
+	if (auto* PhysicsHandle = GetPhysicsHandle();
+		IsValid(PhysicsHandle) && IsValid(GetGrabbed()))
 	{
-		FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
-		PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
+		const FVector Location = GetHand()->GetComponentLocation();
+		const FVector ForwardVector = GetHand()->GetForwardVector();
+
+		const FRotator Rotation = GetHand()->GetComponentRotation();
+
+		const FVector TargetLocation = Location + ForwardVector * HoldDistance;
+		PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, Rotation);
 	}
 }
 
-UPrimitiveComponent* UGrabber::GetGrabbedItem() const
+void UGrabber::Interact()
 {
-	if (const auto* PhysicsHandle = GetPhysicsHandle(); PhysicsHandle)
+	if (IsValid(GetGrabbed()))
 	{
-		return PhysicsHandle->GetGrabbedComponent();
+		Release();
 	}
+	else
+	{
+		Grab();
+	}
+}
 
+void UGrabber::Grab()
+{
+	auto* PhysicsHandle = GetPhysicsHandle();
+
+	if (!IsValid(PhysicsHandle)) { return; }
+	
+	if (auto* Projectile = GetProjectileInReach(); IsValid(Projectile))
+	{
+		if (auto* Body = Projectile->GetBody(); IsValid(Body))
+		{
+			Body->WakeAllRigidBodies();
+			Body->SetSimulatePhysics(true);
+			Body->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // Disable collision with Pawns
+
+			Projectile->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			Projectile->Tags.Add(GrabbedTag);
+
+			PhysicsHandle->GrabComponentAtLocationWithRotation(
+				Body,
+				NAME_None,
+				Projectile->GetActorLocation(),
+				GetHand()->GetComponentRotation()
+			);
+			
+			OnGrabbedUpdated.Broadcast(Projectile);
+		}
+	}
+}
+
+void UGrabber::Release()
+{
+	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
+	if (!IsValid(PhysicsHandle)) { return; }
+
+	if (auto* Projectile = GetGrabbed(); Projectile)
+	{
+		Projectile->Tags.Remove(GrabbedTag);
+
+		if (auto* Body = Projectile->GetBody(); IsValid(Body))
+		{
+			// Enable collision with Pawns back
+			Body->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+
+			// Remove inertia from object
+			Body->SetPhysicsLinearVelocity(FVector::Zero());
+			Body->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
+		}
+
+		PhysicsHandle->ReleaseComponent();
+
+		OnGrabbedUpdated.Broadcast(nullptr);
+	}
+}
+
+void UGrabber::Throw()
+{
+	if (auto* Projectile = GetGrabbed(); IsValid(Projectile))
+	{
+		Projectile->Charge();
+
+		Release();
+
+		if (auto* Body = Projectile->GetBody(); IsValid(Body))
+		{
+			const FVector ForwardVector = GetHand()->GetForwardVector();
+			const FVector ImpulseVector = ForwardVector * ThrowImpulseStrength;
+			Body->SetPhysicsLinearVelocity(ImpulseVector);
+		}
+	}
+}
+
+FText UGrabber::ConstructHint() const
+{
+	const auto* Controller = GetController();
+
+	if (!IsValid(Controller)) { return {}; }
+
+	if (IsValid(GetGrabbed()))
+	{
+		return FText::FromString(
+			FString::Printf(
+				TEXT("[%s] Release, [%s] Throw"),
+				*Controller->GrabKey()->ToString(),
+				*Controller->ThrowKey()->ToString()
+			));
+	}
+	if (const auto* Projectile = GetProjectileInReach(); IsValid(Projectile))
+	{
+		return FText::FromString(FString::Printf(
+			TEXT("[%s] Grab"),
+			*Controller->GrabKey()->ToString()
+		));
+	}
+	return {};
+}
+
+AProjectile* UGrabber::GetProjectileInReach() const
+{
+	if (const UHand* Hand = GetHand(); IsValid(Hand))
+	{
+		if (const auto& HitResult = Hand->GetInteractableInReach();
+			HitResult.IsSet())
+		{
+			return Cast<AProjectile>(HitResult->GetActor());
+		}
+	}
+	return {};
+}
+
+AProjectile* UGrabber::GetGrabbed() const
+{
+	if (const auto* PhysicsHandle = GetPhysicsHandle(); IsValid(PhysicsHandle))
+	{
+		if (const auto* Component = PhysicsHandle->GetGrabbedComponent(); IsValid(Component))
+		{
+			return Cast<AProjectile>(Component->GetOwner());
+		}
+	}
 	return nullptr;
 }
 
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 {
 	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-}
-
-void UGrabber::Grab(const FHitResult& HitResult)
-{
-	if (const auto* Projectile = Cast<AProjectile>(HitResult.GetActor()); !Projectile)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to Grab actor, it's not a Projectile"));
-		return;
-	}
-
-	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (!PhysicsHandle)
-		return;
-
-	UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-	HitComponent->WakeAllRigidBodies();
-	HitComponent->SetSimulatePhysics(true);
-	HitComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // Disable collision with Pawns
-
-	auto* Actor = HitResult.GetActor();
-	Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	Actor->Tags.Add(GrabbedTag);
-
-	PhysicsHandle->GrabComponentAtLocationWithRotation(
-		HitComponent,
-		NAME_None,
-		HitResult.ImpactPoint,
-		GetComponentRotation()
-	);
-}
-
-void UGrabber::Release()
-{
-	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (!PhysicsHandle) { return; }
-
-	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
-	{
-		AActor* Actor = Grabbed->GetOwner();
-		Actor->Tags.Remove(GrabbedTag);
-
-		// Enable collision with Pawns back
-		Grabbed->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-
-
-		// Remove inertia from object
-		Grabbed->SetPhysicsLinearVelocity(FVector::Zero());
-		Grabbed->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
-
-		PhysicsHandle->ReleaseComponent();
-	}
-}
-
-void UGrabber::Throw()
-{
-	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
-	{
-		if (auto* Projectile = Cast<AProjectile>(GetGrabbedItem()->GetOwner()); IsValid(Projectile))
-		{
-			Projectile->Charge();
-
-			Release();
-			
-			const FVector ImpulseVector = GetForwardVector() * ThrowImpulseStrength;
-			Grabbed->SetPhysicsLinearVelocity(ImpulseVector);
-		}
-	}
-}
-
-bool UGrabber::IsGrabbing() const
-{
-	return GetGrabbedItem() != nullptr;
-}
-
-FString UGrabber::GetGrabbedItemName() const
-{
-	return GetGrabbedItem()->GetOwner()->GetActorLabel();
 }
