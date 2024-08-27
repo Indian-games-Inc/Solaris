@@ -43,7 +43,6 @@ public:
 
 	/** Called for interaction with world objects */
 	void MouseClick();
-	void ToggleFlashlight();
 
 	void SetPinLock(TSoftObjectPtr<ADoorPinLock> PinLock);
 
@@ -87,7 +86,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UHintProducer* HintProducer;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
-	float FlashlightLoudness = 0.1F;
 };

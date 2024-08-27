@@ -4,6 +4,7 @@
 #include "Flashlight.h"
 
 #include "Components/SpotLightComponent.h"
+#include "GameFramework/Character.h"
 
 
 // Sets default values
@@ -39,5 +40,7 @@ void AFlashlight::Toggle()
 	{
 		SpotLight->SetVisibility(true);
 	}
-}
 
+	const auto* PlayerCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	MakeNoise(ToggleLoudness, PlayerCharacter->GetInstigator(), GetActorLocation());
+}
