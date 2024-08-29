@@ -29,4 +29,7 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Light, meta = (AllowPrivateAccess = "true"))
 	class USpotLightComponent* SpotLight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Noise", meta=(AllowPrivateAccess = "true"))
+	float ToggleLoudness = 0.1F;
 };

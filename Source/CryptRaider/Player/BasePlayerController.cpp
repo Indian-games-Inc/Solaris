@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "BaseCharacter.h"
+#include "CryptRaider/Component/Flashlight.h"
 #include "CryptRaider/Component/Grabber.h"
 #include "CryptRaider/Component/Interactor.h"
 #include "CryptRaider/Component/Inventory.h"
@@ -98,8 +99,15 @@ void ABasePlayerController::SetupInput()
 			EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, BaseCharacter,
 			                                   &ABaseCharacter::MouseClick);
 			// Toggle Flashlight
-			EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, BaseCharacter,
-			                                   &ABaseCharacter::ToggleFlashlight);
+			if (const auto* FlashlightComponent = BaseCharacter->FindComponentByClass<UChildActorComponent>();
+				IsValid(FlashlightComponent))
+			{
+				if (auto* Flashlight = Cast<AFlashlight>(FlashlightComponent->GetChildActor()))
+				{
+					EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, Flashlight,
+					                                   &AFlashlight::Toggle);
+				}
+			}
 		}
 	}
 }

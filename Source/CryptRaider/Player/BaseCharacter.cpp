@@ -159,12 +159,3 @@ void ABaseCharacter::MouseClick()
 		InteractWithPinLock(Start, End);
 	}
 }
-
-void ABaseCharacter::ToggleFlashlight()
-{
-	if (auto* FlashlightActor = Cast<AFlashlight>(Flashlight->GetChildActor()))
-	{
-		FlashlightActor->Toggle();
-		MakeNoise(FlashlightLoudness, GetInstigator(), GetActorLocation());
-	}
-}
