@@ -31,12 +31,6 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsInPinLock() const;
 
-	UFUNCTION(BlueprintCallable)
-	UMovement* GetMovement() const;
-
-	UFUNCTION(BlueprintCallable)
-	UHealth* GetHealth() const;
-
 public:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
