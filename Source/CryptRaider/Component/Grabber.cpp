@@ -21,16 +21,26 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (auto* PhysicsHandle = GetPhysicsHandle();
-		IsValid(PhysicsHandle) && IsValid(GetGrabbed()))
+	auto* PhysicsHandle = GetPhysicsHandle();
+	auto* Projectile = GetGrabbed();
+	
+	if (IsValid(PhysicsHandle) && IsValid(Projectile))
 	{
 		const FVector Location = GetHand()->GetComponentLocation();
 		const FVector ForwardVector = GetHand()->GetForwardVector();
-
 		const FRotator Rotation = GetHand()->GetComponentRotation();
 
 		const FVector TargetLocation = Location + ForwardVector * HoldDistance;
-		PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, Rotation);
+	
+		if (const float Distance = FVector::Distance(Projectile->GetActorLocation(), TargetLocation);
+			Distance > ReleaseDistance)
+		{
+			Release();
+		}
+		else
+		{
+			PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, Rotation);	
+		}
 	}
 }
 

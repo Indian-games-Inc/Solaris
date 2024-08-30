@@ -52,14 +52,18 @@ public:
 	FGrabbedUpdate OnGrabbedUpdated;
 	
 private:
-	UPROPERTY(EditAnywhere)
-	float HoldDistance = 200;
+	UPROPERTY(EditAnywhere, Category = "Grab",  meta = (AllowPrivateAccess = "true"))
+	float HoldDistance = 200.f;
+
+	UPROPERTY(EditAnywhere, Category = "Grab",  meta = (AllowPrivateAccess = "true"))
+	float ReleaseDistance = 150.f;
 
 	FName GrabbedTag = "Grabbed";
+
 	
 	// Interpolation params
 	
-	// Used to calculate grab move interpolation speed greater -> faster
+	// Used to calculate grab move interpolation speed: greater -> faster
 	UPROPERTY(EditAnywhere, Category = "Interpolation", meta = (AllowPrivateAccess = "true"))
 	float InterpSpeedConstant = 5000.f;
 
