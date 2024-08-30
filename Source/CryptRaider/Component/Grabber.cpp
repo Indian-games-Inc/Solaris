@@ -7,7 +7,6 @@
 #include "Hand.h"
 #include "CryptRaider/Actor/Destructible/Projectile.h"
 #include "CryptRaider/Player/BasePlayerController.h"
-#include "GameFramework/Character.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -57,6 +56,8 @@ void UGrabber::Grab()
 	{
 		if (auto* Body = Projectile->GetBody(); IsValid(Body))
 		{
+			PhysicsHandle->SetInterpolationSpeed(GetInterpSpeed(Body->GetMass()));
+			
 			Body->WakeAllRigidBodies();
 			Body->SetSimulatePhysics(true);
 			Body->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // Disable collision with Pawns
@@ -67,7 +68,7 @@ void UGrabber::Grab()
 			PhysicsHandle->GrabComponentAtLocationWithRotation(
 				Body,
 				NAME_None,
-				Projectile->GetActorLocation(),
+				Projectile->GetBody()->GetCenterOfMass(),
 				GetHand()->GetComponentRotation()
 			);
 			
@@ -112,7 +113,8 @@ void UGrabber::Throw()
 		if (auto* Body = Projectile->GetBody(); IsValid(Body))
 		{
 			const FVector ForwardVector = GetHand()->GetForwardVector();
-			const FVector ImpulseVector = ForwardVector * ThrowImpulseStrength;
+			const FVector ImpulseVector = ForwardVector * GetThrowVelocity(Body->GetMass());
+			
 			Body->SetPhysicsLinearVelocity(ImpulseVector);
 		}
 	}
@@ -171,4 +173,19 @@ AProjectile* UGrabber::GetGrabbed() const
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 {
 	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+}
+
+float UGrabber::GetInterpSpeed(const float& Mass) const
+{
+	return FMath::Max(
+		MinInterpSpeed,
+		FMath::Min(MaxInterpSpeed, InterpSpeedConstant / Mass)
+	);
+}
+
+float UGrabber::GetThrowVelocity(const float& Mass) const
+{
+	return MinThrowVelocity
+		+ (MaxThrowVelocity - MinThrowVelocity) / MaxObjectMass
+		* FMath::Max(MaxObjectMass - Mass, 1.f);;
 }
