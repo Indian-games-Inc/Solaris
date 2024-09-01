@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CryptRaider/Interface/Interactable.h"
 #include "GameFramework/Actor.h"
 #include "SkeletalItem.generated.h"
 
