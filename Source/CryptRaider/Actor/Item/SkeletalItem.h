@@ -14,11 +14,13 @@ class CRYPTRAIDER_API ASkeletalItem : public AActor
 
 public:
 	ASkeletalItem();
+	void CleanMesh();
 	virtual void OnConstruction(const FTransform& Transform) override;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh", meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<UMeshComponent> MeshClass;
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Mesh", meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<UMeshComponent> Mesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh",
+		meta=(AllowPrivateAccess = "true", AllowedClasses = "/Script/Engine.StaticMeshComponent,/Script/Engine.SkeletalMeshComponent"))
+	TSubclassOf<UMeshComponent> MeshClass;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Mesh", meta=(AllowPrivateAccess = "true",
+		AllowedClasses = "/Script/Engine.StaticMeshComponent,/Script/Engine.SkeletalMeshComponent"))
+	TObjectPtr<UMeshComponent> Mesh;
 };
