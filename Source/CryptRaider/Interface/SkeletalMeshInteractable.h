@@ -20,13 +20,9 @@ public:
 	virtual FString HintMessage() const override;
 	virtual bool IsActive() const override;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	void DisablePhysics() const;
+	void EnablePhysics() const;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 protected:
 
 	//TODO: something common??

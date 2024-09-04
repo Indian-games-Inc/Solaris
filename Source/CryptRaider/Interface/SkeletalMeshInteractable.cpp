@@ -4,10 +4,9 @@
 #include "SkeletalMeshInteractable.h"
 
 #include "CryptRaider/Player/BasePlayerController.h"
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
-
-// Sets default values
 ASkeletalMeshInteractable::ASkeletalMeshInteractable()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -18,19 +17,22 @@ ASkeletalMeshInteractable::ASkeletalMeshInteractable()
 
 	CloseUpCamera = CreateDefaultSubobject<UCameraComponent>("CloseUpCamera");
 	CloseUpCamera->SetupAttachment(Body);
-
-
-	// Bind the OnHit function
-	// Body->OnComponentHit.AddDynamic(this, &AStaticMeshInteractable::OnHit);
 }
+
+//TODO: all code should be some where in SkeletalItem -> HidingBox
+
+// Sets default values
 
 void ASkeletalMeshInteractable::Interact()
 {
 	const auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (true)
 	{
+		Body->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		this->SetActorRotation(FRotator(180.0f, 0.0f, 0.0f), ETeleportType::TeleportPhysics);
 		PlayerController->SetViewTargetWithBlend(this, 0.1);
+		PlayerController->GetPawn()->SetActorLocation(this->GetActorLocation());
+		// Body->AttachToComponent(PlayerController->GetCharacter(), FAttachmentTransformRules::KeepWorldTransform);
 	}
 	else
 	{
@@ -39,6 +41,7 @@ void ASkeletalMeshInteractable::Interact()
 	}
 }
 
+//TODO: add message for escape from box
 FString ASkeletalMeshInteractable::HintMessage() const
 {
 	return Tags.Contains(GrabbedTag) ? "Release" : "Grab | Hide";
@@ -49,14 +52,15 @@ bool ASkeletalMeshInteractable::IsActive() const
 	return true;
 }
 
-// Called when the game starts or when spawned
-void ASkeletalMeshInteractable::BeginPlay()
+void ASkeletalMeshInteractable::DisablePhysics() const
 {
-	Super::BeginPlay();
+	Body->SetSimulatePhysics(false);
+	Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Body->OnActorEnableCollisionChanged();
 }
 
-// Called every frame
-void ASkeletalMeshInteractable::Tick(float DeltaTime)
+void ASkeletalMeshInteractable::EnablePhysics() const
 {
-	Super::Tick(DeltaTime);
+	Body->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Body->OnActorEnableCollisionChanged();
 }

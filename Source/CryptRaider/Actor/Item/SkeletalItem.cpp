@@ -13,15 +13,3 @@ ASkeletalItem::ASkeletalItem()
 void ASkeletalItem::Charge()
 {
 }
-
-// Called when the game starts or when spawned
-void ASkeletalItem::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called every frame
-void ASkeletalItem::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}

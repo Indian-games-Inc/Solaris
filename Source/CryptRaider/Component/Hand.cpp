@@ -43,7 +43,7 @@ TOptional<FHitResult> UHand::LineTrace(FVector Start, FVector End, int Radius) c
 	if (HasHit)
 	{
 		// for debug purposes
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 0.1f);
+		// DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 0.1f);
 		return HitResult;
 	}
 
