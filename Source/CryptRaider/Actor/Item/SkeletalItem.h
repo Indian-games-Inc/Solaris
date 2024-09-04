@@ -3,24 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CryptRaider/Interface/Interactable.h"
-#include "GameFramework/Actor.h"
+#include "CryptRaider/Interface/SkeletalMeshInteractable.h"
 #include "SkeletalItem.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API ASkeletalItem : public AActor
+class CRYPTRAIDER_API ASkeletalItem : public ASkeletalMeshInteractable
 {
 	GENERATED_BODY()
 
 public:
+	// Sets default values for this actor's properties
 	ASkeletalItem();
-	void CleanMesh();
-	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void Charge();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh",
-		meta=(AllowPrivateAccess = "true", AllowedClasses = "/Script/Engine.StaticMeshComponent,/Script/Engine.SkeletalMeshComponent"))
-	TSubclassOf<UMeshComponent> MeshClass;
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Mesh", meta=(AllowPrivateAccess = "true",
-		AllowedClasses = "/Script/Engine.StaticMeshComponent,/Script/Engine.SkeletalMeshComponent"))
-	TObjectPtr<UMeshComponent> Mesh;
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 };

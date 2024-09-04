@@ -6,6 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "CryptRaider/Actor/Destructible/Projectile.h"
 #include "CryptRaider/Actor/Item/Item.h"
+#include "CryptRaider/Actor/Item/SkeletalItem.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -53,7 +54,12 @@ UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 
 void UGrabber::Grab(const FHitResult& HitResult)
 {
-	if (const auto* Projectile = Cast<AProjectile>(HitResult.GetActor()); !Projectile)
+	//TODO: decide what to do with Projectaile here
+	if (const auto* ProjectileS = Cast<ASkeletalItem>(HitResult.GetActor()); ProjectileS)
+	{
+
+	}
+	else if (const auto* Projectile = Cast<AProjectile>(HitResult.GetActor()); !Projectile)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to Grab actor, it's not a Projectile"));
 		return;
@@ -107,6 +113,16 @@ void UGrabber::Throw()
 	if (auto* Grabbed = GetGrabbedItem(); Grabbed)
 	{
 		if (auto* Projectile = Cast<AProjectile>(GetGrabbedItem()->GetOwner()); IsValid(Projectile))
+		{
+			Projectile->Charge();
+
+			Release();
+			
+			const FVector ImpulseVector = GetForwardVector() * ThrowImpulseStrength;
+			Grabbed->SetPhysicsLinearVelocity(ImpulseVector);
+		}
+		//TODO: also here
+		if (auto* Projectile = Cast<ASkeletalItem>(GetGrabbedItem()->GetOwner()); IsValid(Projectile))
 		{
 			Projectile->Charge();
 

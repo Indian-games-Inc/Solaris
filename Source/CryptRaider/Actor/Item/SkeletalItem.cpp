@@ -3,46 +3,25 @@
 
 #include "SkeletalItem.h"
 
+// Sets default values
 ASkeletalItem::ASkeletalItem()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ASkeletalItem::CleanMesh()
+void ASkeletalItem::Charge()
 {
-	Mesh->ConditionalBeginDestroy();
-	Mesh->DestroyComponent();
-	Mesh = nullptr;
 }
 
-void ASkeletalItem::OnConstruction(const FTransform& Transform)
+// Called when the game starts or when spawned
+void ASkeletalItem::BeginPlay()
 {
-	Super::OnConstruction(Transform);
-	//TODO: overcomplicated
-	if (MeshClass)
-	{
-		if (!Mesh)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Mesh class set"));
-			Mesh = NewObject<UMeshComponent>(this, MeshClass, "Mesh");
-		}
-		else
-		{
-			if (MeshClass != Mesh->GetClass())
-			{
-				CleanMesh();
-				Mesh = NewObject<UMeshComponent>(this, MeshClass, "Mesh");
-				UE_LOG(LogTemp, Warning, TEXT("Mesh class replaced"));
-			}
-		}
-	}
-	else
-	{
-		if (Mesh)
-		{
-			CleanMesh();
-			UE_LOG(LogTemp, Warning, TEXT("Mesh cleared"));
-		}
-	}
+	Super::BeginPlay();
+}
+
+// Called every frame
+void ASkeletalItem::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }

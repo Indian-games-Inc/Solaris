@@ -158,6 +158,7 @@ float ABaseCharacter::TakeDamage(float Damage,
 	return DamageToApply;
 }
 
+//TODO: adapt hint construction to BOX
 FText ABaseCharacter::ConstructHintFor(const IInteractable* Interactable) const
 {
 	if (!Interactable->IsActive())
