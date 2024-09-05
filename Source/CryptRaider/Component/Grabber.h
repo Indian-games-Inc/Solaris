@@ -45,15 +45,42 @@ private:
 
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
 
+	float GetInterpSpeed(const float& Mass) const;
+	float GetThrowVelocity(const float& Mass) const;
+
 public:
 	FGrabbedUpdate OnGrabbedUpdated;
 	
 private:
-	UPROPERTY(EditAnywhere)
-	float HoldDistance = 200;
+	UPROPERTY(EditAnywhere, Category = "Grab",  meta = (AllowPrivateAccess = "true"))
+	float HoldDistance = 200.f;
 
-	UPROPERTY(EditAnywhere)
-	float ThrowImpulseStrength = 1500;
+	UPROPERTY(EditAnywhere, Category = "Grab",  meta = (AllowPrivateAccess = "true"))
+	float ReleaseDistance = 150.f;
 
 	FName GrabbedTag = "Grabbed";
+
+	
+	// Interpolation params
+	
+	// Used to calculate grab move interpolation speed: greater -> faster
+	UPROPERTY(EditAnywhere, Category = "Interpolation", meta = (AllowPrivateAccess = "true"))
+	float InterpSpeedConstant = 5000.f;
+
+	UPROPERTY(EditAnywhere, Category = "Interpolation", meta = (AllowPrivateAccess = "true"))
+	float MinInterpSpeed = 1.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Interpolation", meta = (AllowPrivateAccess = "true"))
+	float MaxInterpSpeed = 100.f;
+
+	// Throw params
+	
+	UPROPERTY(EditAnywhere, Category = "Throw", meta = (AllowPrivateAccess = "true"))
+	float MaxThrowVelocity = 1000.f;
+
+	UPROPERTY(EditAnywhere, Category = "Throw", meta = (AllowPrivateAccess = "true"))
+	float MinThrowVelocity = 200.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Throw", meta = (AllowPrivateAccess = "true"))
+	float MaxObjectMass = 1500.f;
 };
