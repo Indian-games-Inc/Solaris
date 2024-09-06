@@ -8,7 +8,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "CryptRaider/Actor/Destructible/Projectile.h"
-#include "GameFramework/GameSession.h"
+#include "CryptRaider/Damage/Type/StunDamageType.h"
 
 // Sets default values
 ABaseAIController::ABaseAIController()
@@ -34,7 +34,7 @@ void ABaseAIController::BeginPlay()
 	if (auto* AICharacter = Cast<ABaseAICharacter>(GetCharacter()); IsValid(AICharacter))
 	{
 		AICharacter->OnPlayerOnSightUpdate.AddDynamic(this, &ABaseAIController::OnPLayerOnSight);
-		AICharacter->OnActorHit.AddDynamic(this, &ABaseAIController::OnActorHit);
+		AICharacter->OnTakeStunDamage.AddDynamic(this, &ABaseAIController::OnActorTakeStunDamage);
 	}
 }
 
@@ -62,9 +62,10 @@ void ABaseAIController::OnPLayerOnSight(const bool IsPlayerOnSight, const FVecto
 	BlackboardComponent->SetValueAsVector(PlayerLocationKeyName, PlayerLocation);
 }
 
-void ABaseAIController::OnActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+void ABaseAIController::OnActorTakeStunDamage(AActor* DamagedActor, float Damage, const FHitResult& Hit,
+                                              AController* InstigatedBy, const UDamageType* DamageType, AActor* DamageCauser)
 {
-	if (const auto* Projectile = Cast<AProjectile>(OtherActor); IsValid(Projectile) && Projectile->IsCharged())
+	if (IsValid(Cast<AProjectile>(DamageCauser)) && IsValid(Cast<UStunDamageType>(DamageType)))
 	{
 		BlackboardComponent->SetValueAsVector(HitLocationKeyName, Hit.Location);
 

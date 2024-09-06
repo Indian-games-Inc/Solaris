@@ -3,7 +3,9 @@
 
 #include "BaseAICharacter.h"
 
+#include "CryptRaider/Damage/Event/StunDamageEvent.h"
 #include "CryptRaider/Player/BaseCharacter.h"
+#include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -89,23 +91,37 @@ void ABaseAICharacter::StopAttackTrace()
 	GetWorld()->GetTimerManager().ClearTimer(AttackTraceTimerHandle);
 }
 
-void ABaseAICharacter::GetStunned()
+void ABaseAICharacter::GetStunned(const float& Duration = 0.f)
 {
+	if (bIsStunResistant)
+	{
+		return;
+	}
+	
 	if (!GetWorld()->GetTimerManager().IsTimerActive(StunTimerHandle))
 	{
-		StartStun();
-		const float AnimDuration = PlayAnimMontage(StunAnimation);
-		const float TimerDuration = std::max(AnimDuration, StunDuration);
+		if (IsValid(StunAnimation))
+		{
+			StartStun();
 
-		GetWorld()->GetTimerManager().SetTimer(StunTimerHandle, this, &ABaseAICharacter::FinishStun, TimerDuration);
+			const float PlayRate = StunAnimation->GetPlayLength() / Duration > 0 ? Duration : 1.f;
+			const float AnimDuration = PlayAnimMontage(StunAnimation, PlayRate);
+
+			GetWorld()->GetTimerManager().SetTimer(StunTimerHandle, this, &ABaseAICharacter::FinishStun, AnimDuration);
+		}
 	}
+}
+
+bool ABaseAICharacter::IsStunResistant()
+{
+	return bIsStunResistant;
 }
 
 void ABaseAICharacter::StartStun()
 {
 	GetCharacterMovement()->DisableMovement();
 	SetSensesEnabled(false);
-	IsStunned = true;
+	bIsStunned = true;
 
 	const FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetCharacter()->GetActorLocation();
 
@@ -116,7 +132,7 @@ void ABaseAICharacter::FinishStun()
 {
 	GetCharacterMovement()->SetDefaultMovementMode();
 	SetSensesEnabled(true);
-	IsStunned = false;
+	bIsStunned = false;
 
 	GetWorld()->GetTimerManager().ClearTimer(StunTimerHandle);
 }
@@ -130,6 +146,27 @@ void ABaseAICharacter::SetSensesEnabled(const bool IsEnabled)
 	}
 
 	AIPerceptionComponent->ForgetAll();
+}
+
+float ABaseAICharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent,
+                                   AController* EventInstigator, AActor* DamageCauser)
+{
+	if (DamageEvent.IsOfType(FStunDamageEvent::ClassID))
+	{
+		const auto* StunDamageEvent = static_cast<const FStunDamageEvent*>(&DamageEvent);
+		const UDamageType* DamageTypeCDO = DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>();
+		
+		OnTakeStunDamage.Broadcast(this,
+		                           Damage,
+		                           StunDamageEvent->HitInfo,
+		                           EventInstigator,
+		                           DamageTypeCDO,
+		                           DamageCauser);
+
+		GetStunned(StunDamageEvent->StunDuration);
+	}
+
+	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void ABaseAICharacter::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)

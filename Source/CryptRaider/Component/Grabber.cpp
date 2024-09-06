@@ -116,8 +116,6 @@ void UGrabber::Throw()
 {
 	if (auto* Projectile = GetGrabbed(); IsValid(Projectile))
 	{
-		Projectile->Charge();
-
 		Release();
 
 		if (auto* Body = Projectile->GetBody(); IsValid(Body))

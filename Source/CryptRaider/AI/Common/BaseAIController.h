@@ -29,7 +29,7 @@ private:
 	void OnPLayerOnSight(const bool IsPlayerOnSight, const FVector& PlayerLocation);
 
 	UFUNCTION()
-	void OnActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	void OnActorTakeStunDamage(AActor* DamagedActor, float Damage, const FHitResult& Hit, AController* InstigatedBy, const UDamageType* DamageType, AActor* DamageCauser);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI", meta = (AllowPrivateAccess = "true"))

@@ -4,17 +4,27 @@
 #include "Projectile.h"
 
 #include "Destructible.h"
+#include "CryptRaider/AI/Common/BaseAICharacter.h"
+#include "CryptRaider/Damage/Event/StunDamageEvent.h"
 #include "Field/FieldSystemActor.h"
 
 void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (auto* OtherDestructibleActor = Cast<ADestructible>(OtherActor); OtherDestructibleActor)
+	if (IsValid(Cast<ADestructible>(OtherActor)))
 	{
 		AddForce(Hit.Location);
 	}
 
-	bIsCharged = false;
+	if (IsValid(Cast<ABaseAICharacter>(OtherActor)) && HitForceThreshold <= GetForce())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit Force: %f, Threshold: %f"), GetForce(), HitForceThreshold)
+		FStunDamageEvent DamageEvent;
+		DamageEvent.StunDuration = StunDuration;
+		DamageEvent.HitInfo = Hit;
+		
+		OtherActor->TakeDamage(1, DamageEvent, nullptr, this);
+	}
 }
 
 void AProjectile::Interact()
@@ -25,16 +35,6 @@ void AProjectile::Interact()
 FString AProjectile::HintMessage() const
 {
 	return Tags.Contains(GrabbedTag) ? "Release" : "Grab";
-}
-
-bool AProjectile::IsCharged() const
-{
-	return bIsCharged;
-}
-
-void AProjectile::Charge()
-{
-	bIsCharged = true;
 }
 
 void AProjectile::BeginPlay()
@@ -61,4 +61,15 @@ void AProjectile::AddForce(const FVector& Location) const
 	}
 	
 	MasterFieldActor->SetLifeSpan(MasterFieldDestructionDelay);
+}
+
+float AProjectile::GetForce() const // TODO calculate force toward hit location
+{
+	const float Mass = GetBody()->GetMass();
+	const float Velocity = GetBody()->GetComponentVelocity().Size();
+
+	UE_LOG(LogTemp, Warning, TEXT("Mass: %f"), Mass);
+	UE_LOG(LogTemp, Warning, TEXT("Velocity: %f"), Velocity);
+
+	return Mass * Velocity;
 }

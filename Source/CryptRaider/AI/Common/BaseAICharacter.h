@@ -8,7 +8,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPlayerOnSightDelegate, const bool, IsPlayerOnSight, const FVector&, PlayerLocation);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FTakeStunDamage, AActor*, DamagedActor, float, Damage, const FHitResult&, Hit, class AController*, InstigatedBy, const UDamageType*, DamageType, AActor*, DamageCauser);
 
 UCLASS()
 class CRYPTRAIDER_API ABaseAICharacter : public ACharacter
@@ -28,7 +28,10 @@ public:
 	void TriggerAttack();
 
 	UFUNCTION(BlueprintCallable)
-	void GetStunned();
+	void GetStunned(const float& Duration);
+
+	UFUNCTION()
+	bool IsStunResistant();
 
 protected:
 	UFUNCTION()
@@ -44,11 +47,17 @@ private:
 	void StartStun();
 	void FinishStun();
 
-	void SetSensesEnabled(const bool IsEnabled);
+	void SetSensesEnabled(bool IsEnabled);
+
+public:
+	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
 	UPROPERTY(BlueprintAssignable)
 	FPlayerOnSightDelegate OnPlayerOnSightUpdate;
+
+	UPROPERTY(BlueprintAssignable)
+	FTakeStunDamage OnTakeStunDamage;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
@@ -96,23 +105,19 @@ private:
 	UPROPERTY()
 	FTimerHandle AttackAnimationTimerHandle;
 
-	/*
-	 * Duration of stun
-	 * If less than animation duration, animation duration time will be used instead
-	 */
 	UPROPERTY(
-		EditDefaultsOnly, BlueprintReadWrite,
+		EditDefaultsOnly, BlueprintReadOnly,
 		Category = "AI|Stun",
 		meta = (AllowPrivateAccess = "true")
 	)
-	float StunDuration;
+	bool bIsStunResistant = false;
 
 	UPROPERTY(
 		VisibleAnywhere, BlueprintReadOnly,
 		Category = "AI|Stun",
 		meta = (AllowPrivateAccess = "true")
 	)
-	bool IsStunned;
+	bool bIsStunned;
 
 	UPROPERTY(
 		EditDefaultsOnly, BlueprintReadWrite,
