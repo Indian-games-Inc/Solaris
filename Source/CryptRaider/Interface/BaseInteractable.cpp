@@ -11,7 +11,7 @@ void ABaseInteractable::BeginPlay()
 	Super::BeginPlay();
 	OnTakeAnyDamage.AddUniqueDynamic(this, &ABaseInteractable::OnDamage);
 
-	if (auto Body = GetBody(); IsValid(Body))
+	if (const auto Body = GetBody(); IsValid(Body))
 	{
 		RootComponent->SetupAttachment(GetBody());
 		// Bind the OnHit function
@@ -67,9 +67,7 @@ void ABaseInteractable::OnDamage(AActor* DamagedActor, float Damage, const UDama
 
 UMeshComponent* ABaseInteractable::GetBody() const
 {
-	auto Static = FindComponentByClass<UStaticMeshComponent>();
-	auto Skeletal = FindComponentByClass<USkeletalMeshComponent>();
-	return Static != nullptr
-		       ? Cast<UMeshComponent>(Static)
-		       : Cast<UMeshComponent>(Skeletal);
+	return FindComponentByClass<UStaticMeshComponent>() != nullptr
+		       ? Cast<UMeshComponent>(FindComponentByClass<UStaticMeshComponent>())
+		       : Cast<UMeshComponent>(FindComponentByClass<USkeletalMeshComponent>());
 }
