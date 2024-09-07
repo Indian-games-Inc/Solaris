@@ -67,7 +67,13 @@ void ABaseInteractable::OnDamage(AActor* DamagedActor, float Damage, const UDama
 
 UMeshComponent* ABaseInteractable::GetBody() const
 {
-	return FindComponentByClass<UStaticMeshComponent>() != nullptr
-		       ? Cast<UMeshComponent>(FindComponentByClass<UStaticMeshComponent>())
-		       : Cast<UMeshComponent>(FindComponentByClass<USkeletalMeshComponent>());
+	if (auto* StaticMesh = FindComponentByClass<UStaticMeshComponent>(); IsValid(StaticMesh))
+	{
+		return StaticMesh;
+	}
+	if (auto* SkeletalMesh = FindComponentByClass<USkeletalMeshComponent>(); IsValid(SkeletalMesh))
+	{
+		return SkeletalMesh;
+	}
+	return nullptr;
 }
