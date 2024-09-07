@@ -3,6 +3,7 @@
 
 #include "DeathTrigger.h"
 
+#include "CryptRaider/Damage/Type/InstantDeathDamage.h"
 #include "Kismet/GameplayStatics.h"
 #include "CryptRaider/Player/BaseCharacter.h"
 
@@ -17,13 +18,13 @@ ADeathTrigger::ADeathTrigger()
 void ADeathTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	float Damage = 1.f;
+	
 	if (const auto* Health = OtherActor->FindComponentByClass<UHealth>())
 	{
-		UGameplayStatics::ApplyDamage(OtherActor, Health->GetMaxHealth(), nullptr, this, UDamageType::StaticClass());	
-	} else
-	{
-		UGameplayStatics::ApplyDamage(OtherActor, 1, nullptr, this, UDamageType::StaticClass());
+		Damage = Health->GetMaxHealth();
 	}
+	UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, this, UInstantDeathDamage::StaticClass());
 }
 
 void ADeathTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

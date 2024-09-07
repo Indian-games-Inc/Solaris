@@ -3,6 +3,7 @@
 
 #include "BaseInteractable.h"
 
+#include "CryptRaider/Damage/Type/InstantDeathDamage.h"
 #include "GameFramework/Character.h"
 
 
@@ -73,5 +74,8 @@ void ABaseInteractable::EnablePhysics() const
 void ABaseInteractable::OnDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
                                  AController* InstigatedBy, AActor* DamageCauser)
 {
-	Destroy();
+	if (Cast<UInstantDeathDamage>(DamageType))
+	{
+		Destroy();
+	}
 }
