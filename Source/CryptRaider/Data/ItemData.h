@@ -23,7 +23,7 @@ struct CRYPTRAIDER_API FItemData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Weight = 0.0F;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMesh* Model;
+	UMeshComponent* Model;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperSprite* Icon;
 };

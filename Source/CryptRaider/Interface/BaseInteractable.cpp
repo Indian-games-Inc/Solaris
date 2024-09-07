@@ -5,20 +5,6 @@
 
 #include "GameFramework/Character.h"
 
-
-// Sets default values
-ABaseInteractable::ABaseInteractable()
-{
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
-	Body->SetupAttachment(RootComponent);
-
-	// Bind the OnHit function
-	Body->OnComponentHit.AddDynamic(this, &ABaseInteractable::OnHit);
-}
-
 // Called when the game starts or when spawned
 void ABaseInteractable::BeginPlay()
 {
@@ -26,19 +12,15 @@ void ABaseInteractable::BeginPlay()
 	OnTakeAnyDamage.AddUniqueDynamic(this, &ABaseInteractable::OnDamage);
 }
 
-// Called every frame
-void ABaseInteractable::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void ABaseInteractable::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+                              FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (GetVelocity().Length() > VelocityLimit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable::OnHit fired on the: %s, with velocity %f"), *this->GetName(), GetVelocity().Length());
-		MakeNoise(LoudnessOfOnHit, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(), GetActorLocation());
+		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable::OnHit fired on the: %s, with velocity %f"), *this->GetName(),
+		       GetVelocity().Length());
+		MakeNoise(LoudnessOfOnHit, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(),
+		          GetActorLocation());
 	}
 }
 
@@ -59,19 +41,43 @@ FString ABaseInteractable::HintMessage() const
 
 void ABaseInteractable::DisablePhysics() const
 {
-	Body->SetSimulatePhysics(false);
-	Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Body->OnActorEnableCollisionChanged();
+	GetBody()->SetSimulatePhysics(false);
+	GetBody()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetBody()->OnActorEnableCollisionChanged();
 }
 
 void ABaseInteractable::EnablePhysics() const
 {
-	Body->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	Body->OnActorEnableCollisionChanged();
+	GetBody()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetBody()->OnActorEnableCollisionChanged();
 }
 
 void ABaseInteractable::OnDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
                                  AController* InstigatedBy, AActor* DamageCauser)
 {
 	Destroy();
+}
+
+UMeshComponent* ABaseInteractable::GetBody() const
+{
+	const auto* o = GetOwner();
+	if (o == nullptr)
+		return nullptr;
+
+	auto Static = o->FindComponentByClass<UStaticMeshComponent>();
+	auto Skeletal = o->FindComponentByClass<USkeletalMeshComponent>();
+	return Static != nullptr
+		       ? Cast<UMeshComponent>(Static)
+		       : Cast<UMeshComponent>(Skeletal);
+}
+
+void ABaseInteractable::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	if (GetBody())
+	{
+		// Bind the OnHit function
+		GetBody()->OnComponentHit.AddDynamic(this, &ABaseInteractable::OnHit);
+	}
 }

@@ -40,11 +40,13 @@ void AProjectile::Charge()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!Body) {
+	if (!GetBody()) {
 		UE_LOG(LogTemp, Warning, TEXT("Failed to bind OnComponentHit, Body isn't initialized"))
 	}
-
-	Body->OnComponentHit.AddDynamic(this, &AProjectile::OnComponentHit);
+	else
+	{
+		GetBody()->OnComponentHit.AddDynamic(this, &AProjectile::OnComponentHit);
+	}
 }
 
 void AProjectile::AddForce(const FVector& Location) const
