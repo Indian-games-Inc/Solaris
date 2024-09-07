@@ -8,9 +8,10 @@ AItem::AItem()
 {
 	ItemData.Name = GetName();
 	ItemData.ID = GetName();
-	if (GetBody() != nullptr)
+
+	if (const auto Body = GetBody(); IsValid(Body))
 	{
-		ItemData.Model = DuplicateObject<UMeshComponent>(GetBody(), nullptr);
+		ItemData.Model = DuplicateObject<UMeshComponent>(Body, nullptr);
 	}
 }
 

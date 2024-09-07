@@ -40,12 +40,14 @@ void AProjectile::Charge()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!GetBody()) {
-		UE_LOG(LogTemp, Warning, TEXT("Failed to bind OnComponentHit, Body isn't initialized"))
+
+	if (auto* Body = GetBody(); IsValid(Body))
+	{
+		Body->OnComponentHit.AddDynamic(this, &AProjectile::OnComponentHit);
 	}
 	else
 	{
-		GetBody()->OnComponentHit.AddDynamic(this, &AProjectile::OnComponentHit);
+		UE_LOG(LogTemp, Warning, TEXT("Failed to bind OnComponentHit, Body isn't initialized"))
 	}
 }
 
@@ -57,10 +59,11 @@ void AProjectile::AddForce(const FVector& Location) const
 		FRotator::ZeroRotator
 	);
 
-	if (!MasterFieldActor) {
+	if (!MasterFieldActor)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to spawn MasterField"));
 		return;
 	}
-	
+
 	MasterFieldActor->SetLifeSpan(MasterFieldDestructionDelay);
 }
