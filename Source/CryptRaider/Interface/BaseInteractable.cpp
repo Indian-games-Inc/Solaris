@@ -10,6 +10,13 @@ void ABaseInteractable::BeginPlay()
 {
 	Super::BeginPlay();
 	OnTakeAnyDamage.AddUniqueDynamic(this, &ABaseInteractable::OnDamage);
+
+	if (auto Body = GetBody(); IsValid(Body))
+	{
+		RootComponent->SetupAttachment(GetBody());
+		// Bind the OnHit function
+		Body->OnComponentHit.AddDynamic(this, &ABaseInteractable::OnHit);
+	}
 }
 
 void ABaseInteractable::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -60,24 +67,9 @@ void ABaseInteractable::OnDamage(AActor* DamagedActor, float Damage, const UDama
 
 UMeshComponent* ABaseInteractable::GetBody() const
 {
-	const auto* o = GetOwner();
-	if (o == nullptr)
-		return nullptr;
-
-	auto Static = o->FindComponentByClass<UStaticMeshComponent>();
-	auto Skeletal = o->FindComponentByClass<USkeletalMeshComponent>();
+	auto Static = FindComponentByClass<UStaticMeshComponent>();
+	auto Skeletal = FindComponentByClass<USkeletalMeshComponent>();
 	return Static != nullptr
 		       ? Cast<UMeshComponent>(Static)
 		       : Cast<UMeshComponent>(Skeletal);
-}
-
-void ABaseInteractable::OnConstruction(const FTransform& Transform)
-{
-	Super::OnConstruction(Transform);
-
-	if (GetBody())
-	{
-		// Bind the OnHit function
-		GetBody()->OnComponentHit.AddDynamic(this, &ABaseInteractable::OnHit);
-	}
 }
