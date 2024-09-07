@@ -4,7 +4,6 @@
 #include "Projectile.h"
 
 #include "Destructible.h"
-#include "CryptRaider/AI/Common/BaseAICharacter.h"
 #include "CryptRaider/Damage/Event/StunDamageEvent.h"
 #include "Field/FieldSystemActor.h"
 
@@ -16,9 +15,8 @@ void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 		AddForce(Hit.Location);
 	}
 
-	if (IsValid(Cast<ABaseAICharacter>(OtherActor)) && HitForceThreshold <= GetForce())
+	if (HitForceThreshold <= GetImpulse(Hit))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit Force: %f, Threshold: %f"), GetForce(), HitForceThreshold)
 		FStunDamageEvent DamageEvent;
 		DamageEvent.StunDuration = StunDuration;
 		DamageEvent.HitInfo = Hit;
@@ -35,6 +33,13 @@ void AProjectile::Interact()
 FString AProjectile::HintMessage() const
 {
 	return Tags.Contains(GrabbedTag) ? "Release" : "Grab";
+}
+
+void AProjectile::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	CurrentVelocity = GetBody()->GetComponentVelocity();
 }
 
 void AProjectile::BeginPlay()
@@ -63,13 +68,29 @@ void AProjectile::AddForce(const FVector& Location) const
 	MasterFieldActor->SetLifeSpan(MasterFieldDestructionDelay);
 }
 
-float AProjectile::GetForce() const // TODO calculate force toward hit location
+float AProjectile::GetImpulse(const FHitResult& HitResult) const
 {
+	const FVector BodyCenter = GetBody()->GetCenterOfMass();
+	const FVector ImpactNormal = (HitResult.ImpactPoint - BodyCenter).GetSafeNormal();
+	
 	const float Mass = GetBody()->GetMass();
-	const float Velocity = GetBody()->GetComponentVelocity().Size();
 
-	UE_LOG(LogTemp, Warning, TEXT("Mass: %f"), Mass);
-	UE_LOG(LogTemp, Warning, TEXT("Velocity: %f"), Velocity);
+	// Division is needed to convert (centimeters / seconds) to (meters / second)
+	const float NormalVelocity = FVector::DotProduct(CurrentVelocity, ImpactNormal) / 100;
 
-	return Mass * Velocity;
+	const float Impulse = Mass * NormalVelocity;
+
+	// Debug Purpose only
+	// DrawDebugLine(
+	// 	GetWorld(),
+	// 	BodyCenter,
+	// 	BodyCenter + CurrentVelocity,
+	// 	FColor::Yellow, false, 3
+	// );
+	// DrawDebugLine(GetWorld(),
+	//               BodyCenter,
+	//               BodyCenter + ImpactNormal * NormalVelocity,
+	//               FColor::Red, false, 3);
+
+	return Impulse;
 }

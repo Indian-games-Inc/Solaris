@@ -24,6 +24,8 @@ public:
 	virtual void Interact() override;
 	virtual FString HintMessage() const override;
 
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -32,7 +34,7 @@ private:
 	void AddForce(const FVector& Location) const;
 
 	UFUNCTION()
-	float GetForce() const;
+	float GetImpulse(const FHitResult& HitResult) const;
 
 private:
 	UPROPERTY(EditDefaultsOnly)
@@ -42,10 +44,13 @@ private:
 	float MasterFieldDestructionDelay = 5.0f;
 
 	UPROPERTY(EditDefaultsOnly)
-	float HitForceThreshold = 10000.f;
+	float HitForceThreshold = 1000.f;
 
 	UPROPERTY(EditDefaultsOnly)
-	float StunDuration = 3.f;
+	float StunDuration = 2.f;
 	
 	FName GrabbedTag = "Grabbed";
+
+	UPROPERTY()
+	FVector CurrentVelocity;
 };

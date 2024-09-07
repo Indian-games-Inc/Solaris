@@ -91,7 +91,7 @@ void ABaseAICharacter::StopAttackTrace()
 	GetWorld()->GetTimerManager().ClearTimer(AttackTraceTimerHandle);
 }
 
-void ABaseAICharacter::GetStunned(const float& Duration = 0.f)
+void ABaseAICharacter::GetStunned(const float& Duration)
 {
 	if (bIsStunResistant)
 	{

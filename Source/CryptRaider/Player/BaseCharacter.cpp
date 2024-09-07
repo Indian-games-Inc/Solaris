@@ -16,6 +16,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "CryptRaider/Component/Flashlight.h"
 #include "CryptRaider/Component/HintProducer.h"
+#include "CryptRaider/Damage/Event/StunDamageEvent.h"
+#include "Engine/DamageEvents.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -89,6 +91,12 @@ float ABaseCharacter::TakeDamage(float Damage,
 {
 	float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
+	if (DamageEvent.IsOfType(FStunDamageEvent::ClassID))
+	{
+		// TODO Add stun handling
+		return DamageToApply;
+	}
+	
 	Health->TakeDamage(DamageToApply);
 
 	if (Health->IsDead())

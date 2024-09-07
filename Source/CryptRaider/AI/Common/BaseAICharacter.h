@@ -27,8 +27,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TriggerAttack();
 
+	// If Duration is not set, animation duration will be used instead
 	UFUNCTION(BlueprintCallable)
-	void GetStunned(const float& Duration);
+	void GetStunned(const float& Duration = 0.f);
 
 	UFUNCTION()
 	bool IsStunResistant();
