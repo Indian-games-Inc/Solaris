@@ -4,17 +4,25 @@
 #include "Projectile.h"
 
 #include "Destructible.h"
+#include "CryptRaider/Damage/Event/StunDamageEvent.h"
 #include "Field/FieldSystemActor.h"
 
 void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (auto* OtherDestructibleActor = Cast<ADestructible>(OtherActor); OtherDestructibleActor)
+	if (IsValid(Cast<ADestructible>(OtherActor)))
 	{
 		AddForce(Hit.Location);
 	}
 
-	bIsCharged = false;
+	if (HitImpulseThreshold <= GetImpulse(Hit))
+	{
+		FStunDamageEvent DamageEvent;
+		DamageEvent.StunDuration = StunDuration;
+		DamageEvent.HitInfo = Hit;
+		
+		OtherActor->TakeDamage(1, DamageEvent, nullptr, this);
+	}
 }
 
 void AProjectile::Interact()
@@ -27,14 +35,11 @@ FString AProjectile::HintMessage() const
 	return Tags.Contains(GrabbedTag) ? "Release" : "Grab";
 }
 
-bool AProjectile::IsCharged() const
+void AProjectile::Tick(float DeltaTime)
 {
-	return bIsCharged;
-}
+	Super::Tick(DeltaTime);
 
-void AProjectile::Charge()
-{
-	bIsCharged = true;
+	CurrentVelocity = GetBody()->GetComponentVelocity();
 }
 
 void AProjectile::BeginPlay()
@@ -66,4 +71,31 @@ void AProjectile::AddForce(const FVector& Location) const
 	}
 
 	MasterFieldActor->SetLifeSpan(MasterFieldDestructionDelay);
+}
+
+float AProjectile::GetImpulse(const FHitResult& HitResult) const
+{
+	const FVector BodyCenter = GetBody()->GetCenterOfMass();
+	const FVector ImpactNormal = (HitResult.ImpactPoint - BodyCenter).GetSafeNormal();
+	
+	const float Mass = GetBody()->GetMass();
+
+	// Division is needed to convert (centimeters / seconds) to (meters / second)
+	const float NormalVelocity = FVector::DotProduct(CurrentVelocity, ImpactNormal) / 100;
+
+	const float Impulse = Mass * NormalVelocity;
+
+	// Debug Purpose only
+	// DrawDebugLine(
+	// 	GetWorld(),
+	// 	BodyCenter,
+	// 	BodyCenter + CurrentVelocity,
+	// 	FColor::Yellow, false, 3
+	// );
+	// DrawDebugLine(GetWorld(),
+	//               BodyCenter,
+	//               BodyCenter + ImpactNormal * NormalVelocity,
+	//               FColor::Red, false, 3);
+
+	return Impulse;
 }

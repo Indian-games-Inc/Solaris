@@ -11,6 +11,7 @@ class ABaseAICharacter;
 UBTTask_GetStunned::UBTTask_GetStunned()
 {
 	NodeName = "Get Stunned";
+	StunDuration = 0.f;
 }
 
 FString UBTTask_GetStunned::GetStaticDescription() const
@@ -25,7 +26,7 @@ EBTNodeResult::Type UBTTask_GetStunned::ExecuteTask(UBehaviorTreeComponent& Owne
 	if (ABaseAICharacter* AICharacter = Cast<ABaseAICharacter>(AIController->GetCharacter());
 		IsValid(AICharacter))
 	{
-		AICharacter->GetStunned();
+		AICharacter->GetStunned(StunDuration);
 
 		return FinishTask(OwnerComp, EBTNodeResult::Succeeded);
 	}

@@ -3,6 +3,7 @@
 
 #include "BaseInteractable.h"
 
+#include "CryptRaider/Damage/Type/InstantDeathDamage.h"
 #include "GameFramework/Character.h"
 
 
@@ -31,8 +32,8 @@ void ABaseInteractable::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 {
 	if (GetVelocity().Length() > VelocityLimit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable::OnHit fired on the: %s, with velocity %f"), *this->GetName(),
-		       GetVelocity().Length());
+		// UE_LOG(LogTemp, Warning, TEXT("ABaseInteractable::OnHit fired on the: %s, with velocity %f"), *this->GetName(),
+		//        GetVelocity().Length());
 		MakeNoise(LoudnessOfOnHit, GetWorld()->GetFirstPlayerController()->GetCharacter()->GetInstigator(),
 		          GetActorLocation());
 	}
@@ -69,7 +70,10 @@ void ABaseInteractable::EnablePhysics() const
 void ABaseInteractable::OnDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
                                  AController* InstigatedBy, AActor* DamageCauser)
 {
-	Destroy();
+	if (Cast<UInstantDeathDamage>(DamageType))
+	{
+		Destroy();
+	}
 }
 
 UMeshComponent* ABaseInteractable::GetBody() const
