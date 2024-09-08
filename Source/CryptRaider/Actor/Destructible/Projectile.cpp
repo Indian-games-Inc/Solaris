@@ -45,11 +45,15 @@ void AProjectile::Tick(float DeltaTime)
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!Body) {
+
+	if (auto* Body = GetBody(); IsValid(Body))
+	{
+		Body->OnComponentHit.AddDynamic(this, &AProjectile::OnComponentHit);
+	}
+	else
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to bind OnComponentHit, Body isn't initialized"))
 	}
-
-	Body->OnComponentHit.AddDynamic(this, &AProjectile::OnComponentHit);
 }
 
 void AProjectile::AddForce(const FVector& Location) const
@@ -60,11 +64,12 @@ void AProjectile::AddForce(const FVector& Location) const
 		FRotator::ZeroRotator
 	);
 
-	if (!MasterFieldActor) {
+	if (!MasterFieldActor)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to spawn MasterField"));
 		return;
 	}
-	
+
 	MasterFieldActor->SetLifeSpan(MasterFieldDestructionDelay);
 }
 

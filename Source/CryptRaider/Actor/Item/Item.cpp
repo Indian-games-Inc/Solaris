@@ -8,7 +8,11 @@ AItem::AItem()
 {
 	ItemData.Name = GetName();
 	ItemData.ID = GetName();
-	ItemData.Model = DuplicateObject<UStaticMesh>(Body->GetStaticMesh(), nullptr);
+
+	if (const auto Body = GetBody(); IsValid(Body))
+	{
+		ItemData.Model = DuplicateObject<UMeshComponent>(Body, nullptr);
+	}
 }
 
 // Called when the game starts or when spawned
