@@ -15,7 +15,7 @@ void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 		AddForce(Hit.Location);
 	}
 
-	if (HitForceThreshold <= GetImpulse(Hit))
+	if (HitImpulseThreshold <= GetImpulse(Hit))
 	{
 		FStunDamageEvent DamageEvent;
 		DamageEvent.StunDuration = StunDuration;

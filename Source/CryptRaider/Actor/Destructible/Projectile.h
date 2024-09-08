@@ -44,7 +44,7 @@ private:
 	float MasterFieldDestructionDelay = 5.0f;
 
 	UPROPERTY(EditDefaultsOnly)
-	float HitForceThreshold = 1000.f;
+	float HitImpulseThreshold = 1000.f;
 
 	UPROPERTY(EditDefaultsOnly)
 	float StunDuration = 2.f;
