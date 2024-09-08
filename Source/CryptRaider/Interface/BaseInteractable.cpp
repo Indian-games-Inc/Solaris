@@ -5,15 +5,22 @@
 
 #include "GameFramework/Character.h"
 
+
+ABaseInteractable::ABaseInteractable()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
 // Called when the game starts or when spawned
 void ABaseInteractable::BeginPlay()
 {
 	Super::BeginPlay();
+
 	OnTakeAnyDamage.AddUniqueDynamic(this, &ABaseInteractable::OnDamage);
 
-	if (const auto Body = GetBody(); IsValid(Body))
+	if (auto* Body = GetBody(); IsValid(Body))
 	{
-		RootComponent->SetupAttachment(GetBody());
+		SetRootComponent(Body);
 		// Bind the OnHit function
 		Body->OnComponentHit.AddDynamic(this, &ABaseInteractable::OnHit);
 	}
