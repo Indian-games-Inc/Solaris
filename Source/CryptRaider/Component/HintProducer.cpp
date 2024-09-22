@@ -25,6 +25,10 @@ void UHintProducer::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	{
 		OnHintUpdated.Broadcast(HintMessage);
 	}
+	else
+	{
+		OnHintUpdated.Broadcast(FText {});
+	}
 }
 
 FText UHintProducer::ConstructHint() const
