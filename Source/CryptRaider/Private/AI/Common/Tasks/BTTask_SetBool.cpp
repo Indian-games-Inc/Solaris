@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "AI/Common/Tasks/BTTask_SetBool.h"
 
 #include "BehaviorTree/BlackboardComponent.h"

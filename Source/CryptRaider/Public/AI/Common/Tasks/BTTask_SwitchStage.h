@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,9 +5,7 @@
 #include "AI/Common/Enum/MonsterStage.h"
 #include "BTTask_SwitchStage.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class CRYPTRAIDER_API UBTTask_SwitchStage : public UBTTask_Base
 {

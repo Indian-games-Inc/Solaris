@@ -1,15 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Player/Components/Movement.h"
 
-#include "IAutomationControllerManager.h"
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
-// Sets default values for this component's properties
 UMovement::UMovement()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -32,7 +27,7 @@ UMovement::UMovement()
 	bIsOnLadder = false;
 }
 
-// Called when the game starts
+
 void UMovement::BeginPlay()
 {
 	Super::BeginPlay();

@@ -1,10 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Actor/Door/DoorPinLock.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/PointLightComponent.h"
-
 #include "Actor/Door/Door.h"
 #include "Player/BaseCharacter.h"
 

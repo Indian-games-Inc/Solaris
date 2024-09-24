@@ -1,11 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Door/DoorButton.h"
+
 #include "Actor/Door/Door.h"
 
 
-// Sets default values
 ADoorButton::ADoorButton()
 {
 	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));

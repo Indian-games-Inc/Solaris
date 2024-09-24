@@ -1,10 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "AI/Common/Tasks/BTTask_FindRandomRoom.h"
 
-#include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 
 UBTTask_FindRandomRoom::UBTTask_FindRandomRoom()
 {

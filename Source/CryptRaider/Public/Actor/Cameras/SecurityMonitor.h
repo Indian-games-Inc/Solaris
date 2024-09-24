@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -12,18 +10,16 @@ class CRYPTRAIDER_API ASecurityMonitor : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	ASecurityMonitor();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* Monitor;
 
-private: // Components
+private:
 	UPROPERTY(EditAnywhere)
 	class ASecurityCamera* LinkedCamera;
 
@@ -36,7 +32,7 @@ private: // Components
 	UPROPERTY(EditDefaultsOnly)
 	UTextureRenderTarget2D* CameraRenderTarget;
 
-private: // Properties
+private:
 	UPROPERTY(EditAnywhere, Category="Monitor Properties")
 	float ScreenBrightness = 1.0;
 

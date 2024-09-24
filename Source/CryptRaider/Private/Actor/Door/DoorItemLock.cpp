@@ -1,10 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Door/DoorItemLock.h"
 
 #include "Actor/Door/Door.h"
-#include "Player/BaseCharacter.h"
 #include "Player/Components/Inventory.h"
 #include "Data/InventoryItemWrapper.h"
 #include "Player/BasePlayerController.h"

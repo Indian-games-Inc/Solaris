@@ -1,12 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Cameras/SecurityMonitor.h"
 #include "Actor/Cameras/SecurityCamera.h"
 #include "Engine/TextureRenderTarget2D.h"
 
 
-// Sets default values
 ASecurityMonitor::ASecurityMonitor()
 {
 	Monitor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Monitor"));
@@ -15,12 +11,12 @@ ASecurityMonitor::ASecurityMonitor()
 	CameraRenderTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("CameraRenderTarget"));
 }
 
-// Called when the game starts or when spawned
 void ASecurityMonitor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!LinkedCamera) {
+	if (!LinkedCamera)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to link camera to monitor, camera isn't set"));
 		return;
 	}
@@ -35,7 +31,8 @@ void ASecurityMonitor::BeginPlay()
 
 	if (CameraMaterial)
 	{
-		if (Monitor) {
+		if (Monitor)
+		{
 			Monitor->SetMaterial(0, CameraMaterial);
 		}
 
@@ -51,9 +48,8 @@ void ASecurityMonitor::BeginPlay()
 
 			LinkedCamera->SetTextureTarget(CameraRenderTarget);
 
-			CameraMaterial->SetTextureParameterValue("Texture",CameraRenderTarget);
-			CameraMaterial->SetScalarParameterValue("ScreenBrightness", ScreenBrightness);	
+			CameraMaterial->SetTextureParameterValue("Texture", CameraRenderTarget);
+			CameraMaterial->SetScalarParameterValue("ScreenBrightness", ScreenBrightness);
 		}
 	}
-	
 }

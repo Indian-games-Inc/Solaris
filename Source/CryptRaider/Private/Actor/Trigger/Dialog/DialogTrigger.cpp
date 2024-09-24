@@ -1,6 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#include "Actor/Trigger/Dialog/DialogTrigger.h"
+﻿#include "Actor/Trigger/Dialog/DialogTrigger.h"
 
 #include "Player/BasePlayerController.h"
 

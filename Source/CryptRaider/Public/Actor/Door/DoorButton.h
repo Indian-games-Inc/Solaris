@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,7 +11,6 @@ class CRYPTRAIDER_API ADoorButton : public AActor, public IInteractable
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	ADoorButton();
 
 public:

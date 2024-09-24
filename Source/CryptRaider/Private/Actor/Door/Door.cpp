@@ -1,9 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Door/Door.h"
 
-// Sets default values
+
 ADoor::ADoor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -16,7 +13,6 @@ ADoor::ADoor()
 	DoorMesh->SetupAttachment(RootComponent);
 }
 
-// Called when the game starts or when spawned
 void ADoor::BeginPlay()
 {
 	Super::BeginPlay();

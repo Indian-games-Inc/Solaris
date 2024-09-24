@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Destructible/Projectile.h"
 
 #include "Actor/Destructible/Destructible.h"
@@ -23,11 +20,6 @@ void AProjectile::OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 		
 		OtherActor->TakeDamage(1, DamageEvent, nullptr, this);
 	}
-}
-
-void AProjectile::Interact()
-{
-	Super::Interact();
 }
 
 FString AProjectile::HintMessage() const

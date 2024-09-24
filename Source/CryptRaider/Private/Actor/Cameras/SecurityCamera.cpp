@@ -1,21 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Cameras/SecurityCamera.h"
 
 #include "Components/SceneCaptureComponent2D.h"
 
 
-// Sets default values
 ASecurityCamera::ASecurityCamera()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SceneCaptureComponent2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
 }
 
-// Called when the game starts or when spawned
 void ASecurityCamera::BeginPlay()
 {
 	Super::BeginPlay();
@@ -23,7 +17,6 @@ void ASecurityCamera::BeginPlay()
 	RelativeStartRotation = SceneCaptureComponent2D->GetRelativeRotation();
 }
 
-// Called every frame
 void ASecurityCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

@@ -1,16 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Trigger/LadderTrigger.h"
 
 #include "Player/BaseCharacter.h"
 #include "Components/BoxComponent.h"
 
 
-// Sets default values
+
 ALadderTrigger::ALadderTrigger()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	LadderBox = CreateDefaultSubobject<UBoxComponent>(FName("Ladder Box"));
@@ -31,7 +27,7 @@ void ALadderTrigger::OnConstruction(const FTransform& Transform)
 	LadderBox->SetHiddenInGame(!IsDebug);
 }
 
-// Called when the game starts or when spawned
+
 void ALadderTrigger::BeginPlay()
 {
 	Super::BeginPlay();
@@ -62,10 +58,4 @@ void ALadderTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	{
 		Movement->SetOnLadder(false);
 	}
-}
-
-// Called every frame
-void ALadderTrigger::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }

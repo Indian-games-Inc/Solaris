@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -15,12 +13,10 @@ class CRYPTRAIDER_API UHintProducer : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	UHintProducer();
 
 public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
@@ -31,7 +27,7 @@ private:
 	class UInteractor* GetInteractor() const;
 	class UPicker* GetPicker() const;
 
-public: // Events
+public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FHintUpdated OnHintUpdated;
 };

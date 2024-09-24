@@ -1,7 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "Actor/Trigger/Dialog/Pick/RandomListDialogPickStrategy.h"
+﻿#include "Actor/Trigger/Dialog/Pick/RandomListDialogPickStrategy.h"
 
 FDataTableRowHandle URandomListDialogPickStrategy::GetDialog()
 {

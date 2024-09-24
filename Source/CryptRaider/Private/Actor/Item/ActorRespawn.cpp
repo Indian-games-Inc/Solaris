@@ -1,10 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Item/ActorRespawn.h"
 
 
-// Sets default values
 AActorRespawn::AActorRespawn()
 {
 	ChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Actor"));
@@ -16,12 +12,6 @@ void AActorRespawn::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	RespawnActor();
-}
-
-// Called when the game starts or when spawned
-void AActorRespawn::BeginPlay()
-{
-	Super::BeginPlay();
 }
 
 void AActorRespawn::OnActorDestroyed(AActor* DestroyedActor)
