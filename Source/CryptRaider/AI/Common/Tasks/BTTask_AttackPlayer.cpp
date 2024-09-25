@@ -28,7 +28,7 @@ EBTNodeResult::Type UBTTask_AttackPlayer::ExecuteTask(UBehaviorTreeComponent& Ow
 			const FVector AILocation = AICharacter->GetActorLocation();
 			const FVector PlayerLocation = PlayerCharacter->GetActorLocation();
 
-			if (UE::Geometry::Distance(AILocation, PlayerLocation) <= AttackDistance)
+			if (FVector::Distance(AILocation, PlayerLocation) <= AttackDistance)
 			{
 				AICharacter->TriggerAttack();
 			}
