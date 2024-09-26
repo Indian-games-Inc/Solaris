@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
+#include "Components/WidgetInteractionComponent.h"
 
 #include "Player/BaseCharacter.h"
 #include "Player/Components/Flashlight.h"
@@ -105,6 +106,31 @@ void ABasePlayerController::SetupInput()
 					EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, Flashlight,
 					                                   &AFlashlight::Toggle);
 				}
+			}
+
+			// Widget Interaction
+			if (auto* WidgetInteractionComponent = BaseCharacter->FindComponentByClass<UWidgetInteractionComponent>();
+				IsValid(WidgetInteractionComponent))
+			{
+				EnhancedInputComponent->BindActionInstanceLambda(
+					MouseClickAction, ETriggerEvent::Started,
+					[this, WidgetInteractionComponent](const FInputActionInstance& Instance)
+					{
+						if (const auto& Key = GetKeyByAction(Instance.GetSourceAction()); Key.IsSet())
+						{
+							WidgetInteractionComponent->PressPointerKey(Key.GetValue());
+						}
+					});
+
+				EnhancedInputComponent->BindActionInstanceLambda(
+					MouseClickAction, ETriggerEvent::Completed,
+					[this, WidgetInteractionComponent](const FInputActionInstance& Instance)
+					{
+						if (const auto& Key = GetKeyByAction(Instance.GetSourceAction()); Key.IsSet())
+						{
+							WidgetInteractionComponent->ReleasePointerKey(Key.GetValue());
+						}
+					});
 			}
 		}
 	}
