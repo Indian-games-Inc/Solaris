@@ -41,13 +41,7 @@ bool ADoorItemLock::HasKey() const
 	if (const auto* Inventory = GetWorld()->GetFirstPlayerController()->FindComponentByClass<UInventory>();
 		IsValid(Inventory))
 	{
-		for (auto& Wrapper : Inventory->GetItems())
-		{
-			if (Wrapper.Data.ID == ItemID)
-			{
-				return true;
-			}
-		}
+		return Inventory->HasItem(ItemID);
 	}
 	return false;
 }
