@@ -48,91 +48,123 @@ void ABasePlayerController::SetupInput()
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
-		if (auto* BaseCharacter = Cast<ABaseCharacter>(GetCharacter()); IsValid(BaseCharacter))
+		if (IsValid(GetCharacter()))
 		{
-			//Movement
-			if (auto* Movement = BaseCharacter->FindComponentByClass<UMovement>(); IsValid(Movement))
-			{
-				// Jump
-				EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, Movement,
-				                                   &UMovement::Jump);
-				//Moving
-				EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, Movement,
-				                                   &UMovement::Move);
-				// Crouching
-				EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, Movement,
-				                                   &UMovement::Crouch);
-				// Sprinting
-				EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, Movement,
-				                                   &UMovement::StartSprint);
-				EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, Movement,
-				                                   &UMovement::StopSprint);
-			}
-
-			//Looking
-			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, BaseCharacter,
-			                                   &ABaseCharacter::Look);
-			// Grabber
-			if (auto* Grabber = BaseCharacter->FindComponentByClass<UGrabber>(); IsValid(Grabber))
-			{
-				EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, Grabber,
-				                                   &UGrabber::Interact);
-				EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, Grabber,
-				                                   &UGrabber::Throw);
-			}
-
-			// Interaction
-			if (auto* Interactor = BaseCharacter->FindComponentByClass<UInteractor>(); IsValid(Interactor))
-			{
-				EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, Interactor,
-				                                   &UInteractor::Interact);
-			}
-
-			if (auto* Picker = BaseCharacter->FindComponentByClass<UPicker>(); IsValid(Picker))
-			{
-				EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, Picker,
-												   &UPicker::Interact);
-			}
-
-			// Interaction with PinLock
-			EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, BaseCharacter,
-			                                   &ABaseCharacter::MouseClick);
-			// Toggle Flashlight
-			if (const auto* FlashlightComponent = BaseCharacter->FindComponentByClass<UChildActorComponent>();
-				IsValid(FlashlightComponent))
-			{
-				if (auto* Flashlight = Cast<AFlashlight>(FlashlightComponent->GetChildActor()))
-				{
-					EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, Flashlight,
-					                                   &AFlashlight::Toggle);
-				}
-			}
-
-			// Widget Interaction
-			if (auto* WidgetInteractionComponent = BaseCharacter->FindComponentByClass<UWidgetInteractionComponent>();
-				IsValid(WidgetInteractionComponent))
-			{
-				EnhancedInputComponent->BindActionInstanceLambda(
-					MouseClickAction, ETriggerEvent::Started,
-					[this, WidgetInteractionComponent](const FInputActionInstance& Instance)
-					{
-						if (const auto& Key = GetKeyByAction(Instance.GetSourceAction()); Key.IsSet())
-						{
-							WidgetInteractionComponent->PressPointerKey(Key.GetValue());
-						}
-					});
-
-				EnhancedInputComponent->BindActionInstanceLambda(
-					MouseClickAction, ETriggerEvent::Completed,
-					[this, WidgetInteractionComponent](const FInputActionInstance& Instance)
-					{
-						if (const auto& Key = GetKeyByAction(Instance.GetSourceAction()); Key.IsSet())
-						{
-							WidgetInteractionComponent->ReleasePointerKey(Key.GetValue());
-						}
-					});
-			}
+			BindLook(EnhancedInputComponent);
+			BindMovement(EnhancedInputComponent);
+			BindInteraction(EnhancedInputComponent);
+			BindFlashlight(EnhancedInputComponent);
+			BindWidgetInteraction(EnhancedInputComponent);
+			BindPinLock(EnhancedInputComponent);
 		}
+	}
+}
+
+void ABasePlayerController::BindLook(UEnhancedInputComponent* EnhancedInputComponent) const
+{
+	if (auto* BaseCharacter = Cast<ABaseCharacter>(GetCharacter()); IsValid(BaseCharacter))
+	{
+		//Looking
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, BaseCharacter,
+										   &ABaseCharacter::Look);
+	}
+}
+
+void ABasePlayerController::BindMovement(UEnhancedInputComponent* EnhancedInputComponent) const
+{
+	//Movement
+	if (auto* Movement = GetCharacter()->FindComponentByClass<UMovement>(); IsValid(Movement))
+	{
+		// Jump
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, Movement,
+										   &UMovement::Jump);
+		//Moving
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, Movement,
+										   &UMovement::Move);
+		// Crouching
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, Movement,
+										   &UMovement::Crouch);
+		// Sprinting
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, Movement,
+										   &UMovement::StartSprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, Movement,
+										   &UMovement::StopSprint);
+	}
+}
+
+void ABasePlayerController::BindInteraction(UEnhancedInputComponent* EnhancedInputComponent) const
+{
+	// Grabber
+	if (auto* Grabber = GetCharacter()->FindComponentByClass<UGrabber>(); IsValid(Grabber))
+	{
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, Grabber,
+										   &UGrabber::Interact);
+		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, Grabber,
+										   &UGrabber::Throw);
+	}
+
+	// Interaction
+	if (auto* Interactor = GetCharacter()->FindComponentByClass<UInteractor>(); IsValid(Interactor))
+	{
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, Interactor,
+										   &UInteractor::Interact);
+	}
+
+	// Picker
+	if (auto* Picker = GetCharacter()->FindComponentByClass<UPicker>(); IsValid(Picker))
+	{
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, Picker,
+										   &UPicker::Interact);
+	}
+}
+
+void ABasePlayerController::BindFlashlight(UEnhancedInputComponent* EnhancedInputComponent) const
+{
+	if (const auto* FlashlightComponent = GetCharacter()->FindComponentByClass<UChildActorComponent>();
+		IsValid(FlashlightComponent))
+	{
+		if (auto* Flashlight = Cast<AFlashlight>(FlashlightComponent->GetChildActor()))
+		{
+			EnhancedInputComponent->BindAction(ToggleFlashlightAction, ETriggerEvent::Completed, Flashlight,
+											   &AFlashlight::Toggle);
+		}
+	}
+}
+
+void ABasePlayerController::BindWidgetInteraction(UEnhancedInputComponent* EnhancedInputComponent) const
+{
+	if (auto* WidgetInteractionComponent = GetCharacter()->FindComponentByClass<UWidgetInteractionComponent>();
+		IsValid(WidgetInteractionComponent))
+	{
+		EnhancedInputComponent->BindActionInstanceLambda(
+			MouseClickAction, ETriggerEvent::Started,
+			[this, WidgetInteractionComponent](const FInputActionInstance& Instance)
+			{
+				if (const auto& Key = GetKeyByAction(Instance.GetSourceAction()); Key.IsSet())
+				{
+					WidgetInteractionComponent->PressPointerKey(Key.GetValue());
+				}
+			});
+
+		EnhancedInputComponent->BindActionInstanceLambda(
+			MouseClickAction, ETriggerEvent::Completed,
+			[this, WidgetInteractionComponent](const FInputActionInstance& Instance)
+			{
+				if (const auto& Key = GetKeyByAction(Instance.GetSourceAction()); Key.IsSet())
+				{
+					WidgetInteractionComponent->ReleasePointerKey(Key.GetValue());
+				}
+			});
+	}
+}
+
+void ABasePlayerController::BindPinLock(UEnhancedInputComponent* EnhancedInputComponent) const
+{
+	if (auto* BaseCharacter = Cast<ABaseCharacter>(GetCharacter()); IsValid(BaseCharacter))
+	{
+		// Interaction with PinLock
+		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, BaseCharacter,
+										   &ABaseCharacter::MouseClick);
 	}
 }
 
