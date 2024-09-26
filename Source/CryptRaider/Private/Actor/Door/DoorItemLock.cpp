@@ -38,19 +38,16 @@ FString ADoorItemLock::HintMessage() const
 
 bool ADoorItemLock::HasKey() const
 {
-	auto Items = Cast<ABasePlayerController>(
-		             GetWorld()->
-		             GetFirstPlayerController())->
-	             GetInventory()->
-	             GetItems();
-
-	for (auto& Wrapper : Items)
+	if (const auto* Inventory = GetWorld()->GetFirstPlayerController()->FindComponentByClass<UInventory>();
+		IsValid(Inventory))
 	{
-		if (Wrapper.Data.ID == ItemID)
+		for (auto& Wrapper : Inventory->GetItems())
 		{
-			return true;
+			if (Wrapper.Data.ID == ItemID)
+			{
+				return true;
+			}
 		}
 	}
-
 	return false;
 }

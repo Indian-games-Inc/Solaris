@@ -26,7 +26,10 @@ void ABasePlayerController::BeginPlay()
 
 	if (auto* Picker = GetCharacter()->FindComponentByClass<UPicker>(); IsValid(Picker))
 	{
-		Picker->OnItemPicked.AddUniqueDynamic(this, &ABasePlayerController::OnItemPicked);
+		if (IsValid(Inventory))
+		{
+			Picker->OnItemPicked.AddUniqueDynamic(Inventory, &UInventory::AddItem);
+		}
 	}
 }
 
@@ -166,11 +169,6 @@ void ABasePlayerController::BindPinLock(UEnhancedInputComponent* EnhancedInputCo
 		EnhancedInputComponent->BindAction(MouseClickAction, ETriggerEvent::Started, BaseCharacter,
 										   &ABaseCharacter::MouseClick);
 	}
-}
-
-void ABasePlayerController::OnItemPicked(const FInventoryItemWrapper& Item)
-{
-	Inventory->AddItem(Item);
 }
 
 TOptional<FKey> ABasePlayerController::GetKeyByAction(const UInputAction* Action) const

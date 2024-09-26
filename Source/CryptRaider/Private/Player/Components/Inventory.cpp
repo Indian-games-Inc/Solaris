@@ -23,22 +23,22 @@ void UInventory::AddItem(const FInventoryItemWrapper& NewItem)
 	}
 }
 
-TArray<FInventoryItemWrapper> UInventory::GetItems()
+TArray<FInventoryItemWrapper> UInventory::GetItems() const
 {
 	return Items;
 }
 
-int UInventory::GetColumns()
+int UInventory::GetColumns() const
 {
 	return Columns;
 }
 
-int UInventory::GetRows()
+int UInventory::GetRows() const
 {
 	return Rows;
 }
 
-int UInventory::GetItemsCount()
+int UInventory::GetItemsCount() const
 {
 	return ItemsCount;
 }
@@ -50,12 +50,10 @@ int UInventory::ToFlatIndex(int I, int J)
 
 void UInventory::SwapItems(int OldIndex, int NewIndex)
 {
-	const FInventoryItemWrapper ReplacementItem = Items[OldIndex];
-	Items[OldIndex] = Items[NewIndex];
-	Items[NewIndex] = ReplacementItem;
+	std::swap(Items[OldIndex], Items[NewIndex]);
 }
 
-FInventoryItemWrapper UInventory::GetItemOnIndex(int Index)
+FInventoryItemWrapper UInventory::GetItemOnIndex(int Index) const
 {
 	return Items[Index];
 }
@@ -68,16 +66,16 @@ FInventoryItemWrapper UInventory::RemoveItem(int Index)
 	return Item;
 }
 
-bool UInventory::IsFull()
+bool UInventory::IsFull() const
 {
 	return ItemsCount == Items.Num();
 }
 
-bool UInventory::HasItem(const FString& ItemId)
+bool UInventory::HasItem(const FString& ItemId) const
 {
-	for (auto Item : Items)
+	for (const auto& [Data, Class] : Items)
 	{
-		if (Item.Data.ID == ItemId)
+		if (Data.ID == ItemId)
 		{
 			return true;
 		}

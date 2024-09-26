@@ -45,9 +45,6 @@ private:
 private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
 
-	UFUNCTION()
-	void OnItemPicked(const struct FInventoryItemWrapper& Item);
-
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UInventory* Inventory;
