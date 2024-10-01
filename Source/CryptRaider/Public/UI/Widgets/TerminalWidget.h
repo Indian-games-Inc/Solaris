@@ -20,10 +20,10 @@ private:
 	
 protected:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UNamedSlot* MouseCursor;
+	TObjectPtr<UNamedSlot> MouseCursor;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UImage* CursorImage;
+	TObjectPtr<class UImage> CursorImage;
 
 private:
 	UPROPERTY(EditAnywhere, Category="Cursor", DisplayName= "Interp Speed", meta = (AllowPrivateAccess = "true"))
