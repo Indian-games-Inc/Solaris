@@ -35,11 +35,16 @@ public:
 	FVector GetWorldLocationFromCursor(FVector& WorldDirection) const;
 
 private:
-	UFUNCTION()
-	void OnItemPicked(const struct FInventoryItemWrapper& Item);
-	
+	void BindLook(UEnhancedInputComponent* EnhancedInputComponent) const;
+	void BindMovement(UEnhancedInputComponent* EnhancedInputComponent) const;
+	void BindInteraction(UEnhancedInputComponent* EnhancedInputComponent) const;
+	void BindFlashlight(UEnhancedInputComponent* EnhancedInputComponent) const;
+	void BindWidgetInteraction(UEnhancedInputComponent* EnhancedInputComponent) const;
+	void BindPinLock(UEnhancedInputComponent* EnhancedInputComponent) const;
+
+private:
 	TOptional<FKey> GetKeyByAction(const UInputAction* Action) const;
-	
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UInventory* Inventory;

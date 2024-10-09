@@ -8,6 +8,7 @@
 
 #include "Player/BasePlayerController.h"
 #include "Actor/Door/DoorPinLock.h"
+#include "Components/WidgetInteractionComponent.h"
 #include "Player/Components/Hand.h"
 #include "Player/Components/Grabber.h"
 #include "Player/Components/Picker.h"
@@ -52,6 +53,9 @@ ABaseCharacter::ABaseCharacter()
 
 	Movement = CreateDefaultSubobject<UMovement>(TEXT("Movement"));
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
+
+	WidgetInteraction = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Widget Interaction"));
+	WidgetInteraction->SetupAttachment(FirstPersonCameraComponent);
 }
 
 void ABaseCharacter::Look(const FInputActionValue& Value)

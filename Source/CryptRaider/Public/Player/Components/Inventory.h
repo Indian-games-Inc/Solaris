@@ -20,22 +20,22 @@ public:
 	void AddItem(const FInventoryItemWrapper& Item);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FInventoryItemWrapper> GetItems();
+	TArray<FInventoryItemWrapper> GetItems() const;
 
 	UFUNCTION(BlueprintCallable)
-	int GetRows();
+	int GetRows() const;
 
 	UFUNCTION(BlueprintCallable)
-	int GetColumns();
+	int GetColumns() const;
 
 	UFUNCTION(BlueprintCallable)
-	int GetItemsCount();
+	int GetItemsCount() const;
 
 	UFUNCTION(BlueprintCallable)
 	int ToFlatIndex(int I, int J);
 
 	UFUNCTION(BlueprintCallable)
-	FInventoryItemWrapper GetItemOnIndex(int Index);
+	FInventoryItemWrapper GetItemOnIndex(int Index) const;
 	
 	UFUNCTION(BlueprintCallable)
 	void SwapItems(int OldIndex, int NewIndex);
@@ -44,8 +44,8 @@ public:
 	FInventoryItemWrapper RemoveItem(int Index);
 
 	UFUNCTION(BlueprintCallable)
-	bool IsFull();
-	bool HasItem(const FString& ItemId);
+	bool IsFull() const;
+	bool HasItem(const FString& ItemId) const;
 
 private:
 	UPROPERTY(EditAnywhere)

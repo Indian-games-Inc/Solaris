@@ -5,6 +5,10 @@
 
 bool UItemAwareDialogPickStrategy::Check()
 {
-	const auto Controller = Cast<ABasePlayerController>(GetWorld()->GetFirstPlayerController());
-	return Controller->GetInventory()->HasItem(ItemId);
+	if (const auto* Inventory = GetWorld()->GetFirstPlayerController()->FindComponentByClass<UInventory>();
+		IsValid(Inventory))
+	{
+		return Inventory->HasItem(ItemId);
+	}
+	return false;
 }

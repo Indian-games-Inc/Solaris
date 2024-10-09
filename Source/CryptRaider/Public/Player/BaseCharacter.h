@@ -49,32 +49,35 @@ private:
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FirstPersonCameraComponent;
+	TObjectPtr<class UCameraComponent> FirstPersonCameraComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Flashlight, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* FlashlightArm;
+	TObjectPtr<class USpringArmComponent> FlashlightArm;
 
 	UPROPERTY(EditDefaultsOnly, Category=Flashlight)
 	TSubclassOf<class AFlashlight> FlashlightClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Flashlight, meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* Flashlight;
+	TObjectPtr<UChildActorComponent> Flashlight;
 
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent* SkeletalMeshComponent;
+	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UHand* Hand;
+	TObjectPtr<class UHand> Hand;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UGrabber* Grabber;
+	TObjectPtr<class UGrabber> Grabber;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UPicker* Picker;
+	TObjectPtr<class UPicker> Picker;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UInteractor* Interactor;
+	TObjectPtr<class UInteractor> Interactor;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UHintProducer* HintProducer;
+	TObjectPtr<class UHintProducer> HintProducer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UWidgetInteractionComponent> WidgetInteraction;
 };
