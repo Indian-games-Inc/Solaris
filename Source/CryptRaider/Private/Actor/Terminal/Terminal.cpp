@@ -1,6 +1,6 @@
 ﻿#include "Actor/Terminal/Terminal.h"
 
-#include "UMG/Public/Components/WidgetComponent.h"
+#include "Components/WidgetComponent.h"
 
 
 ATerminal::ATerminal()
