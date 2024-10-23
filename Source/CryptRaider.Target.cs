@@ -8,10 +8,10 @@ public class CryptRaiderTarget : TargetRules
 	public CryptRaiderTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
+		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
-		BuildEnvironment = TargetBuildEnvironment.Unique;
 		CppStandard = CppStandardVersion.Cpp20;
+
 		ExtraModuleNames.Add("CryptRaider");
 	}
 }
