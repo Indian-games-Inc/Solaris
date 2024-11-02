@@ -17,6 +17,7 @@
 #include "Player/Components/Flashlight.h"
 #include "Player/Components/HintProducer.h"
 #include "Damage/Event/StunDamageEvent.h"
+#include "Actor/Scanner/MonsterScanner.h"
 
 
 ABaseCharacter::ABaseCharacter()
@@ -56,6 +57,13 @@ ABaseCharacter::ABaseCharacter()
 
 	WidgetInteraction = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Widget Interaction"));
 	WidgetInteraction->SetupAttachment(FirstPersonCameraComponent);
+	
+	ScannerArm = CreateDefaultSubobject<USpringArmComponent>("Scanner Arm");
+	ScannerArm->SetupAttachment(FirstPersonCameraComponent);
+	
+	Scanner = CreateDefaultSubobject<UChildActorComponent>("Scanner");
+	Scanner->SetupAttachment(ScannerArm);
+	Scanner->SetChildActorClass(ScannerClass);
 }
 
 void ABaseCharacter::Look(const FInputActionValue& Value)

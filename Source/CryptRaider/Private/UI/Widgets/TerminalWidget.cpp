@@ -21,6 +21,9 @@ void UTerminalWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 void UTerminalWidget::CursorMoveUpdate(const float& DeltaTime)
 {
 	const ACharacter* PlayerCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
+
+	if (not IsValid(PlayerCharacter))
+		return;
 	
 	if (const auto* WidgetInteraction = PlayerCharacter->FindComponentByClass<UWidgetInteractionComponent>())
 	{

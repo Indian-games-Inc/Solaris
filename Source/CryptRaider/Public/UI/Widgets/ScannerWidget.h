@@ -15,6 +15,8 @@ class CRYPTRAIDER_API UScannerWidget : public UUserWidget
 public:
 	void ScanUpdate(const FVector2D& ScanPointPosition);
 
+	void SetDrawSize(const FVector2D& Size);
+	
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -24,22 +26,26 @@ private:
 
 	void UpdatePointOpacity(float DeltaTime);
 
+	FVector2D CalculateRelativePosition(const FVector2D& NewPosition) const;
+
+	FVector2D GetScannerSize() const;
+
 private:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> Canvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> Scanner;
-	
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	TObjectPtr<class UNamedSlot> PositionPoint;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	TObjectPtr<class UImage> PointImage;
-	
-
 
 private:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	float ScanPointExtinctionInterpSpeed;
+
+	FVector2D DrawSize;
 };

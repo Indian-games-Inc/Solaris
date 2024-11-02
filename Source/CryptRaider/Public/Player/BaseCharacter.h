@@ -51,6 +51,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCameraComponent> FirstPersonCameraComponent;
 
+	/** Flashlight components */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Flashlight, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USpringArmComponent> FlashlightArm;
 
@@ -80,4 +81,14 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UWidgetInteractionComponent> WidgetInteraction;
+
+	/** Scanner components */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Scanner, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USpringArmComponent> ScannerArm;
+
+	UPROPERTY(EditDefaultsOnly, Category=Scanner, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AMonsterScanner> ScannerClass;
+
+	UPROPERTY(EditDefaultsOnly, Category=Scanner, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UChildActorComponent> Scanner;
 };

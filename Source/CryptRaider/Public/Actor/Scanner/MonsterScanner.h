@@ -18,26 +18,25 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void Tick(float DeltaTime) override;
-
 	void Enable();
 	void Disable();
 
 private:
 	UFUNCTION()
-	void PerformScan();
+	void PerformScan() const;
+
+	bool InFieldOfView(const FVector& ForwardVector, const FVector& Direction) const;
 
 private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
-	// TODO Create monitor Scanner UserWidget
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UWidgetComponent> Monitor;
 
 	UPROPERTY()
 	TSubclassOf<class UScannerWidget> MonitorWidgetClass;
-	
+
 	UPROPERTY(EditAnywhere, Category="Properties", meta=(AllowPrivateAccess = "true"))
 	float MaxScanDistance;
 
