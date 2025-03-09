@@ -24,6 +24,9 @@ void ABasePlayerController::BeginPlay()
 
 	SetupInput();
 
+	if (not IsValid(GetCharacter()))
+		return;
+
 	if (auto* Picker = GetCharacter()->FindComponentByClass<UPicker>(); IsValid(Picker))
 	{
 		if (IsValid(Inventory))

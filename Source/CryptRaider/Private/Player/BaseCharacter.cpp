@@ -29,6 +29,7 @@ ABaseCharacter::ABaseCharacter()
 	FirstPersonCameraComponent->SetupAttachment(RootComponent);
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	FlashlightArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Fashlight Arm"));
 	FlashlightArm->SetupAttachment(FirstPersonCameraComponent);
@@ -37,9 +38,6 @@ ABaseCharacter::ABaseCharacter()
 	Flashlight = CreateDefaultSubobject<UChildActorComponent>(TEXT("Flashlight"));
 	Flashlight->SetupAttachment(FlashlightArm);
 	Flashlight->SetChildActorClass(FlashlightClass);
-	
-	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMesh");
-	SkeletalMeshComponent->SetupAttachment(FirstPersonCameraComponent);
 
 	Hand = CreateDefaultSubobject<UHand>(TEXT("Hand"));
 	Hand->SetupAttachment(FirstPersonCameraComponent);

@@ -61,9 +61,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Flashlight, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UChildActorComponent> Flashlight;
 
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UHand> Hand;
 

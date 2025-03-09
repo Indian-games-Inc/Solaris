@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface/BaseInteractable.h"
 #include "MonsterScanner.generated.h"
 
 UCLASS()
-class CRYPTRAIDER_API AMonsterScanner : public AActor
+class CRYPTRAIDER_API AMonsterScanner : public ABaseInteractable
 {
 	GENERATED_BODY()
 
